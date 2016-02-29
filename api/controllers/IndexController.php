@@ -11,7 +11,7 @@ namespace api\controllers;
 
 
 use common\models\LzhAd;
-use app\models\LzhBorrowInfo;
+use common\models\LzhBorrowInfo;
 use app\models\LzhBorrowInvest;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
