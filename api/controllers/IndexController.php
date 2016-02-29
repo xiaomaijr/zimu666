@@ -10,7 +10,7 @@ namespace api\controllers;
 
 
 
-use app\models\LzhAd;
+use common\models\LzhAd;
 use app\models\LzhBorrowInfo;
 use app\models\LzhBorrowInvest;
 use common\models\ApiBaseException;
