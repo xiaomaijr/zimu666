@@ -12,8 +12,12 @@ namespace common\models;
 class CacheKey
 {
     private static $redisKeys = [
-        'lzhborrowinfo_getlist' => [
+        'lzhborrowinfo_getlist' => [       //首页推荐产品列表
             'key_name' =>  'borrowinfo_list',
+            'expire' => 3*60
+        ],
+        'product_borrowinfo_getlist' => [  //产品页网贷产品列表
+            'key_name' =>  'product_borrowinfo_list',
             'expire' => 3*60
         ]
     ];
@@ -35,11 +39,10 @@ class CacheKey
             $keyName = strtolower($className) . $flag . strtolower($funcName);
         }
 
-        $cacheInfo = self::$redisKeys[$keyName];
-
-        if(empty($cacheInfo)){
+        if(empty(self::$redisKeys[$keyName])){
             throw new ApiBaseException(ApiErrorDescs::ERR_REDIS_KEY_NOE_EXISTS);
         }
+        $cacheInfo = self::$redisKeys[$keyName];
         if($append){
             $cacheInfo['key_name'] .= $flag . $append;
         }

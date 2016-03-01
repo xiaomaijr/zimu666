@@ -175,4 +175,44 @@ class ApiUtils
         $c .= ($func != '') ? $func . "(): " : "";
         return ($c);
     }
+
+    /*
+     * 从一个二维数组中获取某指定的属性
+     * @param array $arr  二维数组
+     * @param string index
+     * return array 一维数组
+     */
+    public static function getCols($arr, $col)
+    {
+        $ret = [];
+        if (!is_array($arr)) {
+            return $ret;
+        }
+        foreach ($arr as $rows) {
+            foreach ($rows as $k => $v) {
+                if ($k === $col)
+                    array_push($ret, $v);
+            }
+        }
+        return $ret;
+    }
+    /*
+     * 从一个二维数组按照每个下表生成一个新的映射关系
+     * @param array $arr  二维数组
+     * @param string $key
+     * return array 二维数组
+     */
+    public static function getMap($arr, $key = 'id')
+    {
+        if (!$arr) {
+            return [];
+        }
+        $res = [];
+        foreach ($arr as $row) {
+            if (in_array($key, array_keys($row))) {
+                $res[$row[$key]] = $row;
+            }
+        }
+        return $res;
+    }
 }

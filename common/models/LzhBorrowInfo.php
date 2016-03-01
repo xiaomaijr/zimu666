@@ -152,20 +152,17 @@ class LzhBorrowInfo extends BaseModel
     /*
      * 获取融资项目列表
      */
-    public static function getList($request){
+    public static function getList($request, $condition, $params = ''){
         $curPage = ApiUtils::getIntParam('p', $request, 1);
         $pageSize = ApiUtils::getIntParam('page_size', $request);
         $cacheKey = CacheKey::getCacheKey($curPage);
-        $cache = new Cache();
         $ret = [];
+        $params = !empty($params)?$params:self::$apiParams;
+        $cache = new Cache();
         if($cache->exists($cacheKey['key_name'])){
             $ret = $cache->get($cacheKey['key_name']);
         }else{
-            $conditions = [
-                'borrow_status'  =>  2,
-                'is_tuijian' => 0 ,
-            ];
-            $list = self::getDataByConditions($conditions, 'id desc', $pageSize, $curPage, self::$apiParams);
+            $list = self::getDataByConditions($condition, 'id desc', $pageSize, $curPage, $params);
             foreach($list as $row){
                 $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
                 $tmp = self::toApiArr($row);

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace common\models;
 
 use common\models\ApiUtils;
 use common\models\BaseModel;

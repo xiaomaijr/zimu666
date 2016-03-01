@@ -12,7 +12,7 @@ namespace api\controllers;
 
 use common\models\LzhAd;
 use common\models\LzhBorrowInfo;
-use app\models\LzhBorrowInvest;
+use common\models\LzhBorrowInvest;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
 use common\models\TimeUtils;
@@ -32,7 +32,11 @@ class IndexController extends ApiBaseController
             $objTimer = new TimeUtils();
             //推荐产品列表
             $objTimer->start('borrowInfo');
-            $borrows = LzhBorrowInfo::getList($request);
+            $condition = [
+                'borrow_status'  =>  2,
+                'is_tuijian' => 0 ,
+            ];
+            $borrows = LzhBorrowInfo::getList($request, $condition);
             $objTimer->stop('borrowInfo');
             //投资及收益累计总额
             $objTimer->start('borrowAndInvestTotal');
