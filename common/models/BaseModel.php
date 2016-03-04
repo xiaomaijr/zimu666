@@ -76,4 +76,27 @@ class BaseModel extends ActiveRecord
         $total = $query->count();
         return $total?$total:0;
     }
+    /*
+     * 判断是否存在满足条件的数据
+     * @param $condition array
+     * return bool exists true not else false
+     */
+    public static function checkExistByCondition($condition){
+        $strConditions = [];
+        if(!empty($condition)){
+            foreach($condition as $key=>$con){
+                if(is_int($key) && is_string($con)){
+                    array_push($strConditions, $con);
+                    unset($condition[$key]);
+                }
+            }
+        }
+        $query = self::find()->where($condition);
+        if(!empty($strConditions)){
+            foreach($strConditions as $strCon){
+                $query->andWhere($strCon);
+            }
+        }
+        return $query->exists();
+    }
 }

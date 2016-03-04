@@ -16,10 +16,14 @@
  
 # 是否开启URL Rewrite.
 RewriteEngine On
+RewriteRule ^static/(.*)$  web/static/$1 [S]
+
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !=/server-status
 RewriteRule ^(.*)$ web/index.php/$1 [QSA,PT,L]
+
+
 
 # 非法链接
 RewriteRule ^/?([a-zA-Z0-9]+)$                                index.php?app=home&mod=Public&act=error404 [L]

@@ -43,15 +43,15 @@ abstract class RedisActiveRecord extends BaseModel
         return $r;
     }
 
-    public static function get($id, $className)
+    public static function get($id, $tableName)
     {
         $cache = self::getCache();
 
-        if (!$cache->exists($className . ':' . $id)) {
+        if (!$cache->exists($tableName . ':' . $id)) {
             $module = self::find()->where(['id' => $id])->asArray()->one();
-            $cache->set($className . ':' . $id, $module);
+            $cache->set($tableName . ':' . $id, $module);
         } else {
-            $module = $cache->get($className . ':' . $id);
+            $module = $cache->get($tableName . ':' . $id);
         }
 
         return $module;

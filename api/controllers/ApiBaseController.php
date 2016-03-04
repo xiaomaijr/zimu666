@@ -13,6 +13,7 @@ use common\models\ApiBaseException;
 use common\models\ApiConfig;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
+use common\models\LzhMemberAccessToken;
 
 class ApiBaseController extends \yii\web\Controller
 {
@@ -88,9 +89,9 @@ class ApiBaseController extends \yii\web\Controller
     }
 
     /*
-     *验证access_token并获取用户信息
+     *验证access_token
      */
-    protected function checkAccessToken($accessToken){
-//        $objUser = \Yii::$app->user
+    protected function checkAccessToken($accessToken,$userId){
+        LzhMemberAccessToken::checkUserLogin($accessToken, $userId);
     }
 }

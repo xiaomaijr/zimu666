@@ -215,4 +215,68 @@ class ApiUtils
         }
         return $res;
     }
+
+    /**
+     * @param $url
+     * @param $data
+     * @param array $header
+     * @return mixed|string
+     */
+    public static function curlByPost($url,$data,$header=array()){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if(!empty($header)) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER,$header);
+        }
+        $ret = curl_exec($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if($statusCode==200){
+            return $ret;
+        }else{
+            return false;
+        }
+    }
+    /*
+     * 获取'YmdHis'格式时间
+     * @param $time unix timestamp
+     * return string
+     */
+    public static function getStrTime($time = 0){
+        if(!$time){
+            $time = time();
+        }
+        return date('YmdHis', $time);
+    }
+    /*
+     * 验证手机号码格式
+     * @param $phone
+     * if false throw new ApiBaseException
+     */
+    public static function checkPhoneFormat($phone){
+        $pattern = "/^1[3,5,7,8]\d{9}$/";
+        if(!preg_match($pattern, $phone)){
+            throw new ApiBaseException(ApiErrorDescs::ERR_PHONE_FORMAT_WRONG);
+        }
+    }
+    /*
+     * 密码格式校验
+     */
+    public static function checkPwd($pwd){
+        if(preg_match( "/^[a-zA-Z_@#!\$]{6,16}$/", $pwd)){
+            return true;
+        }elseif(preg_match( "/^[a-zA-Z0-9]{6,16}$/", $pwd)){
+            return true;
+        }elseif(preg_match( "/^[0-9_@#!\$]{6,16}$/", $pwd)){
+            return true;
+        }else{
+            throw new ApiBaseException(ApiErrorDescs::ERR_USER_PASSWORD_FORMART_WORNG);
+        }
+    }
 }
