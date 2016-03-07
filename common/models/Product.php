@@ -30,23 +30,24 @@ class Product extends Component
 
         $cacheKey = CacheKey::getCacheKey($this->type . '_' . ApiUtils::getIntParam('p', $request), self::REDIS_KEY_PRODUCT_LIST);
         $cache = new Cache();
-        $list = $ids = [];
+        $list = [];
         $model =  $this->listModelName;
         if($cache->exists($cacheKey['key_name'])){
             $ids = $cache->get($cacheKey['key_name']);
-            $list = $model::gets($ids, '',  $this->listParams);
+            $list = $model::gets($ids);
         }else{
             $list = $model::getDataByConditions($this->listCondition, 'id desc', $pageSize, $curPage, $this->listParams);
-            if($this->type == self::PRODUCT_TYPE_P2B){
-                foreach($list as $row){
-                    $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
-                    $row['process'] = $process;
-                    $ret[$row[$this->listIndex]] = $row;
-                    $ids[] = $row['id'];
-                }
-                $list = $ret;
-            }
+            $ids = ApiUtils::getCols($list, $this->listIndex);
             $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
+        }
+        if($this->type == self::PRODUCT_TYPE_P2B){
+            foreach($list as $row){
+                $tmp = $model::toApiArr($row);
+                $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
+                $tmp['process'] = $process;
+                $ret[$row[$this->listIndex]] = $tmp;
+            }
+            $list = $ret;
         }
         return $list;
     }

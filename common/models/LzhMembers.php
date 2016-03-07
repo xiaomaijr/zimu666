@@ -134,7 +134,7 @@ class LzhMembers extends RedisActiveRecord
     public function register($params){
         $this->_checkPhoneRegistered($params['user_name']);
         $this->user_phone = $params['user_name'];
-        $this->user_pass = md5($params['passwd']);
+        $this->user_pass = md5('a2m' . $params['passwd'] . '1df');;
         $this->reg_time = time();
         $this->reg_ip = ApiUtils::getStrParam('REMOTE_ADDR', $_SERVER);
         $this->last_log_ip = ApiUtils::getStrParam('REMOTE_ADDR', $_SERVER);
@@ -173,7 +173,7 @@ class LzhMembers extends RedisActiveRecord
         if(!$obj){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
         }
-        if(md5($passwd) != $obj['user_pass']){
+        if(md5('a2m'.$passwd .'1df') != $obj['user_pass']){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_PASSWD_INPUT_WRONG);
         }
         $memAccToken = new LzhMemberAccessToken();
@@ -188,7 +188,7 @@ class LzhMembers extends RedisActiveRecord
         if(!$obj){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
         }
-        $obj->user_pass = md5($passwd);
+        $obj->user_pass =  md5('a2m'.$passwd .'1df');
         if(!$obj->update()){
             throw new ApiBaseException(ApiErrorDescs::ERR_RESET_PASSWD_FAIL);
         }

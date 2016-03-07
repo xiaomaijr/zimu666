@@ -42,8 +42,10 @@ class ProductController extends ApiBaseController
                 $userProIds = $objPro->getUserList($request['user_id'], $ids);
                 $timer->stop('user_invest_product');
             }
+            $list = [];
             foreach($productList as $key => $val){
-                $productList[$key]['flag'] = empty($userProIds) || !in_array($key, $userProIds)?0:1;
+                $val['flag'] = empty($userProIds) || !in_array($key, $userProIds)?0:1;
+                $list[] = $val;
             }
 
             $ret = [
@@ -51,7 +53,7 @@ class ProductController extends ApiBaseController
                 'message' => 'success',
                 'result' => [
                     'type' => $type,
-                    'list' =>  $productList
+                    'list' =>  $list
                 ]
             ];
         }catch(ApiBaseException $e){

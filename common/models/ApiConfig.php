@@ -18,4 +18,7 @@ class ApiConfig
     public static $arrNoNeedCheckApiSign = [
 
     ];
+
+    const USER_LOGIN_TIMES_LIMIT = 5;//用户登录次数限制
+    const USER_LOGIN_DURATION = 1*60;//用户登录次数限制期限
 }

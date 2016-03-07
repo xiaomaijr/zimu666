@@ -43,13 +43,13 @@ abstract class RedisActiveRecord extends BaseModel
         return $r;
     }
 
-    public static function get($id, $tableName = '', $select = '*')
+    public static function get($id, $tableName = '')
     {
         $cache = self::getCache();
         $tableName = $tableName?$tableName:self::tableName();
 
         if (!$cache->exists($tableName . ':' . $id)) {
-            $module = self::find()->select($select)->where(['id' => $id])->asArray()->one();
+            $module = self::find()->where(['id' => $id])->asArray()->one();
             $cache->set($tableName . ':' . $id, $module);
         } else {
             $module = $cache->get($tableName . ':' . $id);
@@ -58,7 +58,7 @@ abstract class RedisActiveRecord extends BaseModel
         return $module;
     }
 
-    public static function gets($ids, $tableName = '', $select = '*')
+    public static function gets($ids, $tableName = '')
     {
         $modules = array();
         $cache = self::getCache();
@@ -78,7 +78,7 @@ abstract class RedisActiveRecord extends BaseModel
 
         if ($isNeedRead) {
             $key = implode(',', $ids);
-            $sql = "SELECT " . $select . " FROM " . $tableName . " WHERE `id` IN (" . $key . ") ORDER BY field(id, " . $key . ")";
+            $sql = "SELECT * FROM " . $tableName . " WHERE `id` IN (" . $key . ") ORDER BY field(id, " . $key . ")";
             $nueList = self::findBySql($sql)->asArray()->all();
 //            $nueList = self::find()->where(['in', 'id', $ids])->asArray()->all();
 

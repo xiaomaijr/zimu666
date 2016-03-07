@@ -16,6 +16,7 @@ use common\models\LzhBorrowInvest;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
 use common\models\TimeUtils;
+use yii\redis\Cache;
 
 
 class IndexController extends ApiBaseController
@@ -69,5 +70,11 @@ class IndexController extends ApiBaseController
 
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
+    }
+
+    public function actionTest(){
+        $cache = new Cache();
+        $cache->redis->expire('abc', 60);
+        echo md5('a2mzx1234561df');exit;
     }
 }

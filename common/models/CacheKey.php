@@ -36,6 +36,9 @@ class CacheKey
             'key_name' => 'reset_passwd_unique',
             'expire' => 3*60
         ],
+        'login_err_limit' => [     //重复登录失败限制
+            'expire' => 15*60
+        ]
     ];
     /*
      * 获取reids keyName及其生命周期

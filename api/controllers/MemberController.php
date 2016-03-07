@@ -10,6 +10,7 @@ namespace api\controllers;
 
 
 use common\models\ApiBaseException;
+use common\models\ApiConfig;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\CacheKey;
@@ -32,6 +33,7 @@ class MemberController extends ApiBaseController
     const CACHE_KEY_RESET_PASSWD = 'reset_passwd'; //密码重置有效期
     const CACHE_KEY_GET_MESSAGE_CODE = 'get_message_code';//短信验证码有效期
     const CACHE_KEY_GET_MESSAGE_LIMIT = 'get_message_limit';//短信验证码请求频率限制
+    const CACHE_KEY_LOGIN_ERR_LIMIT = 'login_err_limit';//登录失败限制
     /*
      * 获取图形验证码
      */
@@ -97,6 +99,9 @@ class MemberController extends ApiBaseController
                 throw new ApiBaseException(ApiErrorDescs::ERR_VERIFY_CODE_WRONG);
             }
             //注册用户需要校验用户名是否存在
+            if($request['key'] == 'register' && LzhMembers::checkExistByCondition(['user_name' => $userName])){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_REGISTER_PHONE_EXIST);
+            }
             if($request['key'] == 'forgetpass' && !LzhMembers::checkExistByCondition(['user_name' => $userName])){
                 throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
             }
@@ -199,8 +204,21 @@ class MemberController extends ApiBaseController
             $request = $_REQUEST;
             ApiUtils::checkPwd($request['passwd']);
             ApiUtils::checkPhoneFormat($request['user_name']);
+            $key = CacheKey::getCacheKey($request['user_name'], self::CACHE_KEY_LOGIN_ERR_LIMIT);
             $timer = new TimeUtils();
-
+//            $cache = new Cache();
+            $redis = new \Redis();
+            $redis->connect('127.0.0.1');
+            $exist = false;
+            if($redis->exists($key['key_name'])) {
+                $exist = true;
+                $num = $redis->hGet($key['key_name'], 'num');
+                $time = $redis->hGet($key['key_name'], 'time');
+                $duration = time() - $time;
+                if ($duration <= ApiConfig::USER_LOGIN_DURATION && $num > 4) {
+                    throw new ApiBaseException(ApiErrorDescs::ERR_USER_LOGIN_ERR_FREQUENT);
+                }
+            }
             //用户登录
             $timer->start('password_check');
             $memberInfo = LzhMembers::login($request['user_name'], $request['passwd'], $request['mobile_type']);
@@ -211,7 +229,6 @@ class MemberController extends ApiBaseController
                 LzhMemberDeviceToken::bindToken($memberInfo['user_id'], $request['device_token'], $request['mobile_type'], $memberInfo['mobile']);
                 $timer->stop('device_token_bind');
             }
-
             $result = [
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
@@ -221,6 +238,16 @@ class MemberController extends ApiBaseController
                 ]
             ];
         }catch(ApiBaseException $e){
+            if ($exist && $duration <= ApiConfig::USER_LOGIN_DURATION) {
+                $num++;
+                $redis->hset($key['key_name'], 'num', $num);
+            } else {
+                $time = time();
+                $num = 1;
+                $redis->hset($key['key_name'], 'time', $time);
+                $redis->hset($key['key_name'], 'num', $num);
+            }
+            $redis->expire($key['key_name'], $key['expire']);
             $result = [
                 'code' => $e->getCode(),
                 'message' => $e->getMessage()
@@ -371,5 +398,16 @@ class MemberController extends ApiBaseController
         return $this->keyTypeMap[$key];
     }
 
+    /*
+     * 充值
+     */
+    public function actionRecharge(){
+        try{
+            $request = $_REQUEST;
+
+        }catch(ApiBaseException $e){
+
+        }
+    }
 
 }

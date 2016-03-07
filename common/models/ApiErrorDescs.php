@@ -35,6 +35,7 @@ class ApiErrorDescs
     const ERR_RESET_PASSWD_FAIL = 20;//重置保存密码失败
     const ERR_NOTICE_KEY_NOT_EXIST = 21;//短信验证码key不存在
     const ERR_RESET_USERPASS_OVERDUE = 22;//重置密码信息已过期
+    const ERR_USER_LOGIN_ERR_FREQUENT = 23;//用户登录失败次数过于频繁
 
 
     //1000-2000消息类错误
@@ -76,6 +77,7 @@ class ApiErrorDescs
         self::ERR_RESET_PASSWD_FAIL => '重置密码保存失败',
         self::ERR_NOTICE_KEY_NOT_EXIST => '短信验证码key不存在',
         self::ERR_RESET_USERPASS_OVERDUE => '重置密码信息已过期',
+        self::ERR_USER_LOGIN_ERR_FREQUENT => '用户登录失败次数太过频繁，请5分钟后再进行登录',
 
         //1000-2000消息类错误
         self::ERR_MESSAGE_INFO_EMPTY => '信息配置为空',

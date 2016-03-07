@@ -92,7 +92,7 @@ class LzhMemberAccessToken extends RedisActiveRecord
      * 验证用户登录
      */
     public static function checkUserLogin($accessToken, $memberId){
-        $obj = self::findOne(['token' => $accessToken]);
+        $obj = self::get($memberId);
         if(!$obj){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_ACCESS_TOKEN_OVERDUE);
         }
@@ -100,7 +100,7 @@ class LzhMemberAccessToken extends RedisActiveRecord
         if(($accTokenCTime + 7*24*3600) < time()){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_ACCESS_TOKEN_OVERDUE);
         }
-        if($memberId != $obj['member_id']){
+        if($accessToken != $obj['access_token']){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_ACCESS_TOKEN_OVERDUE);
         }
     }
@@ -118,5 +118,20 @@ class LzhMemberAccessToken extends RedisActiveRecord
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_LOGOUT_FAIL);
         }
+    }
+
+    public static function get($memberId, $tableName = '', $select = '*')
+    {
+        $cache = self::getCache();
+        $tableName = $tableName?$tableName:self::tableName();
+
+        if (!$cache->exists($tableName . ':' . $memberId)) {
+            $module = self::find()->select($select)->where(['member_id' => $memberId])->asArray()->one();
+            $cache->set($tableName . ':' . $memberId, $module);
+        } else {
+            $module = $cache->get($tableName . ':' . $memberId);
+        }
+
+        return $module;
     }
 }

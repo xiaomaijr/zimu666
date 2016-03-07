@@ -169,7 +169,7 @@ class LzhBorrowInfo extends RedisActiveRecord
         return [
             'borrow_name' => ApiUtils::getStrParam('borrow_name', $arr),
             'borrow_duration' => ApiUtils::getIntParam('borrow_duration', $arr),
-            'borrow_type' => self::$borrowTypeMap[ApiUtils::getIntParam('borrow_type', $arr)],
+//            'borrow_type' => self::$borrowTypeMap[ApiUtils::getIntParam('borrow_type', $arr)],
             'borrow_money' => ApiUtils::getFloatParam('borrow_money', $arr),
             'borrow_interest' => ApiUtils::getFloatParam('borrow_interest', $arr),
             'borrow_interest_rate' => ApiUtils::getFloatParam('borrow_interest_rate', $arr),
@@ -194,17 +194,18 @@ class LzhBorrowInfo extends RedisActiveRecord
         $cache = new Cache();
         if($cache->exists($cacheKey['key_name'])){
             $ids = $cache->get($cacheKey['key_name']);
-            $ret = self::gets($ids, '', $params);
+            $list = self::gets($ids);
         }else{
             $list = self::getDataByConditions($condition, 'id desc', $pageSize, $curPage, $params);
-            foreach($list as $row){
-                $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
-                $tmp = self::toApiArr($row);
-                $tmp['process'] = $process;
-                $ret[] = $tmp;
-                $ids[] = $row['id'];
-            }
+            $ids = ApiUtils::getCols($list, 'id');
             $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
+        }
+        foreach($list as $row){
+            $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
+            $tmp = self::toApiArr($row);
+            $tmp['process'] = $process;
+            $ret[] = $tmp;
+            $ids[] = $row['id'];
         }
 
         return $ret;
