@@ -16,8 +16,10 @@ class CacheKey
             'key_name' =>  'borrowinfo_list',
             'expire' => 3*60
         ],
-        'product_borrowinfo_getlist' => [  //产品页网贷产品列表
-            'key_name' =>  'product_borrowinfo_list',
+        'product_list' => [  //产品页网贷产品列表
+            'expire' => 3*60
+        ],
+        'borrow_invest_total' => [  //首页投资收益总额
             'expire' => 3*60
         ],
         'xmjrcodekey' => [               //图形验证码
@@ -25,11 +27,9 @@ class CacheKey
             'expire' => 30*60
         ],
         'get_message_limit' => [               //请求短信验证码接口频率限制
-            'key_name' => 'get_message_limit',
             'expire' => 1*60
         ],
         'get_message_code' => [               //短信验证码有效期
-            'key_name' => 'get_message_code',
             'expire' => 3*60
         ],
         'reset_passwd' => [               //重置登录密码唯一识别码有效期
@@ -59,6 +59,7 @@ class CacheKey
             throw new ApiBaseException(ApiErrorDescs::ERR_REDIS_KEY_NOE_EXISTS);
         }
         $cacheInfo = self::$redisKeys[$keyName];
+        $cacheInfo['key_name'] = isset($cacheInfo['key_name'])?$cacheInfo['key_name']:$keyName;
         if($append){
             $cacheInfo['key_name'] .= $flag . $append;
         }

@@ -51,6 +51,8 @@ class LzhMembers extends RedisActiveRecord
         return 'lzh_members';
     }
 
+    public static $tableName = 'lzh_members';
+
     /**
      * @inheritdoc
      */
@@ -112,15 +114,18 @@ class LzhMembers extends RedisActiveRecord
     }
 
     public function insertEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 
     public function updateEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 
     public function deleteEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 
     /*

@@ -38,8 +38,9 @@ use yii\redis\Cache;
  * @property integer $is_statics
  * @property integer $recommend_id
  */
-class LzhBorrowInvest extends BaseModel
+class LzhBorrowInvest extends RedisActiveRecord
 {
+    const BORROW_AND_INVEST_TOTAL = 'borrow_invest_total';//投资收益总额
     /**
      * @inheritdoc
      */
@@ -47,6 +48,8 @@ class LzhBorrowInvest extends BaseModel
     {
         return 'lzh_borrow_invest';
     }
+
+    public static $tableName = 'lzh_borrow_invest';
 
     /**
      * @inheritdoc
@@ -100,10 +103,10 @@ class LzhBorrowInvest extends BaseModel
      * 查询投资总额和收益总额
      */
     public static function getBorrowAndInvestTotal(){
-        $key = 'borrow_and_invest_total';
+        $key = CacheKey::getCacheKey('', self::BORROW_AND_INVEST_TOTAL);
         $cache = new Cache();
-        if(false&&$cache->exists($key)){
-            $info = $cache->get($key);
+        if($cache->exists($key['key_name'])){
+            $info = $cache->get($key['key_name']);
         }else{
             $condition = "loanno != '\'\''";
             $info = self::find()
@@ -111,8 +114,23 @@ class LzhBorrowInvest extends BaseModel
                 ->where($condition)
                 ->asArray()
                 ->one();
-            $cache->set($key, $info, 3*60);
+            $cache->set($key['key_name'], $info, $key['expire']);
         }
         return $info;
+    }
+
+    public function insertEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
+    }
+
+    public function updateEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
+    }
+
+    public function deleteEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 }

@@ -28,6 +28,7 @@ class LzhMemberDeviceToken extends RedisActiveRecord
         return 'lzh_member_device_token';
     }
 
+    public static $tableName = 'lzh_member_device_token';
     /**
      * @inheritdoc
      */
@@ -60,15 +61,18 @@ class LzhMemberDeviceToken extends RedisActiveRecord
     }
 
     public function insertEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 
     public function updateEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 
     public function deleteEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 
     /*

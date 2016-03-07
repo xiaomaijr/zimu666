@@ -50,7 +50,7 @@ use yii\redis\Cache;
  * @property string $deal_info
  * @property integer $is_ready
  */
-class LzhBorrowInfo extends BaseModel
+class LzhBorrowInfo extends RedisActiveRecord
 {
     /**
      * @inheritdoc
@@ -59,6 +59,8 @@ class LzhBorrowInfo extends BaseModel
     {
         return 'lzh_borrow_info';
     }
+
+    public static $tableName = 'lzh_borrow_info';
 
     /**
      * @inheritdoc
@@ -124,10 +126,41 @@ class LzhBorrowInfo extends BaseModel
             'is_ready' => 'Is Ready',
         ];
     }
+
+    //还款方式映射
+    public static $repayMap = [
+        1 => '按天到期还款',
+        2 => '按月分期还款',
+        3 => '按季分期还款',
+        4 => '每月还息到期还本',
+
+    ];
+    //借款类型映射
+    public static $borrowTypeMap = [
+        1 => '普通标',
+        2 => '担保标',
+        3 => '秒还标',
+        4 => '净值标',
+        5 => '抵押标',
+    ];
+    //借款状态映射
+    public static $borrowStatusMap = [
+        0 => '初审待审核',
+        1 => '初审未通过',
+        2 => '借款中',
+        3 => '流标',
+        4 => '复审中',
+        5 => '复审未通过',
+        6 => '还款中',
+        7 => '正常完成',
+        8 => '已逾期',
+        9 => '网站代还完成',
+        10 => '逾期还款',
+    ];
     /*
      * api返回字段
      */
-    public static $apiParams = ['borrow_name', 'borrow_duration',  'borrow_type', 'borrow_money', 'borrow_interest',  'borrow_interest_rate', 'has_borrow', 'borrow_min',
+    public static $apiParams = ['id', 'borrow_name', 'borrow_duration',  'borrow_type', 'borrow_money', 'borrow_interest',  'borrow_interest_rate', 'has_borrow', 'borrow_min',
     'borrow_max', 'repayment_type', 'is_tuijian', 'use_hongbao', 'borrow_status'];
     /*
      * 过滤列表api需要字段
@@ -136,17 +169,17 @@ class LzhBorrowInfo extends BaseModel
         return [
             'borrow_name' => ApiUtils::getStrParam('borrow_name', $arr),
             'borrow_duration' => ApiUtils::getIntParam('borrow_duration', $arr),
-            'borrow_type' => ApiUtils::getIntParam('borrow_type', $arr),
+            'borrow_type' => self::$borrowTypeMap[ApiUtils::getIntParam('borrow_type', $arr)],
             'borrow_money' => ApiUtils::getFloatParam('borrow_money', $arr),
             'borrow_interest' => ApiUtils::getFloatParam('borrow_interest', $arr),
             'borrow_interest_rate' => ApiUtils::getFloatParam('borrow_interest_rate', $arr),
             'has_borrow' => ApiUtils::getFloatParam('has_borrow', $arr),
             'borrow_min' => ApiUtils::getIntParam('borrow_min', $arr),
             'borrow_max' => ApiUtils::getIntParam('borrow_max', $arr),
-            'repayment_type' => ApiUtils::getIntParam('repayment_type', $arr),
+            'repayment_type' => self::$repayMap[ApiUtils::getIntParam('repayment_type', $arr)],
             'is_tuijian' => ApiUtils::getIntParam('is_tuijian', $arr),
             'use_hongbao' => ApiUtils::getIntParam('use_hongbao', $arr),
-            'borrow_status' => ApiUtils::getIntParam('borrow_status', $arr),
+            'borrow_status' => self::$borrowStatusMap[ApiUtils::getIntParam('borrow_status', $arr)],
         ];
     }
     /*
@@ -156,11 +189,12 @@ class LzhBorrowInfo extends BaseModel
         $curPage = ApiUtils::getIntParam('p', $request, 1);
         $pageSize = ApiUtils::getIntParam('page_size', $request);
         $cacheKey = CacheKey::getCacheKey($curPage);
-        $ret = [];
+        $ret = $ids = [];
         $params = !empty($params)?$params:self::$apiParams;
         $cache = new Cache();
         if($cache->exists($cacheKey['key_name'])){
-            $ret = $cache->get($cacheKey['key_name']);
+            $ids = $cache->get($cacheKey['key_name']);
+            $ret = self::gets($ids, '', $params);
         }else{
             $list = self::getDataByConditions($condition, 'id desc', $pageSize, $curPage, $params);
             foreach($list as $row){
@@ -168,10 +202,25 @@ class LzhBorrowInfo extends BaseModel
                 $tmp = self::toApiArr($row);
                 $tmp['process'] = $process;
                 $ret[] = $tmp;
+                $ids[] = $row['id'];
             }
-            $cache->set($cacheKey['key_name'], $ret, $cacheKey['expire']);
+            $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
         }
 
         return $ret;
+    }
+    public function insertEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
+    }
+
+    public function updateEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
+    }
+
+    public function deleteEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 }

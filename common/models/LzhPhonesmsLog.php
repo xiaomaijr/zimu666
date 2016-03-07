@@ -16,7 +16,7 @@ use Yii;
  * @property integer $types
  * @property integer $status
  */
-class LzhPhonesmsLog extends BaseModel
+class LzhPhonesmsLog extends RedisActiveRecord
 {
     /**
      * @inheritdoc
@@ -25,6 +25,8 @@ class LzhPhonesmsLog extends BaseModel
     {
         return 'lzh_phonesms_log';
     }
+
+    public static $tableName = 'lzh_phonesms_log';
 
     /**
      * @inheritdoc
@@ -157,5 +159,20 @@ class LzhPhonesmsLog extends BaseModel
     public function saveSendMessageLog($data){
         $this->attributes = $data;
         $this->save();
+    }
+
+    public function insertEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
+    }
+
+    public function updateEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
+    }
+
+    public function deleteEvent(){
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 }

@@ -24,6 +24,7 @@ class LzhMemberAccessToken extends RedisActiveRecord
         return 'lzh_member_access_token';
     }
 
+    public static $tableName = 'lzh_member_access_token';
     /**
      * @inheritdoc
      */
@@ -53,15 +54,18 @@ class LzhMemberAccessToken extends RedisActiveRecord
     }
 
     public function insertEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 
     public function updateEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
 
     public function deleteEvent(){
-
+        $cache = self::getCache();
+        $cache->delete(self::$tableName . ':' . $this->id);
     }
     /*
      * 用户登录
