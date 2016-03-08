@@ -204,6 +204,7 @@ class LzhBorrowInfo extends RedisActiveRecord
             $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
             $tmp = self::toApiArr($row);
             $tmp['process'] = $process;
+            $tmp['remain'] = $tmp['borrow_money'] - $tmp['has_borrow'];
             $ret[] = $tmp;
             $ids[] = $row['id'];
         }

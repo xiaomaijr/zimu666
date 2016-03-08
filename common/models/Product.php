@@ -44,6 +44,7 @@ class Product extends Component
             foreach($list as $row){
                 $tmp = $model::toApiArr($row);
                 $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
+                $tmp['remain'] = $tmp['borrow_money'] - $tmp['has_borrow'];
                 $tmp['process'] = $process;
                 $ret[$row[$this->listIndex]] = $tmp;
             }

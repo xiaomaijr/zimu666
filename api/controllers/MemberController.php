@@ -215,7 +215,7 @@ class MemberController extends ApiBaseController
                 $num = $redis->hGet($key['key_name'], 'num');
                 $time = $redis->hGet($key['key_name'], 'time');
                 $duration = time() - $time;
-                if ($duration <= ApiConfig::USER_LOGIN_DURATION && $num > 4) {
+                if ($num > 4) {
                     throw new ApiBaseException(ApiErrorDescs::ERR_USER_LOGIN_ERR_FREQUENT);
                 }
             }

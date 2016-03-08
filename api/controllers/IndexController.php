@@ -73,8 +73,8 @@ class IndexController extends ApiBaseController
     }
 
     public function actionTest(){
-        $cache = new Cache();
-        $cache->redis->expire('abc', 60);
-        echo md5('a2mzx1234561df');exit;
+
+        echo crc32("The quick fox jumped over the lazy dog.");
+        exit;
     }
 }
