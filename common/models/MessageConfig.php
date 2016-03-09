@@ -61,6 +61,15 @@ class MessageConfig
         'forgetpass' => '亲爱的芝麻粉，您的验证码为#CODE#(3分钟内有效]，此验证码供您找回登录密码使用，请勿向任何人泄露！如有疑问，请联系客服：400-6688-122',
         'register' => '您正在进行注册，本次的验证码是#CODE#。 如非本人操作，请与客服联系：400-6688-122【小麦金融】',
     ];
+
+    //需要验证用户已注册的短信请求参数key
+    public static $checkExistMsgKeys = [
+        'forgetpass',
+    ];
+    //需要验证用户未注册的短信请求参数key
+    public static $checkNotExistMsgKeys = [
+        'register',
+    ];
     /*
      * 消息发送
      * @param $type int different type show different business

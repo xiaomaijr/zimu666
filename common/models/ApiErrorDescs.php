@@ -24,7 +24,7 @@ class ApiErrorDescs
     const ERR_PHONE_FORMAT_WRONG = 9;//手机号码格式有误
     const ERR_USER_PASSWORD_FORMART_WORNG = 10;//用户登录密码格式有误
     const ERR_USER_REGISTER_FAIL = 11;//用户注册失败
-    const ERR_USER_REGISTER_PHONE_EXIST = 12;//用户手机号已注册
+    const ERR_USER_REGISTER_PHONE_EXIST = 12;//用户名已注册
     const ERR_USER_LOGIN_FAIL = 13;//用户登录失败
     const ERR_USER_ACCESS_TOKEN_OVERDUE = 14;//用户登录信息已过期
     const ERR_USER_NAME_NOT_REGISTER = 15;//用户名未注册
@@ -36,6 +36,7 @@ class ApiErrorDescs
     const ERR_NOTICE_KEY_NOT_EXIST = 21;//短信验证码key不存在
     const ERR_RESET_USERPASS_OVERDUE = 22;//重置密码信息已过期
     const ERR_USER_LOGIN_ERR_FREQUENT = 23;//用户登录失败次数过于频繁
+    const ERR_ILL_REQUEST_MESSAGE = 24;//非法请求短信发送接口
 
 
     //1000-2000消息类错误
@@ -66,7 +67,7 @@ class ApiErrorDescs
         self::ERR_PHONE_FORMAT_WRONG => '手机号码格式有误',
         self::ERR_USER_PASSWORD_FORMART_WORNG => '用户登录密码格式有误',
         self::ERR_USER_REGISTER_FAIL  => '用户注册失败',
-        self::ERR_USER_REGISTER_PHONE_EXIST => '用户手机号已注册',
+        self::ERR_USER_REGISTER_PHONE_EXIST => '用户名已注册',
         self::ERR_USER_LOGIN_FAIL => '用户登录失败',
         self::ERR_USER_ACCESS_TOKEN_OVERDUE => '用户登录信息已过期',
         self::ERR_USER_NAME_NOT_REGISTER => '用户名未注册',
@@ -78,6 +79,7 @@ class ApiErrorDescs
         self::ERR_NOTICE_KEY_NOT_EXIST => '短信验证码key不存在',
         self::ERR_RESET_USERPASS_OVERDUE => '重置密码信息已过期',
         self::ERR_USER_LOGIN_ERR_FREQUENT => '用户登录失败次数太过频繁，请5分钟后再进行登录',
+        self::ERR_ILL_REQUEST_MESSAGE => '请求非法',
 
         //1000-2000消息类错误
         self::ERR_MESSAGE_INFO_EMPTY => '信息配置为空',

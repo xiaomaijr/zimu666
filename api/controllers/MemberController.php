@@ -98,15 +98,12 @@ class MemberController extends ApiBaseController
             if(!$ret){
                 throw new ApiBaseException(ApiErrorDescs::ERR_VERIFY_CODE_WRONG);
             }
-            //注册用户需要校验用户名是否存在
-            if($request['key'] == 'register' && LzhMembers::checkExistByCondition(['user_name' => $userName])){
-                throw new ApiBaseException(ApiErrorDescs::ERR_USER_REGISTER_PHONE_EXIST);
-            }
-            if($request['key'] == 'forgetpass' && !LzhMembers::checkExistByCondition(['user_name' => $userName])){
-                throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
-            }
-            $data['code'] = rand(100000, 999999);
+            //校验用户名是否存在
+            $timer->start('check_user_name');
+            LzhMembers::checkExistByMsgKey($userName, $request['key']);
+            $timer->stop('check_user_name');
             //短信验证码发送
+            $data['code'] = rand(100000, 999999);
             $timer->start('mobile_message_send');
             $type = $this->_getNoticeTypeByKey($request['key']);
             $ret = MessageConfig::Notice($type, $userName, 0, $data);
@@ -208,7 +205,7 @@ class MemberController extends ApiBaseController
             $timer = new TimeUtils();
 //            $cache = new Cache();
             $redis = new \Redis();
-            $redis->connect('127.0.0.1');
+            $redis->connect(\Yii::$app->redis->hostname);
             $exist = false;
             if($redis->exists($key['key_name'])) {
                 $exist = true;

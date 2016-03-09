@@ -35,14 +35,14 @@ class ApiBaseController extends \yii\web\Controller
             if(parent::beforeAction($action)){
                 //做参数校验
                 $arrParams = $_REQUEST;
-                $arrParamsNeeded = isset(ApiConfig::$arrSellerCheckParams[$strControllerId][$strActionId]) ?
-                    ApiConfig::$arrSellerCheckParams[$strControllerId][$strActionId] : array();
-                if (false === ApiUtils::checkParams($arrParamsNeeded, $arrParams)) {
+                $arrParamsNeeded = isset(ApiConfig::$arrApiCheckParams[$strControllerId][$strActionId]) ?
+                    ApiConfig::$arrApiCheckParams[$strControllerId][$strActionId] : [];
+                $arrParamsNeeded = array_merge($arrParamsNeeded, ApiConfig::$arrCommCheckParams);
+                if (!(defined('yii_debug') && !empty($_REQUEST['xiaomai'])  && (strcmp($_REQUEST['xiaomai'], 'heiheihei') == 0)) && false === ApiUtils::checkParams($arrParamsNeeded, $arrParams)) {
                     throw new ApiBaseException(ApiErrorDescs::ERR_PARAM_INVALID);
                 }
                 //做api sign校验
                 if (!(defined('yii_debug') && !empty($_REQUEST['xiaomai'])  && (strcmp($_REQUEST['xiaomai'], 'heiheihei') == 0)) && !$checkNeed && false === ApiUtils::checkSign($arrParams, XIAOMAI_API_SIGN_SECRET)) {
-                    file_put_contents('result.txt', ApiUtils::checkSign($arrParams,XIAOMAI_API_SIGN_SECRET));
                     throw new ApiBaseException(ApiErrorDescs::ERR_SIGN_ERR);
                 }
                 return true;

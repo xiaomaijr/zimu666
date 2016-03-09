@@ -10,6 +10,7 @@ namespace api\controllers;
 
 
 
+use common\models\HashRedis;
 use common\models\LzhAd;
 use common\models\LzhBorrowInfo;
 use common\models\LzhBorrowInvest;
@@ -73,8 +74,6 @@ class IndexController extends ApiBaseController
     }
 
     public function actionTest(){
-
-        echo crc32("The quick fox jumped over the lazy dog.");
-        exit;
+        echo \Yii::$app->redis->hostname;exit;
     }
 }

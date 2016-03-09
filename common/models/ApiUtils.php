@@ -19,12 +19,12 @@ class ApiUtils
      */
     public static function checkParams(Array $paramsNeeded, Array $params = array())
     {
-        $params = array_merge($_GET, $_POST);
-        if (!is_array($paramsNeeded) || !is_array($params)) {
-            return false;
-        }
+        $params = $params?$params:array_merge($_GET, $_POST);
+//        if (!is_array($paramsNeeded) || !is_array($params)) {
+//            return false;
+//        }
         foreach ($paramsNeeded as $value) {
-            if (!isset($params[$value]) && !empty($params[$value])) {
+            if (empty($params[$value])) {
                 return false;
             }
         }
@@ -269,11 +269,7 @@ class ApiUtils
      * 密码格式校验
      */
     public static function checkPwd($pwd){
-        if(preg_match( "/^[a-zA-Z_@#!\$]{6,16}$/", $pwd)){
-            return true;
-        }elseif(preg_match( "/^[a-zA-Z0-9]{6,16}$/", $pwd)){
-            return true;
-        }elseif(preg_match( "/^[0-9_@#!\$]{6,16}$/", $pwd)){
+        if(preg_match( "/^[a-zA-Z0-9]{6,16}$/", $pwd)){
             return true;
         }else{
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_PASSWORD_FORMART_WORNG);

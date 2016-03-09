@@ -193,5 +193,17 @@ class LzhMembers extends RedisActiveRecord
             throw new ApiBaseException(ApiErrorDescs::ERR_RESET_PASSWD_FAIL);
         }
     }
+    /*
+     * 根据key验证短信发送用户是否已注册
+     */
+    public static function checkExistByMsgKey($userName, $key){
+        if(in_array($key, MessageConfig::$checkNotExistMsgKeys) && self::checkExistByCondition(['user_name' => $userName])){
+            throw new ApiBaseException(ApiErrorDescs::ERR_USER_REGISTER_PHONE_EXIST);
+        } elseif(in_array($key, MessageConfig::$checkExistMsgKeys) && !self::checkExistByCondition(['user_name' => $userName])){
+            throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
+        }else{
+            throw new ApiBaseException(ApiErrorDescs::ERR_ILL_REQUEST_MESSAGE);
+        }
+    }
 
 }
