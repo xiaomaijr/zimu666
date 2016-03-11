@@ -55,17 +55,17 @@ class LzhMemberAccessToken extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::$tableName . ':' . $this->member_id);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::$tableName . ':' . $this->member_id);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::$tableName . ':' . $this->member_id);
     }
     /*
      * 用户登录
@@ -100,7 +100,7 @@ class LzhMemberAccessToken extends RedisActiveRecord
         if(($accTokenCTime + 7*24*3600) < time()){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_ACCESS_TOKEN_OVERDUE);
         }
-        if($accessToken != $obj['access_token']){
+        if($accessToken != $obj['token']){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_ACCESS_TOKEN_OVERDUE);
         }
     }

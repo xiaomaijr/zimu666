@@ -49,7 +49,7 @@ class BaseModel extends ActiveRecord
             return [];
         }
         $info = self::find()
-            ->where([$param => $id, 'is_del' => 0])
+            ->where([$param => $id])
             ->asArray()
             ->one();
         return $info?$info:[];

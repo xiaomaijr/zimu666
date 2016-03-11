@@ -40,7 +40,9 @@ use yii\redis\Cache;
  */
 class LzhBorrowInvest extends RedisActiveRecord
 {
+
     const BORROW_AND_INVEST_TOTAL = 'borrow_invest_total';//投资收益总额
+    const CACHE_KEY_USER_TOTAL_INCODE = 'user_total_income'; //用户累计收益缓存key
     /**
      * @inheritdoc
      */
@@ -50,6 +52,11 @@ class LzhBorrowInvest extends RedisActiveRecord
     }
 
     public static $tableName = 'lzh_borrow_invest';
+
+    //设置分表tablename
+    public function setSubTableName($tableName){
+        $this->subTableName = $tableName;
+    }
 
     /**
      * @inheritdoc
@@ -133,4 +140,30 @@ class LzhBorrowInvest extends RedisActiveRecord
         $cache = self::getCache();
         $cache->delete(self::$tableName . ':' . $this->id);
     }
+
+    /*
+     * 查询用户总收益
+     */
+    public static function getTotalIncomeByInvestId($investUid){
+        $cacheKey = CacheKey::getCacheKey($investUid . '_' . date("Ymd"), self::CACHE_KEY_USER_TOTAL_INCODE);
+        $cache = new Cache();
+        if($cache->exists($cacheKey['key_name'])){
+            return $cache->get($cacheKey['key_name']);
+        }
+        $incomeInfos = self::getDataByConditions(['investor_uid' => intval($investUid), "loanno != ''"], null, 0, 0, ['borrow_id', 'investor_interest', 'add_time', 'integral_days']);
+        $income = 0;
+        $tmp = [];
+        foreach($incomeInfos as $info){
+            $diffDay = ApiUtils::getDiffDay($info['add_time'], time());
+            if($diffDay > $info['integral_days']){
+                $tmp[] = $info['investor_interest'];
+                continue;
+            }
+            $tmp[] = $info['investor_interest']/$info['integral_days'] * $diffDay;
+        }
+        $income = sprintf("%.02f", array_sum($tmp));
+        $cache->set($cacheKey['key_name'], $income, $cacheKey['expire']);
+        return $income;
+    }
+
 }

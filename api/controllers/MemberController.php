@@ -14,8 +14,11 @@ use common\models\ApiConfig;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\CacheKey;
+use common\models\LzhBorrowInvest;
+use common\models\LzhEscrowAccount;
 use common\models\LzhMemberAccessToken;
 use common\models\LzhMemberDeviceToken;
+use common\models\LzhMemberMoney;
 use common\models\LzhMembers;
 use common\models\MessageConfig;
 use common\models\TimeUtils;
@@ -396,15 +399,43 @@ class MemberController extends ApiBaseController
     }
 
     /*
-     * 充值
+     * 个人账户
      */
-    public function actionRecharge(){
+    public function actionAccount(){
         try{
             $request = $_REQUEST;
+            $timer = new TimeUtils();
+            //检查用户登录信息
+            $timer->start('check_access_token');
+            $this->checkAccessToken($request['access_token'], $request['user_id']);
+            $timer->stop('check_access_token');
+            //获取用户资金
+            $timer->start('get_mm_money');
+            $data = LzhMemberMoney::getUserMoney($request['user_id']);
+            $timer->stop('get_mm_money');
+            //用户累计收益
+            $timer->start('accumulated_income');
+            $data['income'] = LzhBorrowInvest::getTotalIncomeByInvestId($request['user_id']);
+            $timer->stop('accumulated income');
+            //检查用户是否在钱多多绑定账户
+            $data['essrow'] = LzhEscrowAccount::checkExistByCondition(['uid' => $request['user_id']])?1:0;
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result'  => $data
+            ];
 
         }catch(ApiBaseException $e){
-
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
         }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
     }
 
 }

@@ -38,6 +38,9 @@ class CacheKey
         ],
         'login_err_limit' => [     //重复登录失败限制
             'expire' => 15*60
+        ],
+        'user_total_income' => [   //截止今日用户累计收益
+            'expire' => 24*60
         ]
     ];
     /*

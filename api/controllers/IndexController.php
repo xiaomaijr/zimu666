@@ -74,6 +74,8 @@ class IndexController extends ApiBaseController
     }
 
     public function actionTest(){
-        echo \Yii::$app->redis->hostname;exit;
+        $incode = LzhBorrowInvest::getTotalIncomeByInvestId(236716);exit;
+
+//        echo \Yii::$app->redis->hostname;exit;
     }
 }

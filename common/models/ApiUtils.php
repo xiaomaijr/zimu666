@@ -275,4 +275,15 @@ class ApiUtils
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_PASSWORD_FORMART_WORNG);
         }
     }
+    /*
+     *
+     */
+    public static function getDiffDay($preTime, $nextTime){
+        if($preTime > $nextTime){
+            return false;
+        }
+        $preTime = strtotime(date('Ymd', $preTime) . ' 0:0:0');
+        $nextTime = strtotime(date('Ymd', $nextTime) . ' 0:0:0');
+        return ($nextTime-$preTime)/24/3600;
+    }
 }
