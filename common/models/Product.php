@@ -43,10 +43,11 @@ class Product extends Component
         if($this->type == self::PRODUCT_TYPE_P2B){
             foreach($list as $row){
                 $tmp = $model::toApiArr($row);
-                $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
-                $tmp['remain'] = $tmp['borrow_money'] - $tmp['has_borrow'];
-                $tmp['process'] = $process;
-                $ret[$row[$this->listIndex]] = $tmp;
+//                $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
+//                $tmp['remain'] = $tmp['borrow_money'] - $tmp['has_borrow'];
+//                $tmp['process'] = $process;
+//                $ret[$row[$this->listIndex]] = $tmp;
+                $ret[] = $tmp;
             }
             $list = $ret;
         }

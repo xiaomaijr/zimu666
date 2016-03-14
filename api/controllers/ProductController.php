@@ -35,25 +35,24 @@ class ProductController extends ApiBaseController
             $objPro = new Product($config);
             $productList = $objPro->getList($request, $ids);
             $timer->stop('product_list');
-            $request['user_id'] = 236716;
             //获取用户已投资产品
-            if(!empty($request['user_id'])){
-                $timer->start('user_invest_product');
-                $userProIds = $objPro->getUserList($request['user_id'], $ids);
-                $timer->stop('user_invest_product');
-            }
-            $list = [];
-            foreach($productList as $key => $val){
-                $val['flag'] = empty($userProIds) || !in_array($key, $userProIds)?0:1;
-                $list[] = $val;
-            }
+//            if(!empty($request['user_id'])){
+//                $timer->start('user_invest_product');
+//                $userProIds = $objPro->getUserList($request['user_id'], $ids);
+//                $timer->stop('user_invest_product');
+//            }
+//            $list = [];
+//            foreach($productList as $key => $val){
+//                $val['flag'] = empty($userProIds) || !in_array($key, $userProIds)?0:1;
+//                $list[] = $val;
+//            }
 
             $ret = [
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
                 'result' => [
                     'type' => $type,
-                    'list' =>  $list
+                    'list' =>  $productList
                 ]
             ];
         }catch(ApiBaseException $e){

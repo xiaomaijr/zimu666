@@ -167,6 +167,7 @@ class LzhBorrowInfo extends RedisActiveRecord
      */
     public static function toApiArr($arr){
         return [
+            'id' => ApiUtils::getIntParam('id', $arr),
             'borrow_name' => ApiUtils::getStrParam('borrow_name', $arr),
             'borrow_duration' => ApiUtils::getIntParam('borrow_duration', $arr),
 //            'borrow_type' => self::$borrowTypeMap[ApiUtils::getIntParam('borrow_type', $arr)],
@@ -180,6 +181,8 @@ class LzhBorrowInfo extends RedisActiveRecord
             'is_tuijian' => ApiUtils::getIntParam('is_tuijian', $arr),
             'use_hongbao' => ApiUtils::getIntParam('use_hongbao', $arr),
             'borrow_status' => self::$borrowStatusMap[ApiUtils::getIntParam('borrow_status', $arr)],
+            'remain' => ApiUtils::getFloatParam('borrow_money', $arr) - ApiUtils::getFloatParam('has_borrow', $arr),
+            'process' => ApiUtils::getFloatParam('borrow_money', $arr)?ApiUtils::getFloatParam('has_borrow', $arr)/ApiUtils::getFloatParam('borrow_money', $arr):0,
         ];
     }
     /*
@@ -201,10 +204,7 @@ class LzhBorrowInfo extends RedisActiveRecord
             $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
         }
         foreach($list as $row){
-            $process = $row['has_borrow']&&$row['borrow_money']?$row['has_borrow']/$row['borrow_money']:0;
             $tmp = self::toApiArr($row);
-            $tmp['process'] = $process;
-            $tmp['remain'] = $tmp['borrow_money'] - $tmp['has_borrow'];
             $ret[] = $tmp;
             $ids[] = $row['id'];
         }
@@ -224,5 +224,18 @@ class LzhBorrowInfo extends RedisActiveRecord
     public function deleteEvent(){
         $cache = self::getCache();
         $cache->delete(self::$tableName . ':' . $this->id);
+    }
+
+    public static function getInfo($id){
+        $info = self::get($id);
+        if(empty($info)){
+            throw new ApiBaseException(ApiErrorDescs::ERR_BORROW_DATA_NOT_EXIST);
+        }
+        $objInvest = new LzhBorrowInvest(['subTableName' => 'lzh_borrow_investor_' . $id%3]);
+        $investInfo = $objInvest->getInvestPersonAndMoneyTotal($id);
+        $data = self::toApiArr($info);
+        $data['person_count'] = ApiUtils::getIntParam('c', $investInfo);
+        $data['money_total'] = ApiUtils::getFloatParam('s', $investInfo);
+        return $data;
     }
 }

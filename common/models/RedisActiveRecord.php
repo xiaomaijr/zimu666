@@ -47,10 +47,11 @@ abstract class RedisActiveRecord extends BaseModel
     {
         $cache = self::getCache();
         $tableName = $tableName?$tableName:self::tableName();
+        $module = [];
 
         if (!$cache->exists($tableName . ':' . $id)) {
             $module = self::find()->where(['id' => $id])->asArray()->one();
-            $cache->set($tableName . ':' . $id, $module);
+            $module AND $cache->set($tableName . ':' . $id, $module);
         } else {
             $module = $cache->get($tableName . ':' . $id);
         }

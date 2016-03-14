@@ -43,6 +43,7 @@ class LzhBorrowInvest extends RedisActiveRecord
 
     const BORROW_AND_INVEST_TOTAL = 'borrow_invest_total';//投资收益总额
     const CACHE_KEY_USER_TOTAL_INCODE = 'user_total_income'; //用户累计收益缓存key
+    const CACHE_KEY_BORROW_INVESTOR_AND_MONEY_TOTAL = 'brw_intor_a_mny_ttl'; //
     /**
      * @inheritdoc
      */
@@ -166,4 +167,20 @@ class LzhBorrowInvest extends RedisActiveRecord
         return $income;
     }
 
+    /*
+     * 获取某个标投标总人数及投资总额
+     */
+    public function getInvestPersonAndMoneyTotal($borrowId){
+        $cacheKey = CacheKey::getCacheKey($borrowId, self::CACHE_KEY_BORROW_INVESTOR_AND_MONEY_TOTAL);
+        $cache = new Cache();
+        $info = [];
+        if(!$cache->exists($cacheKey['key_name'])){
+            $info = self::find()->select('count(id) as c, sum(investor_capital) as s')->from($this->subTableName)->where("loanno != ''")->andWhere(['borrow_id' => $borrowId])
+                ->asArray()->one();
+            $cache->set($cacheKey['key_name'], $info, $cacheKey['expire']);
+        }else{
+            $info = $cache->get($cacheKey['key_name']);
+        }
+        return $info;
+    }
 }

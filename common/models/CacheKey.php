@@ -41,7 +41,10 @@ class CacheKey
         ],
         'user_total_income' => [   //截止今日用户累计收益
             'expire' => 24*60
-        ]
+        ],
+        'brw_intor_a_mny_ttl' => [ //某个标投标总人数及总金额
+            'expire' => 1*60
+        ],
     ];
     /*
      * 获取reids keyName及其生命周期

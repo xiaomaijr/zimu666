@@ -76,17 +76,17 @@ class LzhMemberMoney extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::$tableName . ':' . $this->uid);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::$tableName . ':' . $this->uid);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::$tableName . ':' . $this->uid);
     }
     /*
      *获取用户账户总额
@@ -103,4 +103,18 @@ class LzhMemberMoney extends RedisActiveRecord
         return $money;
     }
 
+    public static function get($uid, $tableName = ''){
+        $cache = self::getCache();
+        $tableName = !empty($tableName)?$tableName:self::tableName();
+        $key = $tableName . ":" . $uid;
+        if($cache->exists($key)){
+            return $cache->get($key);
+        }
+        $info = self::getDataByID($uid, 'uid');
+        if(!empty($info)){
+            $cache->set($key, $info);
+        }
+        return $info;
+
+    }
 }

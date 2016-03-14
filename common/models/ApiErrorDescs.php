@@ -44,6 +44,9 @@ class ApiErrorDescs
     const ERR_MESSAGE_CODE_EMPTY = 1001;//注册短信验证码为空
     const ERR_MESSAGE_PHONE_EMPTY = 1002;//用户手机号不能为空
 
+    //2000-3000投资错误信息
+    const ERR_BORROW_DATA_NOT_EXIST = 2000;//借款信息不存在
+
 
 
 
@@ -85,6 +88,9 @@ class ApiErrorDescs
         self::ERR_MESSAGE_INFO_EMPTY => '信息配置为空',
         self::ERR_MESSAGE_CODE_EMPTY => '注册短信验证码为空',
         self::ERR_MESSAGE_PHONE_EMPTY => '用户手机号不能为空',
+
+        //2000-3000借款错误信息
+        self::ERR_BORROW_DATA_NOT_EXIST => '借款信息不存在',
     ];
 
 
