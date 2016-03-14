@@ -49,14 +49,14 @@ return [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['trace', 'info'],
                     'categories' => ['application'],
-                    'logFile' => dirname(__DIR__) . '/../../runtime/mall/logs/app_' . date('Y-m-d') . '.log',
+                    'logFile' => dirname(__DIR__) . '/../runtime/logs/app_' . date('Y-m-d') . '.log',
                     'maxLogFiles' => 50,
                 ],
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                     'categories' => ['application'],
-                    'logFile' => dirname(__DIR__) . '/../../runtime/mall/logs/error_' . date('Y-m-d') . '.log',
+                    'logFile' => dirname(__DIR__) . '/../runtime/logs/error_' . date('Y-m-d') . '.log',
                     'maxLogFiles' => 50,
                 ],
 

@@ -92,7 +92,7 @@ class LzhMemberMoney extends RedisActiveRecord
      *获取用户账户总额
      */
     public static function getUserMoney($memberId){
-        $preMoney = self::getDataByID($memberId, 'uid');
+        $preMoney = self::get($memberId);
         $money = [
             'invest_money' => ApiUtils::getFloatParam('invest_money', $preMoney),
             'back_money' => ApiUtils::getFloatParam('back_money', $preMoney),

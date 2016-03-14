@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\redis\Cache;
 
 /**
  * This is the model class for table "lzh_escrow_account".
@@ -93,4 +94,32 @@ class LzhEscrowAccount extends RedisActiveRecord
         $cache = self::getCache();
         $cache->delete(self::$tableName . ':' . $this->uid);
     }
+    /*
+     * 获取用户第三方支付绑定信息
+     * @param $uid eq member id
+     * unbind return ['yeeBind'=>0,'qddBind'=>0] else return ['yeeBind'=>1,'qddBind'=>1]
+     */
+    public static function getUserBindInfo($uid){
+        $data = ['yeeBind'=>0,'qddBind'=>0];
+        if(empty($uid)){
+            return $data;
+        }
+        $cacheKey = CacheKey::getCacheKey($uid, self::tableName(), ':');
+        $cache = new Cache();
+        if($cache->exists($cacheKey['key_name'])){
+            return $cache->get($cacheKey['key_name']);
+        }
+        $infos = self::getDataByConditions(['uid' => $uid]);
+        foreach($infos as $info){
+            if(empty($info) || empty($info['qdd_marked'])) continue;
+            if($info['platform'] == 0){
+                $data['qddBind'] = 1;
+            }elseif($info['platform'] == 1){
+                $data['yeeBind'] = 1;
+            }
+        }
+        $cache->set($cacheKey['key_name'], $data, $cacheKey['expire']);
+        return $data;
+    }
+
 }
