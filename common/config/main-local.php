@@ -3,16 +3,13 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-//            'dsn' => 'mysql:host=127.0.0.1:3306;dbname=mall',
             'dsn' => 'mysql:host=101.201.208.181:3306;dbname=xmjrxb',
             'username' => 'xmjrtest',
             'password' => 'MGM4MGYyYW',
-//            'password' => '',
             'charset' => 'utf8',
         ],
         'db1' => [
             'class' => 'yii\db\Connection',
-//            'dsn' => 'mysql:host=127.0.0.1:3306;dbname=mall',
             'dsn' => 'mysql:host=101.200.234.95:3910;dbname=devil',
             'username' => 'root',
             'password' => '',
