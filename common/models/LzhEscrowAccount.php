@@ -28,6 +28,7 @@ use yii\redis\Cache;
  */
 class LzhEscrowAccount extends RedisActiveRecord
 {
+    const CACHE_KEY_USER_BIND = 'lzh_escrow_account_bind';
     /**
      * @inheritdoc
      */
@@ -82,17 +83,20 @@ class LzhEscrowAccount extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->uid);
+        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::CACHE_KEY_USER_BIND . ':' . $this->uid);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->uid);
+        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::CACHE_KEY_USER_BIND . ':' . $this->uid);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->uid);
+        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::CACHE_KEY_USER_BIND . ':' . $this->uid);
     }
     /*
      * 获取用户第三方支付绑定信息
@@ -104,12 +108,19 @@ class LzhEscrowAccount extends RedisActiveRecord
         if(empty($uid)){
             return $data;
         }
-        $cacheKey = CacheKey::getCacheKey($uid, self::tableName(), ':');
+        $cacheKey = CacheKey::getCacheKey($uid, self::CACHE_KEY_USER_BIND, ':');
         $cache = new Cache();
         if($cache->exists($cacheKey['key_name'])){
-            return $cache->get($cacheKey['key_name']);
+            $ids = $cache->get($cacheKey['key_name']);
+            $infos = self::gets($ids);
+        }else{
+            $infos = self::getDataByConditions(['uid' => $uid]);
+            if(empty($infos)){
+                return $data;
+            }
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
         }
-        $infos = self::getDataByConditions(['uid' => $uid]);
         foreach($infos as $info){
             if(empty($info) || empty($info['qdd_marked'])) continue;
             if($info['platform'] == 0){
@@ -118,7 +129,6 @@ class LzhEscrowAccount extends RedisActiveRecord
                 $data['yeeBind'] = 1;
             }
         }
-        $cache->set($cacheKey['key_name'], $data, $cacheKey['expire']);
         return $data;
     }
 

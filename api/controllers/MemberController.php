@@ -419,7 +419,8 @@ class MemberController extends ApiBaseController
             $timer->stop('accumulated income');
             //检查用户是否在钱多多绑定账户
             $timer->start('escrow_account');
-            $data['escrow'] = LzhEscrowAccount::checkExistByCondition(['uid' => $request['user_id']])?1:0;
+            $escrow = LzhEscrowAccount::getUserBindInfo($request['user_id']);
+            $data['escrow'] = $escrow['yeeBind'] | $escrow['qddBind'];
             $timer->stop('escrow_account');
             $result = [
                 'code' => ApiErrorDescs::SUCCESS,

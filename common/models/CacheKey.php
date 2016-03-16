@@ -45,7 +45,7 @@ class CacheKey
         'brw_intor_a_mny_ttl' => [ //某个标投标总人数及总金额
             'expire' => 1*60
         ],
-        'lzh_escrow_account' => [ //用户第三方支付绑定
+        'lzh_escrow_account_bind' => [ //用户第三方支付绑定
             'expire' => 0
         ],
     ];

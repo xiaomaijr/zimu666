@@ -37,6 +37,7 @@ class ApiErrorDescs
     const ERR_RESET_USERPASS_OVERDUE = 22;//重置密码信息已过期
     const ERR_USER_LOGIN_ERR_FREQUENT = 23;//用户登录失败次数过于频繁
     const ERR_ILL_REQUEST_MESSAGE = 24;//非法请求短信发送接口
+    const ERR_UNKNOW_ERROR = 25;//异常错误
 
 
     //1000-2000消息类错误
@@ -46,6 +47,10 @@ class ApiErrorDescs
 
     //2000-3000投资错误信息
     const ERR_BORROW_DATA_NOT_EXIST = 2000;//借款信息不存在
+    const ERR_USER_UNBIND_THIRD_PAY = 2001;//未绑定第三方支付
+    const ERR_INVEST_RECORD_ADD_FAIL = 2002;//投资记录保存失败
+    const ERR_INVEST_DETAIL_ADD_FAIL = 2003;//投资还款保存失败
+    const ERR_INVEST_FAIL = 2004;//投资失败
 
 
 
@@ -83,6 +88,8 @@ class ApiErrorDescs
         self::ERR_RESET_USERPASS_OVERDUE => '重置密码信息已过期',
         self::ERR_USER_LOGIN_ERR_FREQUENT => '用户登录失败次数太过频繁，请5分钟后再进行登录',
         self::ERR_ILL_REQUEST_MESSAGE => '请求非法',
+        self::ERR_UNKNOW_ERROR => '异常错误',
+
 
         //1000-2000消息类错误
         self::ERR_MESSAGE_INFO_EMPTY => '信息配置为空',
@@ -91,6 +98,10 @@ class ApiErrorDescs
 
         //2000-3000借款错误信息
         self::ERR_BORROW_DATA_NOT_EXIST => '借款信息不存在',
+        self::ERR_USER_UNBIND_THIRD_PAY => '未绑定第三方支付',
+        self::ERR_INVEST_RECORD_ADD_FAIL => '投资记录保存失败',
+        self::ERR_INVEST_DETAIL_ADD_FAIL => '投资还款保存失败',
+        self::ERR_INVEST_FAIL => '投资失败',
     ];
 
 

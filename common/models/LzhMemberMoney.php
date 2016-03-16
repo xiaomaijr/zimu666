@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\redis\Cache;
 
 /**
  * This is the model class for table "lzh_member_money".
@@ -34,7 +35,9 @@ class LzhMemberMoney extends RedisActiveRecord
     {
         return 'lzh_member_money';
     }
+    const CACHE_KEY_USER_ACCOUNT = 'user_money';//用户资金账户数据
 
+    public static $tableName = 'lzh_member_money';
     /**
      * @inheritdoc
      */
@@ -76,45 +79,51 @@ class LzhMemberMoney extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->uid);
+        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::CACHE_KEY_USER_ACCOUNT . '_' . $this->uid);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->uid);
+        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::CACHE_KEY_USER_ACCOUNT . '_' . $this->uid);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->uid);
+        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->delete(self::CACHE_KEY_USER_ACCOUNT . '_' . $this->uid);
     }
     /*
      *获取用户账户总额
      */
-    public static function getUserMoney($memberId){
-        $preMoney = self::get($memberId);
-        $money = [
-            'invest_money' => ApiUtils::getFloatParam('invest_money', $preMoney),
-            'back_money' => ApiUtils::getFloatParam('back_money', $preMoney),
-            'available_money' => ApiUtils::getFloatParam('total_money', $preMoney),
-            'expected_assets' => ApiUtils::getFloatParam('total_money', $preMoney) + ApiUtils::getFloatParam('freeze_money', $preMoney) +
-                ApiUtils::getFloatParam('collect_money', $preMoney),
-        ];
+    public static function getUserMoney($memberId, $platform = 'qdd'){
+        $data = [];
+        $cacheKey = CacheKey::getCacheKey($memberId, self::CACHE_KEY_USER_ACCOUNT);
+        $cache = new Cache();
+        if($cache->exists($cacheKey['key_name'])){
+            $ids = $cache->get($cacheKey['key_name']);
+            $infos = self::gets($ids);
+        }else{
+            $infos = self::getDataByConditions(['uid' => $memberId]);
+            if(empty($infos)) return $data;
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
+        }
+        foreach($infos as $info){
+            if($info['platform'] == 0){
+                $data['qdd'] = [
+                    'invest_money' => ApiUtils::getFloatParam('invest_money', $info),
+                    'back_money' => ApiUtils::getFloatParam('back_money', $info),
+                    'available_money' => ApiUtils::getFloatParam('total_money', $info),
+                    'expected_assets' => ApiUtils::getFloatParam('total_money', $info) + ApiUtils::getFloatParam('freeze_money', $info) +
+                        ApiUtils::getFloatParam('collect_money', $info),
+                ];
+            }else{
+                $data['yee'] = [];
+            }
+        }
+        $money = in_array($platform, ['qdd', 'yee'])?$data[$platform]:$data;
         return $money;
-    }
-
-    public static function get($uid, $tableName = ''){
-        $cache = self::getCache();
-        $tableName = !empty($tableName)?$tableName:self::tableName();
-        $key = $tableName . ":" . $uid;
-        if($cache->exists($key)){
-            return $cache->get($key);
-        }
-        $info = self::getDataByID($uid, 'uid');
-        if(!empty($info)){
-            $cache->set($key, $info);
-        }
-        return $info;
-
     }
 }

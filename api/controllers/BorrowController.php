@@ -9,10 +9,12 @@
 namespace api\controllers;
 
 
+use api\models\InvestInter;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\LzhBorrowInfo;
+use common\models\LzhEscrowAccount;
 use common\models\LzhMemberMoney;
 use common\models\TimeUtils;
 
@@ -62,22 +64,75 @@ class BorrowController extends ApiBaseController
         try{
             $request = $_REQUEST;
             $id = ApiUtils::getIntParam('id', $request);
+            $money = ApiUtils::getFloatParam('money', $request);
             $timer = new TimeUtils();
-            $timer->start('check_access_token');
-            $this->checkAccessToken($request['access_token'], $request['user_id']);
-            $timer->stop('check_access_token');
 
-            //验证标参数
-            $timer->start('check_borrow');
+            //验证标是否存在
+            $timer->start('check_borrow_exist');
             if(!($borrow = LzhBorrowInfo::get($id))){
                 throw new ApiBaseException(ApiErrorDescs::ERR_BORROW_DATA_NOT_EXIST);
             }
-            $timer->stop('check_borrow');
+            $timer->stop('check_borrow_exist');
+            //验证 用户信息
+            $timer->start('check_access_token');
+            $this->checkAccessToken($request['access_token'], $request['user_id']);
+            $timer->stop('check_access_token');
             //验证用户是否绑定第三方支付
             $timer->start('check_bind_qdd');
-
+            $escrow = LzhEscrowAccount::getUserBindInfo($request['user_id']);
+            if($escrow['yeeBind'] | $escrow['qddBind']){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
+            }
             $timer->stop('check_bind_qdd');
+            //验证标状态等
+            $timer->start('check_borrow_status');
+            if($borrow['status'] != 2){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '只能投正在借款中的标');
+            }
+            if($borrow['borrow_uid'] == $request['user_id']){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '不能去投自己的标');
+            }
+            $timer->stop('check_borrow_status');
+            //验证用户账户可用资金
+            $timer->start('check_money');
+            $userMny = LzhMemberMoney::getUserMoney($request['user_id']);
+            if($userMny['available_money'] < $money){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '账户余额不足，请先充值');
+            }
+            $timer->stop('check_money');
+            $msg = "您的账户可用余额为{$userMny['available_money']}元，实际投标{$money}元，您确认投标吗？";
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => $msg
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
 
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    //投标
+    public function actionInvest(){
+        try{
+            $request = $_REQUEST;
+            $uid = ApiUtils::getIntParam('user_id', $request);
+            $borrowId = ApiUtils::getIntParam('id', $request);
+            $money = ApiUtils::getFloatParam('money', $request);
+            $timer = new TimeUtils();
+            $timer->start('check_access_token');
+            $this->checkAccessToken($request['access_token'], $uid);
+            $timer->stop('check_access_token');
+            //投标过程
+            $timer->start('invest');
+            $investId = InvestInter::investMoneyThird($uid, $borrowId, $money);
+            $timer->stop('invest');
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

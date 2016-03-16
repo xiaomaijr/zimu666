@@ -225,7 +225,7 @@ class LzhBorrowInfo extends RedisActiveRecord
         $cache = self::getCache();
         $cache->delete(self::$tableName . ':' . $this->id);
     }
-
+    //获取投标总人数及投资总额
     public static function getInfo($id){
         $info = self::get($id);
         if(empty($info)){
@@ -237,5 +237,13 @@ class LzhBorrowInfo extends RedisActiveRecord
         $data['person_count'] = ApiUtils::getIntParam('c', $investInfo);
         $data['money_total'] = ApiUtils::getFloatParam('s', $investInfo);
         return $data;
+    }
+    /*
+     * 更新has_borrow并验证其是否小于borrow_money
+     */
+    public static function updateHasBorrow($id ,$money){
+        $sql = "update " . self::$tableName . " set has_money = has_money + " . $money . " where id = " . $id . " and has_money + " . $money . " < borrow_money";
+        $db = self::getDb();
+        return $db->createCommand($sql)->execute();
     }
 }

@@ -183,4 +183,34 @@ class LzhBorrowInvest extends RedisActiveRecord
         }
         return $info;
     }
+
+    /*
+     * 添加新投资记录到总表
+     */
+    public static function add($attrs = []){
+        if(empty($attrs)){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资信息不能为空');
+        }
+        $obj = new self;
+        $obj->attributes = $attrs;
+        $ret = $obj->save();
+        if(!$ret){
+            throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
+        }
+        return $obj->id;
+    }
+    /*
+     * 添加新投资记录到分表
+     */
+    public function addSubTable($attrs = []){
+        if(empty($attrs)){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资信息不能为空');
+        }
+        $sql = "insert into " . $this->subTableName . " " . array_keys($attrs) . " valaues (" . array_values($attrs) . ")";
+        $db = $this->getDb();
+        $ret = $db->createCommand($sql)->execute();
+        if(!$ret){
+            throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
+        }
+    }
 }
