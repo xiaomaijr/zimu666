@@ -17,7 +17,7 @@ abstract class RedisActiveRecord extends BaseModel
     public static function getCache()
     {
         if (null == self::$cache) {
-            self::$cache = new Cache();
+            self::$cache = new RedisUtil();
         }
         return self::$cache;
     }
@@ -49,13 +49,18 @@ abstract class RedisActiveRecord extends BaseModel
         $tableName = $tableName?$tableName:self::tableName();
         $module = [];
 
-        if (!$cache->exists($tableName . ':' . $id)) {
+        if(!$cache->hExists($tableName, 'id:' . $id)){
             $module = self::find()->where(['id' => $id])->asArray()->one();
-            $module AND $cache->set($tableName . ':' . $id, $module);
-        } else {
-            $module = $cache->get($tableName . ':' . $id);
+            $module AND $cache->hSet($tableName,  'id:' . $id, $module);
+        }else{
+            $module = $cache->hGet($tableName, 'id:' . $id);
         }
-
+//        if (!$cache->exists($tableName . ':' . $id)) {
+//            $module = self::find()->where(['id' => $id])->asArray()->one();
+//            $module AND $cache->set($tableName . ':' . $id, $module);
+//        } else {
+//            $module = $cache->get($tableName . ':' . $id);
+//        }
         return $module;
     }
 
@@ -67,13 +72,13 @@ abstract class RedisActiveRecord extends BaseModel
 
         $isNeedRead = false;
         foreach ($ids as $id) {
-            if (!$cache->exists($tableName . ':' . $id)) {
+            if (!$cache->hExists($tableName, 'id:' . $id)) {
                 $isNeedRead = true;
                 $modules = array();
                 break;
             } else {
-                $vehicleType = $cache->get($tableName . ':' . $id);
-                $modules[$id] = $vehicleType;
+                $tmp = $cache->hGet($tableName, 'id:' . $id);
+                $modules[$id] = $tmp;
             }
         }
 
@@ -84,7 +89,7 @@ abstract class RedisActiveRecord extends BaseModel
 //            $nueList = self::find()->where(['in', 'id', $ids])->asArray()->all();
 
             foreach ($nueList as $module) {
-                $cache->set($tableName . ':' . $module['id'], $module);
+                $cache->hSet($tableName, 'id:' . $module['id'], $module);
                 $modules[$module['id']] = $module;
             }
         }

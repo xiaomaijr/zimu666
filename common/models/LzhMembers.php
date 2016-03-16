@@ -115,17 +115,17 @@ class LzhMembers extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
     /*

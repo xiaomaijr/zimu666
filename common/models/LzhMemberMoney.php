@@ -35,7 +35,6 @@ class LzhMemberMoney extends RedisActiveRecord
     {
         return 'lzh_member_money';
     }
-    const CACHE_KEY_USER_ACCOUNT = 'user_money';//用户资金账户数据
 
     public static $tableName = 'lzh_member_money';
     /**
@@ -99,16 +98,16 @@ class LzhMemberMoney extends RedisActiveRecord
      */
     public static function getUserMoney($memberId, $platform = 'qdd'){
         $data = [];
-        $cacheKey = CacheKey::getCacheKey($memberId, self::CACHE_KEY_USER_ACCOUNT);
-        $cache = new Cache();
-        if($cache->exists($cacheKey['key_name'])){
-            $ids = $cache->get($cacheKey['key_name']);
+        $cache = self::getCache();
+        $field = 'uid:' . $memberId;
+        if($cache->hExists(self::$tableName, $field)){
+            $ids = $cache->hGet(self::$tableName, $field);
             $infos = self::gets($ids);
         }else{
             $infos = self::getDataByConditions(['uid' => $memberId]);
             if(empty($infos)) return $data;
             $ids = ApiUtils::getCols($infos, 'id');
-            $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
+            $cache->hSet(self::$tableName, $field, $ids);
         }
         foreach($infos as $info){
             if($info['platform'] == 0){

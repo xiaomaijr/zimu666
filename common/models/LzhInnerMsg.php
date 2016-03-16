@@ -14,7 +14,7 @@ use Yii;
  * @property string $send_time
  * @property integer $status
  */
-class LzhInnerMsg extends \yii\db\ActiveRecord
+class LzhInnerMsg extends RedisActiveRecord
 {
     /**
      * @inheritdoc
@@ -24,9 +24,11 @@ class LzhInnerMsg extends \yii\db\ActiveRecord
         return 'lzh_inner_msg';
     }
 
+    public static $tableName = 'lzh_inner_msg';
+
     //设置分表tablename
-    public function setSubTableName($tableName){
-        $this->subTableName = $tableName;
+    public function setTableName($tableName){
+        $this->tableName = $tableName;
     }
 
     /**
@@ -57,33 +59,68 @@ class LzhInnerMsg extends \yii\db\ActiveRecord
         ];
     }
 
+    public function insertEvent(){
+        $cache = self::getCache();
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'uid:' . $this->uid);
+    }
+
+    public function updateEvent(){
+        $cache = self::getCache();
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'uid:' . $this->uid);
+    }
+
+    public function deleteEvent(){
+        $cache = self::getCache();
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'uid:' . $this->uid);
+    }
+
     /*
      * 添加新通知到总表
      */
-    public static function add($attrs = []){
+    public function add($attrs = []){
         if(empty($attrs)){
             throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '通知内容不能为空');
         }
-        $obj = new self;
-        $obj->attributes = $attrs;
-        $ret = $obj->save();
+        $this->attributes = $attrs;
+        $ret = $this->save();
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
         }
-        return $obj->id;
+        return $this->id;
     }
     /*
-     * 添加新通知到分表
+     * 获取某个用户通知
      */
-    public function addSubTable($attrs = []){
-        if(empty($attrs)){
-            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '通知内容不能为空');
+    public function getMsgByUid($uid){
+        $data = [];
+        if(empty($data)) return $data;
+        $field = 'uid:' . $uid;
+        $cache = self::getCache();
+        if(!$cache->hExists(self::$tableName, $field)){
+            $userMsgs = self::getDataByConditions(['uid' => $uid]);
+            if(empty($userMsgs)) return $data;
+            $ids = ApiUtils::getCols($userMsgs, 'id');
+            $cache->hSet(self::$tableName, $field, $ids);
+        }else{
+            $ids = $cache->hGet(self::$tableName, $field);
+            $userMsgs = self::gets($ids);
         }
-        $sql = "insert into " . $this->subTableName . " " . array_keys($attrs) . " valaues (" . array_values($attrs) . ")";
-        $db = $this->getDb();
-        $ret = $db->createCommand($sql)->execute();
-        if(!$ret){
-            throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
+        foreach($userMsgs as $msg){
+            $data[] = self::toApiArr($msg);
         }
+        return $data;
     }
+    //api过滤参数
+    public static function toApiArr($arr){
+        return [
+            'title' => ApiUtils::getStrParam('title', $arr),
+            'msg' => ApiUtils::getStrParam('msg', $arr),
+            'send_time' => date('Ymd H:i:s', $arr['send_time']),
+            'status' => ApiUtils::getIntParam('status', $arr),
+        ];
+    }
+
 }

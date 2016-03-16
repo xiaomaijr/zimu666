@@ -61,22 +61,22 @@ class LzhAd extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
     public static function getAppBanners(){
-        $info = self::gets([3], self::$tableName);
-        $banners = json_decode($info[3]['content'],true);
+        $info = self::get(3);
+        $banners = json_decode($info['content'],true);
         return $banners;
     }
 }

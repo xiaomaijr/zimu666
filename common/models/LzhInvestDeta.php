@@ -42,10 +42,12 @@ class LzhInvestDeta extends RedisActiveRecord
     {
         return 'lzh_investor_detail_0';
     }
-    //设置分表tablename
-    public function setSubTableName($tableName){
-        $this->subTableName = $tableName;
+    //设置tablename
+    public function setTableName($tableName){
+        $this->tableName = $tableName;
     }
+
+    public static $tableName = 'lzh_investor_detail_0';
     /**
      * @inheritdoc
      */
@@ -94,43 +96,27 @@ class LzhInvestDeta extends RedisActiveRecord
     }
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName,  'id:' . $this->id);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName,  'id:' . $this->id);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName,  'id:' . $this->id);
     }
-    /*
-     * 添加新投资记录到总表
-     */
-//    public static function add($attrs = []){
-//        if(empty($attrs)){
-//            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资还款信息不能为空');
-//        }
-//        $obj = new self;
-//        $obj->attributes = $attrs;
-//        $ret = $obj->save();
-//        if(!$ret){
-//            throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_DETAIL_ADD_FAIL);
-//        }
-//        return $obj->id;
-//    }
     /*
      * 添加新投资记录到分表
      */
-    public function addSubTable($attrs = []){
+    public function add($attrs = []){
         if(empty($attrs)){
             throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资还款信息不能为空');
         }
-        $sql = "insert into " . $this->subTableName . " " . array_keys($attrs) . " valaues (" . array_values($attrs) . ")";
-        $db = $this->getDb();
-        $ret = $db->createCommand($sql)->execute();
+        $this->attributes = $attrs;
+        $ret = $this->save();
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_DETAIL_ADD_FAIL);
         }

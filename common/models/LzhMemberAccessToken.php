@@ -55,17 +55,17 @@ class LzhMemberAccessToken extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->member_id);
+        $cache->hDel(self::$tableName, 'member_id:' . $this->member_id);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->member_id);
+        $cache->hDel(self::$tableName, 'member_id:' . $this->member_id);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->member_id);
+        $cache->hDel(self::$tableName, 'member_id:' . $this->member_id);
     }
     /*
      * 用户登录
@@ -120,16 +120,17 @@ class LzhMemberAccessToken extends RedisActiveRecord
         }
     }
 
-    public static function get($memberId, $tableName = '', $select = '*')
+    public static function get($memberId, $tableName = '')
     {
         $cache = self::getCache();
         $tableName = $tableName?$tableName:self::tableName();
 
-        if (!$cache->exists($tableName . ':' . $memberId)) {
-            $module = self::find()->select($select)->where(['member_id' => $memberId])->asArray()->one();
-            $cache->set($tableName . ':' . $memberId, $module);
+        $field = 'member_id:' . $memberId;
+        if (!$cache->hExists($tableName, $field)) {
+            $module = self::find()->where(['member_id' => $memberId])->asArray()->one();
+            $cache->hSet($tableName, $field, $module);
         } else {
-            $module = $cache->get($tableName . ':' . $memberId);
+            $module = $cache->hGet($tableName, $field);
         }
 
         return $module;

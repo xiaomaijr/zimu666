@@ -186,7 +186,7 @@ class LzhBorrowInfo extends RedisActiveRecord
         ];
     }
     /*
-     * 获取融资项目列表
+     * 获取推荐融资项目列表
      */
     public static function getList($request, $condition, $params = ''){
         $curPage = ApiUtils::getIntParam('p', $request, 1);
@@ -213,17 +213,17 @@ class LzhBorrowInfo extends RedisActiveRecord
     }
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
     //获取投标总人数及投资总额
     public static function getInfo($id){
@@ -231,7 +231,7 @@ class LzhBorrowInfo extends RedisActiveRecord
         if(empty($info)){
             throw new ApiBaseException(ApiErrorDescs::ERR_BORROW_DATA_NOT_EXIST);
         }
-        $objInvest = new LzhBorrowInvest(['subTableName' => 'lzh_borrow_investor_' . $id%3]);
+        $objInvest = new LzhBorrowInvest(['tableName' => 'lzh_borrow_investor_' . $id%3]);
         $investInfo = $objInvest->getInvestPersonAndMoneyTotal($id);
         $data = self::toApiArr($info);
         $data['person_count'] = ApiUtils::getIntParam('c', $investInfo);

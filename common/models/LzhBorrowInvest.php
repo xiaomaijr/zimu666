@@ -55,8 +55,8 @@ class LzhBorrowInvest extends RedisActiveRecord
     public static $tableName = 'lzh_borrow_invest';
 
     //设置分表tablename
-    public function setSubTableName($tableName){
-        $this->subTableName = $tableName;
+    public function setTableName($tableName){
+        $this->TableName = $tableName;
     }
 
     /**
@@ -129,30 +129,40 @@ class LzhBorrowInvest extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'investor_uid:' . $this->investor_uid);
+        $cache->hDel(self::$tableName, 'borrow_id:' . $this->borrow_id);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'investor_uid:' . $this->investor_uid);
+        $cache->hDel(self::$tableName, 'borrow_id:' . $this->borrow_id);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'investor_uid:' . $this->investor_uid);
+        $cache->hDel(self::$tableName, 'borrow_id:' . $this->borrow_id);
     }
 
     /*
      * 查询用户总收益
      */
     public static function getTotalIncomeByInvestId($investUid){
-        $cacheKey = CacheKey::getCacheKey($investUid . '_' . date("Ymd"), self::CACHE_KEY_USER_TOTAL_INCODE);
-        $cache = new Cache();
-        if($cache->exists($cacheKey['key_name'])){
-            return $cache->get($cacheKey['key_name']);
-        }
-        $incomeInfos = self::getDataByConditions(['investor_uid' => intval($investUid), "loanno != ''"], null, 0, 0, ['borrow_id', 'investor_interest', 'add_time', 'integral_days']);
         $income = 0;
+        $cache = self::getCache();
+        if($cache->hExists(self::$tableName, 'investor_uid:' . $investUid)){
+            $ids = $cache->hget(self::$tableName, 'investor_uid:' . $investUid);
+            $incomeInfos = self::gets($ids);
+        }else{
+            $incomeInfos = self::getDataByConditions(['investor_uid' => intval($investUid), "loanno != ''"], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);
+            if(empty($incomeInfos)) return $income;
+            $ids = ApiUtils::getCols($incomeInfos, 'id');
+            $cache->hset(self::$tableName, 'investor_uid:' . $investUid, $ids);
+        }
         $tmp = [];
         foreach($incomeInfos as $info){
             $diffDay = ApiUtils::getDiffDay($info['add_time'], time());
@@ -163,7 +173,6 @@ class LzhBorrowInvest extends RedisActiveRecord
             $tmp[] = $info['investor_interest']/$info['integral_days'] * $diffDay;
         }
         $income = sprintf("%.02f", array_sum($tmp));
-        $cache->set($cacheKey['key_name'], $income, $cacheKey['expire']);
         return $income;
     }
 
@@ -171,46 +180,40 @@ class LzhBorrowInvest extends RedisActiveRecord
      * 获取某个标投标总人数及投资总额
      */
     public function getInvestPersonAndMoneyTotal($borrowId){
-        $cacheKey = CacheKey::getCacheKey($borrowId, self::CACHE_KEY_BORROW_INVESTOR_AND_MONEY_TOTAL);
-        $cache = new Cache();
-        $info = [];
-        if(!$cache->exists($cacheKey['key_name'])){
-            $info = self::find()->select('count(id) as c, sum(investor_capital) as s')->from($this->subTableName)->where("loanno != ''")->andWhere(['borrow_id' => $borrowId])
-                ->asArray()->one();
-            $cache->set($cacheKey['key_name'], $info, $cacheKey['expire']);
+        $info = ['c' => 0, 's' => 0];
+        $cache = self::getCache();
+        $key = self::$tableName;
+        $field = 'borrow_id:' . $borrowId;
+        if(!$cache->hExists($key, $field)){
+            $infos = self::find()->select('investor_capital')->from($this->tableName)->where("loanno != ''")->andWhere(['borrow_id' => $borrowId])
+                ->asArray()->all();
+            if(empty($infos)) return $info;
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->hSet($key, $field, $ids);
         }else{
-            $info = $cache->get($cacheKey['key_name']);
+            $ids = $cache->hGet($key, $field);
+            $infos = self::gets($ids);
         }
+        $info['c'] = count($infos);
+        $intorTotal = 0;
+        foreach($infos as $row){
+            $intorTotal += $row['investor_capital'];
+        }
+        $info['s'] = $intorTotal;
         return $info;
     }
-
     /*
-     * 添加新投资记录到总表
+     * 添加新投资记录
      */
-    public static function add($attrs = []){
+    public function add($attrs = []){
         if(empty($attrs)){
             throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资信息不能为空');
         }
-        $obj = new self;
-        $obj->attributes = $attrs;
-        $ret = $obj->save();
+        $this->attributes = $attrs;
+        $ret = $this->save();
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
         }
-        return $obj->id;
-    }
-    /*
-     * 添加新投资记录到分表
-     */
-    public function addSubTable($attrs = []){
-        if(empty($attrs)){
-            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资信息不能为空');
-        }
-        $sql = "insert into " . $this->subTableName . " " . array_keys($attrs) . " valaues (" . array_values($attrs) . ")";
-        $db = $this->getDb();
-        $ret = $db->createCommand($sql)->execute();
-        if(!$ret){
-            throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
-        }
+        return $this->id;
     }
 }
