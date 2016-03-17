@@ -20,7 +20,7 @@ class ApiBaseController extends \yii\web\Controller
 
     public $timeStart = 0;
 
-
+    public $enableCsrfValidation=false;
     /*
      * 每个action之前对参数及签名校验
      *
