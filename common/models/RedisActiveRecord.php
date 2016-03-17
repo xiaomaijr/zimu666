@@ -8,11 +8,16 @@ use yii\db\ActiveRecord;
 use yii\filters\auth\AuthInterface;
 use yii\redis\Cache;
 
-abstract class RedisActiveRecord extends BaseModel
+abstract class RedisActiveRecord extends ActiveRecord
 {
     public static $cache;
 
     public static $tableName = "redis_active_record";
+
+    public static function tableName()
+    {
+        return self::$tableName;
+    }
 
     public static function getCache()
     {
@@ -46,7 +51,7 @@ abstract class RedisActiveRecord extends BaseModel
     public static function get($id, $tableName = '')
     {
         $cache = self::getCache();
-        $tableName = $tableName?$tableName:self::tableName();
+        $tableName = $tableName?$tableName:static::tableName();
         $module = [];
 
         if(!$cache->hExists($tableName, 'id:' . $id)){
@@ -55,12 +60,6 @@ abstract class RedisActiveRecord extends BaseModel
         }else{
             $module = $cache->hGet($tableName, 'id:' . $id);
         }
-//        if (!$cache->exists($tableName . ':' . $id)) {
-//            $module = self::find()->where(['id' => $id])->asArray()->one();
-//            $module AND $cache->set($tableName . ':' . $id, $module);
-//        } else {
-//            $module = $cache->get($tableName . ':' . $id);
-//        }
         return $module;
     }
 
@@ -68,8 +67,7 @@ abstract class RedisActiveRecord extends BaseModel
     {
         $modules = array();
         $cache = self::getCache();
-        $tableName = $tableName?$tableName:self::tableName();
-
+        $tableName = $tableName?$tableName:static::tableName();
         $isNeedRead = false;
         foreach ($ids as $id) {
             if (!$cache->hExists($tableName, 'id:' . $id)) {
@@ -86,7 +84,7 @@ abstract class RedisActiveRecord extends BaseModel
             $key = implode(',', $ids);
             $sql = "SELECT * FROM " . $tableName . " WHERE `id` IN (" . $key . ") ORDER BY field(id, " . $key . ")";
             $nueList = self::findBySql($sql)->asArray()->all();
-//            $nueList = self::find()->where(['in', 'id', $ids])->asArray()->all();
+//            $nueList = self::find()->where(['id' => $ids])->asArray()->all();
 
             foreach ($nueList as $module) {
                 $cache->hSet($tableName, 'id:' . $module['id'], $module);
@@ -95,6 +93,94 @@ abstract class RedisActiveRecord extends BaseModel
         }
 
         return $modules;
+    }
+
+    /*
+     *根据指定条件批量返回数据,至少二维数据
+     */
+    public static function getDataByConditions($condition = [], $order = 'id desc', $limit = 10, $offset = 1, $select = '*'){
+        $strConditions = [];
+        if(!empty($condition)){
+            foreach($condition as $key=>$con){
+                if(is_int($key) && is_string($con)){
+                    array_push($strConditions, $con);
+                    unset($condition[$key]);
+                }
+            }
+        }
+        $query = self::find()->select($select)->where($condition);
+        if(!empty($strConditions)){
+            foreach($strConditions as $strCon){
+                $query->andWhere($strCon);
+            }
+        }
+        $query->orderBy($order);
+        if($limit && $offset){
+            $query->limit($limit)->offset(($offset - 1) * $limit);
+        }elseif($limit){
+            $query->limit($limit);
+        }
+//        echo $query->createCommand()->getRawSql();exit;
+        $infos = $query->asArray()->all();
+        return $infos?$infos:[];
+    }
+    /*
+     * 根据id返回单一数据
+     */
+    public static function getDataByID($id, $param = 'id'){
+        if(!$id){
+            return [];
+        }
+        $info = self::find()
+            ->where([$param => $id])
+            ->asArray()
+            ->one();
+        return $info?$info:[];
+    }
+    /*
+     * 返回总数
+     */
+    public static function getCountByCondition($condition = []){
+        $strConditions = [];
+        if(!empty($condition)){
+            foreach($condition as $key=>$con){
+                if(is_int($key) && is_string($con)){
+                    array_push($strConditions, $con);
+                    unset($condition[$key]);
+                }
+            }
+        }
+        $query = self::find()->where($condition);
+        if(!empty($strConditions)){
+            foreach($strConditions as $strCon){
+                $query->andWhere($strCon);
+            }
+        }
+        $total = $query->count();
+        return $total?$total:0;
+    }
+    /*
+     * 判断是否存在满足条件的数据
+     * @param $condition array
+     * return bool exists true not else false
+     */
+    public static function checkExistByCondition($condition){
+        $strConditions = [];
+        if(!empty($condition)){
+            foreach($condition as $key=>$con){
+                if(is_int($key) && is_string($con)){
+                    array_push($strConditions, $con);
+                    unset($condition[$key]);
+                }
+            }
+        }
+        $query = self::find()->where($condition);
+        if(!empty($strConditions)){
+            foreach($strConditions as $strCon){
+                $query->andWhere($strCon);
+            }
+        }
+        return $query->exists();
     }
 
     abstract public function insertEvent();

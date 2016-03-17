@@ -13,9 +13,9 @@ use api\models\InvestInter;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
-use common\models\LzhBorrowInfo;
-use common\models\LzhEscrowAccount;
-use common\models\LzhMemberMoney;
+use common\models\BorrowInfo;
+use common\models\EscrowAccount;
+use common\models\MemberMoney;
 use common\models\TimeUtils;
 
 class BorrowController extends ApiBaseController
@@ -28,14 +28,14 @@ class BorrowController extends ApiBaseController
             $timer = new TimeUtils();
             //获取借款详情
             $timer->start('get_borrow_info');
-            $bowInfo = LzhBorrowInfo::getInfo($id);
+            $bowInfo = BorrowInfo::getInfo($id);
             $timer->stop('get_borrow_info');
             //获取用户资金账户
             $money = [];
             if(!empty($request['user_id'])){
                 $timer->start('get_member_money');
                 $this->checkAccessToken($request['access_token'], $request['user_id']);
-                $money = LzhMemberMoney::get($request['user_id']);
+                $money = MemberMoney::get($request['user_id']);
                 $timer->stop('get_member_money');
             }
             //风控及其它信息
@@ -69,7 +69,7 @@ class BorrowController extends ApiBaseController
 
             //验证标是否存在
             $timer->start('check_borrow_exist');
-            if(!($borrow = LzhBorrowInfo::get($id))){
+            if(!($borrow = BorrowInfo::get($id))){
                 throw new ApiBaseException(ApiErrorDescs::ERR_BORROW_DATA_NOT_EXIST);
             }
             $timer->stop('check_borrow_exist');
@@ -79,7 +79,7 @@ class BorrowController extends ApiBaseController
             $timer->stop('check_access_token');
             //验证用户是否绑定第三方支付
             $timer->start('check_bind_qdd');
-            $escrow = LzhEscrowAccount::getUserBindInfo($request['user_id']);
+            $escrow = EscrowAccount::getUserBindInfo($request['user_id']);
             if($escrow['yeeBind'] | $escrow['qddBind']){
                 throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
             }
@@ -95,7 +95,7 @@ class BorrowController extends ApiBaseController
             $timer->stop('check_borrow_status');
             //验证用户账户可用资金
             $timer->start('check_money');
-            $userMny = LzhMemberMoney::getUserMoney($request['user_id']);
+            $userMny = MemberMoney::getUserMoney($request['user_id']);
             if($userMny['available_money'] < $money){
                 throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '账户余额不足，请先充值');
             }

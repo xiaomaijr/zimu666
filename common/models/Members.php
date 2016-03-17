@@ -41,7 +41,7 @@ use Yii;
  * @property integer $channel_code
  * @property integer $reset_pass
  */
-class LzhMembers extends RedisActiveRecord
+class Members extends RedisActiveRecord
 {
     /**
      * @inheritdoc
@@ -149,7 +149,7 @@ class LzhMembers extends RedisActiveRecord
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_REGISTER_FAIL);
         }
-        $memAccToken = new LzhMemberAccessToken();
+        $memAccToken = new MemberAccessToken();
         $accessToken = $memAccToken->login($this->id, $params['mobile_type']);
         return [
             'user_id' => $this->id,
@@ -176,7 +176,7 @@ class LzhMembers extends RedisActiveRecord
         if(md5('a2m'.$passwd .'1df') != $obj['user_pass']){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_PASSWD_INPUT_WRONG);
         }
-        $memAccToken = new LzhMemberAccessToken();
+        $memAccToken = new MemberAccessToken();
         $accessToken = $memAccToken->login($obj->id, $mobileType);
         return [ 'access_token' => $accessToken, 'user_id' => $obj->id, 'mobile' => $obj['user_phone'] ];
     }

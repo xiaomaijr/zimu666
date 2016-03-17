@@ -50,7 +50,7 @@ use yii\redis\Cache;
  * @property string $deal_info
  * @property integer $is_ready
  */
-class LzhBorrowInfo extends RedisActiveRecord
+class BorrowInfo extends RedisActiveRecord
 {
     /**
      * @inheritdoc
@@ -231,7 +231,7 @@ class LzhBorrowInfo extends RedisActiveRecord
         if(empty($info)){
             throw new ApiBaseException(ApiErrorDescs::ERR_BORROW_DATA_NOT_EXIST);
         }
-        $objInvest = new LzhBorrowInvest(['tableName' => 'lzh_borrow_investor_' . $id%3]);
+        $objInvest = new BorrowInvest(['tableName' => 'lzh_borrow_investor_' . $id%3]);
         $investInfo = $objInvest->getInvestPersonAndMoneyTotal($id);
         $data = self::toApiArr($info);
         $data['person_count'] = ApiUtils::getIntParam('c', $investInfo);

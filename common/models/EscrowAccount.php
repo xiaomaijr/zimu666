@@ -26,7 +26,7 @@ use yii\redis\Cache;
  * @property integer $repayment
  * @property integer $secondary_percent
  */
-class LzhEscrowAccount extends RedisActiveRecord
+class EscrowAccount extends RedisActiveRecord
 {
     /**
      * @inheritdoc

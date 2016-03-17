@@ -10,10 +10,9 @@ namespace api\controllers;
 
 
 
-use common\models\HashRedis;
-use common\models\LzhAd;
-use common\models\LzhBorrowInfo;
-use common\models\LzhBorrowInvest;
+use common\models\Ad;
+use common\models\BorrowInfo;
+use common\models\BorrowInvest;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
 use common\models\TimeUtils;
@@ -38,15 +37,15 @@ class IndexController extends ApiBaseController
                 'borrow_status'  =>  2,
                 'is_tuijian' => 0 ,
             ];
-            $borrows = LzhBorrowInfo::getList($request, $condition);
+            $borrows = BorrowInfo::getList($request, $condition);
             $objTimer->stop('borrowInfo');
             //投资及收益累计总额
             $objTimer->start('borrowAndInvestTotal');
-            $brwAndInvInfo = LzhBorrowInvest::getBorrowAndInvestTotal();
+            $brwAndInvInfo = BorrowInvest::getBorrowAndInvestTotal();
             $objTimer->stop('borrowAndInvestTotal');
             //banner信息
             $objTimer->start('ad_banner');
-            $banners = LzhAd::getAppBanners();
+            $banners = Ad::getAppBanners();
             $objTimer->stop('ad_banner');
 
             $ret = [
@@ -74,7 +73,7 @@ class IndexController extends ApiBaseController
     }
 
     public function actionTest(){
-        $incode = LzhBorrowInvest::getTotalIncomeByInvestId(236716);exit;
+        $incode = BorrowInvest::getTotalIncomeByInvestId(236716);exit;
 
 //        echo \Yii::$app->redis->hostname;exit;
     }

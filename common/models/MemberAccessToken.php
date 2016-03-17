@@ -14,7 +14,7 @@ use Yii;
  * @property string $mobile_type
  * @property string $update_times
  */
-class LzhMemberAccessToken extends RedisActiveRecord
+class MemberAccessToken extends RedisActiveRecord
 {
     /**
      * @inheritdoc

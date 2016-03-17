@@ -78,7 +78,7 @@ class MessageConfig
      * return true or throw ApiBaseException
      */
     public static function Notice($type, $phone, $userId = 0, $data = []){
-        $user = LzhMembers::get($userId , 'lzh_members');
+        $user = Members::get($userId , 'lzh_members');
         switch($type){
             case 1:         //注册短信验证码发送
                 if(empty($data['code'])){
@@ -89,7 +89,7 @@ class MessageConfig
                 }
                 $message = self::_getMessageByKey('register');
                 $content = str_replace('#CODE#', $data['code'], $message);
-                $objPhoneSend = new LzhPhonesmsLog();
+                $objPhoneSend = new PhonesmsLog();
                 $ret = $objPhoneSend->sendSms($phone, $content);
                 $infos = [
                     'uid' => $userId,
@@ -111,7 +111,7 @@ class MessageConfig
                 }
                 $message = self::_getMessageByKey('forgetpass');
                 $content = str_replace('#CODE#', $data['code'], $message);
-                $objPhoneSend = new LzhPhonesmsLog();
+                $objPhoneSend = new PhonesmsLog();
                 $ret = $objPhoneSend->sendSms($phone, $content);
                 $infos = [
                     'uid' => $userId,

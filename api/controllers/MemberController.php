@@ -14,12 +14,12 @@ use common\models\ApiConfig;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\CacheKey;
-use common\models\LzhBorrowInvest;
-use common\models\LzhEscrowAccount;
-use common\models\LzhMemberAccessToken;
-use common\models\LzhMemberDeviceToken;
-use common\models\LzhMemberMoney;
-use common\models\LzhMembers;
+use common\models\BorrowInvest;
+use common\models\EscrowAccount;
+use common\models\MemberAccessToken;
+use common\models\MemberDeviceToken;
+use common\models\MemberMoney;
+use common\models\Members;
 use common\models\MessageConfig;
 use common\models\TimeUtils;
 use common\models\Verify;
@@ -103,7 +103,7 @@ class MemberController extends ApiBaseController
             }
             //校验用户名是否存在
             $timer->start('check_user_name');
-            LzhMembers::checkExistByMsgKey($userName, $request['key']);
+            Members::checkExistByMsgKey($userName, $request['key']);
             $timer->stop('check_user_name');
             //短信验证码发送
             $data['code'] = rand(100000, 999999);
@@ -169,13 +169,13 @@ class MemberController extends ApiBaseController
             ApiUtils::checkPwd($request['passwd']);
             //用户注册
             $timer->start('register_member');
-            $objMember = new LzhMembers();
+            $objMember = new Members();
             $ret = $objMember->register($request);
             $timer->stop('register_member');
             //device token绑定
             if(!empty($request['device_token'])){
                 $timer->start('device_token_bind');
-                LzhMemberDeviceToken::bindToken($ret['user_id'], $request['device_token'], $request['mobile_type'], $request['user_name']);
+                MemberDeviceToken::bindToken($ret['user_id'], $request['device_token'], $request['mobile_type'], $request['user_name']);
                 $timer->stop('device_token_bind');
             }
             $result = [
@@ -221,12 +221,12 @@ class MemberController extends ApiBaseController
             }
             //用户登录
             $timer->start('password_check');
-            $memberInfo = LzhMembers::login($request['user_name'], $request['passwd'], $request['mobile_type']);
+            $memberInfo = Members::login($request['user_name'], $request['passwd'], $request['mobile_type']);
             $timer->stop('password_check');
             //device token绑定
             if(!empty($request['device_token'])){
                 $timer->start('device_token_bind');
-                LzhMemberDeviceToken::bindToken($memberInfo['user_id'], $request['device_token'], $request['mobile_type'], $memberInfo['mobile']);
+                MemberDeviceToken::bindToken($memberInfo['user_id'], $request['device_token'], $request['mobile_type'], $memberInfo['mobile']);
                 $timer->stop('device_token_bind');
             }
             $result = [
@@ -270,11 +270,11 @@ class MemberController extends ApiBaseController
             $this->checkAccessToken($request['access_token'], $request['user_id']);
             //删除access_token
             $timer->start('delete_access_token');
-            LzhMemberAccessToken::logOut($request['user_id']);
+            MemberAccessToken::logOut($request['user_id']);
             $timer->stop('delete_access_token');
             //解绑device_token
             $timer->start('unbind_device_token');
-            LzhMemberDeviceToken::unbindToken($request['user_id']);
+            MemberDeviceToken::unbindToken($request['user_id']);
             $timer->stop('unbind_device_token');
             $result = [
                 'code' => ApiErrorDescs::SUCCESS,
@@ -318,7 +318,7 @@ class MemberController extends ApiBaseController
             $timer->stop('check_message_code');
             //检查用户名是否存在并生成重置密码有效信息
             $timer->start('check_user_name');
-            if(!LzhMembers::checkExistByCondition(['user_name' => $request['user_name']])){
+            if(!Members::checkExistByCondition(['user_name' => $request['user_name']])){
                 throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
             }
             $resetCacheKey = CacheKey::getCacheKey($request['user_name'], self::CACHE_KEY_RESET_PASSWD);
@@ -369,7 +369,7 @@ class MemberController extends ApiBaseController
             $timer->stop('check_reset_token');
             //重置用户密码
             $timer->start('reset_user_pass');
-            LzhMembers::resetUserPass($request['user_name'], $request['first_passwd']);
+            Members::resetUserPass($request['user_name'], $request['first_passwd']);
             $timer->stop('reset_user_pass');
             $result = [
                 'code' => ApiErrorDescs::SUCCESS,
@@ -411,15 +411,15 @@ class MemberController extends ApiBaseController
             $timer->stop('check_access_token');
             //获取用户资金
             $timer->start('get_mm_money');
-            $data = LzhMemberMoney::getUserMoney($request['user_id']);
+            $data = MemberMoney::getUserMoney($request['user_id']);
             $timer->stop('get_mm_money');
             //用户累计收益
             $timer->start('accumulated_income');
-            $data['income'] = LzhBorrowInvest::getTotalIncomeByInvestId($request['user_id']);
+            $data['income'] = BorrowInvest::getTotalIncomeByInvestId($request['user_id']);
             $timer->stop('accumulated income');
             //检查用户是否在钱多多绑定账户
             $timer->start('escrow_account');
-            $escrow = LzhEscrowAccount::getUserBindInfo($request['user_id']);
+            $escrow = EscrowAccount::getUserBindInfo($request['user_id']);
             $data['escrow'] = $escrow['yeeBind'] | $escrow['qddBind'];
             $timer->stop('escrow_account');
             $result = [

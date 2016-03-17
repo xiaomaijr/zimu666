@@ -16,7 +16,7 @@ use Yii;
  * @property integer $types
  * @property integer $status
  */
-class LzhPhonesmsLog extends RedisActiveRecord
+class PhonesmsLog extends RedisActiveRecord
 {
     /**
      * @inheritdoc

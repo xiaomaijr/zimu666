@@ -26,7 +26,7 @@ use yii\redis\Cache;
  * @property string $invest_vouch_limit
  * @property string $invest_vouch_cuse
  */
-class LzhMemberMoney extends RedisActiveRecord
+class MemberMoney extends RedisActiveRecord
 {
     /**
      * @inheritdoc

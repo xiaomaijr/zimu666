@@ -75,8 +75,8 @@ class ProductController extends ApiBaseController
         switch ($type){
             case 1 :
                 $typeConfig = [
-                    'listModelName' => 'common\models\LzhBorrowInfo',
-                    'userModelName' => 'common\models\LzhBorrowInvest',
+                    'listModelName' => 'common\models\BorrowInfo',
+                    'userModelName' => 'common\models\BorrowInvest',
                     'listParams' => 'id, borrow_name, borrow_interest_rate, borrow_duration, borrow_money, borrow_min, repayment_type, has_borrow',
                     'userParams' => 'borrow_id',
                     'listCondition' => ['borrow_status'  =>  2],

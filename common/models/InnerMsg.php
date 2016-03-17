@@ -14,21 +14,21 @@ use Yii;
  * @property string $send_time
  * @property integer $status
  */
-class LzhInnerMsg extends RedisActiveRecord
+class InnerMsg extends RedisActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'lzh_inner_msg';
+        return self::$tableName;
     }
 
     public static $tableName = 'lzh_inner_msg';
 
     //设置分表tablename
     public function setTableName($tableName){
-        $this->tableName = $tableName;
+        self::$tableName = $tableName;
     }
 
     /**
@@ -78,7 +78,7 @@ class LzhInnerMsg extends RedisActiveRecord
     }
 
     /*
-     * 添加新通知到总表
+     * 添加新通知
      */
     public function add($attrs = []){
         if(empty($attrs)){
@@ -94,13 +94,13 @@ class LzhInnerMsg extends RedisActiveRecord
     /*
      * 获取某个用户通知
      */
-    public function getMsgByUid($uid){
+    public function getMsgByUid($uid, $page = 1, $pageSize = 100){
         $data = [];
-        if(empty($data)) return $data;
+        if(empty($uid)) return $data;
         $field = 'uid:' . $uid;
         $cache = self::getCache();
         if(!$cache->hExists(self::$tableName, $field)){
-            $userMsgs = self::getDataByConditions(['uid' => $uid]);
+            $userMsgs = self::getDataByConditions(['uid' => $uid], 'id desc', $pageSize, $page);
             if(empty($userMsgs)) return $data;
             $ids = ApiUtils::getCols($userMsgs, 'id');
             $cache->hSet(self::$tableName, $field, $ids);

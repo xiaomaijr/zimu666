@@ -17,7 +17,7 @@ use Yii;
  * @property integer $ad_type
  * @property integer $platform
  */
-class LzhAd extends RedisActiveRecord
+class Ad extends RedisActiveRecord
 {
     /**
      * @inheritdoc

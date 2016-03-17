@@ -38,7 +38,7 @@ use yii\redis\Cache;
  * @property integer $is_statics
  * @property integer $recommend_id
  */
-class LzhBorrowInvest extends RedisActiveRecord
+class BorrowInvest extends RedisActiveRecord
 {
 
     const BORROW_AND_INVEST_TOTAL = 'borrow_invest_total';//投资收益总额
@@ -49,14 +49,14 @@ class LzhBorrowInvest extends RedisActiveRecord
      */
     public static function tableName()
     {
-        return 'lzh_borrow_invest';
+        return self::$tableName;
     }
 
     public static $tableName = 'lzh_borrow_invest';
 
     //设置分表tablename
     public function setTableName($tableName){
-        $this->TableName = $tableName;
+        self::$tableName = $tableName;
     }
 
     /**

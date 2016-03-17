@@ -17,7 +17,7 @@ use Yii;
  * @property integer $create_time
  * @property integer $update_time
  */
-class LzhMemberDeviceToken extends RedisActiveRecord
+class MemberDeviceToken extends RedisActiveRecord
 {
     const DEVICE_TOKEN_IDENTIFY_USER = 1;
     /**

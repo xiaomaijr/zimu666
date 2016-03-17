@@ -33,18 +33,18 @@ use Yii;
  * @property string $ts
  * @property integer $add_time
  */
-class LzhInvestDeta extends RedisActiveRecord
+class InvestDeta extends RedisActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'lzh_investor_detail_0';
+        return self::$tableName;
     }
     //设置tablename
     public function setTableName($tableName){
-        $this->tableName = $tableName;
+        self::$tableName = $tableName;
     }
 
     public static $tableName = 'lzh_investor_detail_0';
