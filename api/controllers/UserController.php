@@ -62,7 +62,7 @@ class UserController extends UserBaseController
             $userId = ApiUtils::getIntParam('user_id', $request);
             $page = ApiUtils::getIntParam('p', $request, 1);
             $pageSize = ApiUtils::getIntParam('page_size', $request, 100);
-            $type = ApiUtils::getIntParam('type', $request, 0);
+            $type = ApiUtils::getIntParam('type', $request);
             $timer = new TimeUtils();
             $timer->start('get_fund_flow');
             //获取资金流水
@@ -76,6 +76,31 @@ class UserController extends UserBaseController
                 'message' => 'success',
                 'result' => $list,
             ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+
+    /*
+     * 银行卡列表
+     */
+    public function actionBankList(){
+        try{
+            $request = $_REQUEST;
+            $userId = ApiUtils::getIntParam('user_id', $request);
+            $timer = new TimeUtils();
+
+            $timer->start('get_banks');
+
+            $timer->stop('get_banks');
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

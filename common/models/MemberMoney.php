@@ -78,20 +78,20 @@ class MemberMoney extends RedisActiveRecord
 
     public function insertEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
-        $cache->delete(self::CACHE_KEY_USER_ACCOUNT . '_' . $this->uid);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'uid:' . $this->uid);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
-        $cache->delete(self::CACHE_KEY_USER_ACCOUNT . '_' . $this->uid);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'uid:' . $this->uid);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
-        $cache->delete(self::$tableName . ':' . $this->id);
-        $cache->delete(self::CACHE_KEY_USER_ACCOUNT . '_' . $this->uid);
+        $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'uid:' . $this->uid);
     }
     /*
      *获取用户账户总额
