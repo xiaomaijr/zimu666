@@ -41,6 +41,7 @@ class ApiErrorDescs
     const ERR_URL_CONFIG_KEY_ERR = 26;//URL CONFIG KEY NOT EXIST
 
 
+
     //1000-2000消息类错误
     const ERR_MESSAGE_INFO_EMPTY = 1000;//信息配置为空
     const ERR_MESSAGE_CODE_EMPTY = 1001;//注册短信验证码为空
@@ -52,6 +53,9 @@ class ApiErrorDescs
     const ERR_INVEST_RECORD_ADD_FAIL = 2002;//投资记录保存失败
     const ERR_INVEST_DETAIL_ADD_FAIL = 2003;//投资还款保存失败
     const ERR_INVEST_FAIL = 2004;//投资失败
+
+    //3000-4000资金账户及银行卡
+    const ERR_BANK_FREEZED = 3000;//银行卡被绑定
 
 
 
@@ -104,6 +108,9 @@ class ApiErrorDescs
         self::ERR_INVEST_RECORD_ADD_FAIL => '投资记录保存失败',
         self::ERR_INVEST_DETAIL_ADD_FAIL => '投资还款保存失败',
         self::ERR_INVEST_FAIL => '投资失败',
+
+            //3000-4000资金账户及银行卡
+        self::ERR_BANK_FREEZED => '银行卡被绑定',
     ];
 
 

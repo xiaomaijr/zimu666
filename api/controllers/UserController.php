@@ -10,10 +10,13 @@ namespace api\controllers;
 
 
 use common\models\ApiBaseException;
+use common\models\ApiConfig;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
+use common\models\EscrowAccount;
 use common\models\InnerMsg;
 use common\models\MemberBanks;
+use common\models\MemberInfo;
 use common\models\MemberMoneylog;
 use common\models\TimeUtils;
 
@@ -107,6 +110,56 @@ class UserController extends UserBaseController
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
                 'result' => $list,
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+     * 绑定银行卡页面
+     */
+    public function actionBank(){
+        try{
+            $request = $_REQUEST;
+            $userId = ApiUtils::getIntParam('user_id', $request);
+            $timer = new TimeUtils();
+            //验证用户银行卡是否被冻结
+            $timer->start('freeze_bank');
+            if(MemberBanks::checkExistByCondition(['uid' => $userId, 'status' => MemberBanks::BANK_STATUS_FREEZED])){
+                throw new ApiBaseException(ApiErrorDescs::ERR_BANK_FREEZED);
+            }
+            $timer->stop('freeze_bank');
+            //第三方支付绑定
+            $timer->start('third_pay_bind');
+            $thirdPayInfo = EscrowAccount::getUserBindInfo($userId);
+            if(!$thirdPayInfo['qddBind'] && !$thirdPayInfo['yeeBind']){
+                $this->redirect('/escrow/register-bind');
+            }
+            $timer->stop('third_pay_bind');
+            //银行列表
+            $timer->start('user_bank');
+            $userBank = MemberBanks::getListByUid($userId);
+            $timer->stop('user_bank');
+            //用户信息
+            $timer->start('user_info');
+            $userInfo = MemberInfo::get($userId);
+            $timer->stop('user_info');
+
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => [
+                    'bank' => $userBank,
+                    'user_info' => $userInfo
+                ]
             ];
         }catch(ApiBaseException $e){
             $result = [

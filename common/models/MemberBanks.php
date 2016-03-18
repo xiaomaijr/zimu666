@@ -22,6 +22,14 @@ use Yii;
  */
 class MemberBanks extends RedisActiveRecord
 {
+
+    const BANK_STATUS_BIND_SUCCESS = 1;//银行卡绑定成功
+
+    const BANK_STATUS_BINDING = -2;//银行卡绑定中
+
+    const BANK_STATUS_FREEZED = -3;//银行卡被冻结
+
+    const BANK_STATUS_UNBIND = -4;//银行卡已解绑
     /**
      * @inheritdoc
      */
@@ -140,7 +148,7 @@ class MemberBanks extends RedisActiveRecord
         $field = 'uid:' . $uid;
         $cache = self::getCache();
         if(!$cache->hExists(self::$tableName, $field)){
-            $infos = self::getDataByConditions(['uid' => $uid]);
+            $infos = self::getDataByConditions(['uid' => $uid, 'status' => [1, 2, 3]]);
             if(empty($infos)) return $data;
             $ids = ApiUtils::getCols($infos, 'id');
             $cache->hSet(self::$tableName, $field, $ids);

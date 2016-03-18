@@ -98,7 +98,7 @@ abstract class RedisActiveRecord extends ActiveRecord
     /*
      *根据指定条件批量返回数据,至少二维数据
      */
-    public static function getDataByConditions($condition = [], $order = 'id desc', $limit = 10, $offset = 1, $select = '*'){
+    public static function getDataByConditions($condition = [], $order = 'id desc', $limit = 100, $offset = 1, $select = '*'){
         $strConditions = [];
         if(!empty($condition)){
             foreach($condition as $key=>$con){

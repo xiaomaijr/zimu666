@@ -513,4 +513,11 @@ class ApiUtils
             return $_resul;
         }
     }
+    /*
+     * 获取年月日时分秒
+     */
+    public static function getStrTimeByUnix($unixTime = 0){
+        $unixTime = $unixTime?$unixTime:time();
+        return date("Y-m-d H:i:s");
+    }
 }

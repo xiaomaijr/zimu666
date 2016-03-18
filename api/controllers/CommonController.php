@@ -12,6 +12,9 @@ namespace api\controllers;
 use common\models\ApiBaseException;
 use common\models\ApiConfig;
 use common\models\ApiErrorDescs;
+use common\models\ApiUtils;
+use common\models\Area;
+use common\models\TimeUtils;
 
 class CommonController extends ApiBaseController
 {
@@ -21,6 +24,33 @@ class CommonController extends ApiBaseController
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
                 'result' => ApiConfig::$bankList,
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+
+    public function actionGetArea(){
+        try{
+            $request = $_REQUEST;
+            $reid = ApiUtils::getIntParam('reid', $request);
+            $timer = new TimeUtils();
+
+            $timer->start('get_area');
+            $areas = Area::getAreaByReid($reid);
+            $timer->stop('get_area');
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => $areas
             ];
         }catch(ApiBaseException $e){
             $result = [
