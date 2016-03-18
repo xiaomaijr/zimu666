@@ -13,6 +13,7 @@ use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\InnerMsg;
+use common\models\MemberBanks;
 use common\models\MemberMoneylog;
 use common\models\TimeUtils;
 
@@ -99,8 +100,14 @@ class UserController extends UserBaseController
             $timer = new TimeUtils();
 
             $timer->start('get_banks');
-
+            $list = MemberBanks::getListByUid($userId);
             $timer->stop('get_banks');
+
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => $list,
+            ];
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

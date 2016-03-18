@@ -129,7 +129,7 @@ class Verify
         $this->_color = imagecolorallocate($this->_image, mt_rand(1,150), mt_rand(1,150), mt_rand(1,150));
         // 验证码使用随机字体
         $ttfPath = dirname(__FILE__) . '/Verify/' . ($this->useZh ? 'zhttfs' : 'ttfs') . '/';
-        $ttfPath = 'c:/Windows/Fonts/';
+        $ttfPath = UrlConfig::getUrl('fonts_path');
         if(empty($this->fontttf)){
             $dir = dir($ttfPath);
             $ttfs = array();
@@ -192,7 +192,7 @@ class Verify
         $fileName = uniqid($key['key_name']) . '.png';
         imagepng($this->_image, $this->path . $fileName);
         imagedestroy($this->_image);
-        return 'http://192.168.101.198/static/' . $fileName;
+        return UrlConfig::getUrl('verify') . $fileName;
     }
 
     /**

@@ -73,7 +73,7 @@ class IndexController extends ApiBaseController
     }
 
     public function actionTest(){
-        $incode = BorrowInvest::getTotalIncomeByInvestId(236716);exit;
+        $incode = BorrowInvest::getDataByConditions(['investor_uid' => intval(236716), "loanno != ''"], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);;exit;
 
 //        echo \Yii::$app->redis->hostname;exit;
     }

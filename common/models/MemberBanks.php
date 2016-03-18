@@ -122,33 +122,53 @@ class MemberBanks extends RedisActiveRecord
      * @param number $status 支持状态（1为支持，0为不支持）
      * @return unknown
      */
-    public function selectBanksName($field = '*',$platform = 0,$status = 1){
-        $list = array(
-            array(
-                'bank_code'=>1, 'bank_name'=>'中国银行',
-            ),
-            array(
-                'bank_code'=>2, 'bank_name'=>'中国工商银行',
-            ),
-            array(
-                'bank_code'=>3, 'bank_name'=>'中国农业银行',
-            ),
-            array(
-                'bank_code'=>4, 'bank_name'=>'交通银行',
-            ),
-            array(
-                'bank_code'=>5, 'bank_name'=>'广东发展银行',
-            ),
-            array(
-                'bank_code'=>7, 'bank_name'=>'中国建设银行',
-            ),
-            array(
-                'bank_code'=>8, 'bank_name'=>'浦发银行',
-            ),
-            array(
-                'bank_code'=>10, 'bank_name'=>'招商银行',
-            ),
-        );
-        return $list;
+    public function getBankName($bankCode){
+        $bankList = ApiConfig::$bankList;
+        foreach($bankList as $row){
+            if($row['bank_code'] == $bankCode){
+                return $row['bank_name'];
+            }
+        }
     }
+
+    /*
+     * 获取某个用户绑定银行卡列表
+     */
+    public static function getListByUid($uid){
+        $data = [];
+        if(empty($uid)) return $data;
+        $field = 'uid:' . $uid;
+        $cache = self::getCache();
+        if(!$cache->hExists(self::$tableName, $field)){
+            $infos = self::getDataByConditions(['uid' => $uid]);
+            if(empty($infos)) return $data;
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->hSet(self::$tableName, $field, $ids);
+        }else{
+            $ids = $cache->hGet(self::$tableName, $field);
+            $infos = self::gets($ids);
+        }
+        foreach($infos as $info){
+            $data[] = self::toApiArr($info);
+        }
+        return $data;
+    }
+    //api过滤参数
+    public static function toApiArr($arr){
+        $factor = ApiUtils::getStrParam('factor', $arr, self::BANK_KEY_DEFAULT);
+        return [
+            'bank_name' => self::getBankName(ApiUtils::getIntParam('bank_name', $arr)),
+            'bank_num' => self::getBankNum(ApiUtils::getStrParam('bank_num', $arr), $factor),
+            'bank_address' => ApiUtils::getStrParam('bank_address', $arr),
+            'add_time' => date("Y-m-d H:i:s", ApiUtils::getIntParam('add_time', $arr)),
+        ];
+    }
+
+    //银行卡号处理
+    private static function getBankNum($bankNum, $factor){
+        $decodeBankNum = self::decode($bankNum, $factor);
+        $len = strlen($decodeBankNum) - 8;
+        return substr_replace($decodeBankNum, str_repeat('*', $len), 4, -4);
+    }
+
 }

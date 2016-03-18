@@ -38,6 +38,7 @@ class ApiErrorDescs
     const ERR_USER_LOGIN_ERR_FREQUENT = 23;//用户登录失败次数过于频繁
     const ERR_ILL_REQUEST_MESSAGE = 24;//非法请求短信发送接口
     const ERR_UNKNOW_ERROR = 25;//异常错误
+    const ERR_URL_CONFIG_KEY_ERR = 26;//URL CONFIG KEY NOT EXIST
 
 
     //1000-2000消息类错误
@@ -89,6 +90,7 @@ class ApiErrorDescs
         self::ERR_USER_LOGIN_ERR_FREQUENT => '用户登录失败次数太过频繁，请5分钟后再进行登录',
         self::ERR_ILL_REQUEST_MESSAGE => '请求非法',
         self::ERR_UNKNOW_ERROR => '异常错误',
+        self::ERR_URL_CONFIG_KEY_ERR => 'KEY NOT FUND IN URL CONFIGS ',
 
 
         //1000-2000消息类错误

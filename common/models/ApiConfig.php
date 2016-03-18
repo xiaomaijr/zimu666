@@ -85,4 +85,31 @@ class ApiConfig
         14 => '企业还款',
         15 => '企业还息',
     ];
+    //银行列表
+    public static $bankList = [
+        [
+            'bank_code'=>1, 'bank_name'=>'中国银行',
+        ],
+        [
+            'bank_code'=>2, 'bank_name'=>'中国工商银行',
+        ],
+        [
+            'bank_code'=>3, 'bank_name'=>'中国农业银行',
+        ],
+        [
+            'bank_code'=>4, 'bank_name'=>'交通银行',
+        ],
+        [
+            'bank_code'=>5, 'bank_name'=>'广东发展银行',
+        ],
+        [
+            'bank_code'=>7, 'bank_name'=>'中国建设银行',
+        ],
+        [
+            'bank_code'=>8, 'bank_name'=>'浦发银行',
+        ],
+        [
+            'bank_code'=>10, 'bank_name'=>'招商银行',
+        ],
+    ];
 }
