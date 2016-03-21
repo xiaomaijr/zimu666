@@ -15,6 +15,7 @@ use common\models\BorrowInfo;
 use common\models\BorrowInvest;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
+use common\models\MemberBanks;
 use common\models\TimeUtils;
 use common\models\UrlConfig;
 use yii\redis\Cache;
@@ -78,7 +79,8 @@ class IndexController extends ApiBaseController
 //        $incode = BorrowInvest::getDataByConditions(['investor_uid' => intval(236716), "loanno != ''"], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);;exit;
 
 //        echo \Yii::$app->redis->hostname;exit;
-        echo base64_encode(64);
+        $obj = new MemberBanks();
+        var_dump($obj->encode('6225880141357777', 'lt63p'));
         exit;
     }
 }

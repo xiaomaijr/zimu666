@@ -173,4 +173,64 @@ class UserController extends UserBaseController
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
     }
+
+    /*
+     * 银行卡绑定接口
+     */
+    public function actionBindBank(){
+        try{
+            $request = $_REQUEST;
+            $timer = new TimeUtils();
+
+            $oldBkNuM = ApiUtils::getStrParam('old_account', $request);
+            $newBkNum = ApiUtils::getStrParam('account', $request);
+            $repeatBkNum = ApiUtils::getStrParam('repeat_account', $request);
+            $bankName = ApiUtils::getStrParam('bank_name', $request);
+            $privince = ApiUtils::getStrParam('privince', $request);
+            $city = ApiUtils::getStrParam('city', $request);
+            $bankAddr = ApiUtils::getStrParam('bank_addr', $request);
+
+            if($newBkNum != $repeatBkNum){
+                throw new ApiBaseException(ApiErrorDescs::ERR_BANK_NUM_INPUT_ERR);
+            }
+            $timer->start('check_old_bank_num');
+            $userBank = MemberBanks::getListByUid($request['user_id'], 0);
+//            echo json_encode($userBank);exit;
+            if($userBank){
+                if($userBank[0]['bank_num'] != $oldBkNuM){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_OLD_BANK_NUM_INPUT_ERR);
+                }
+                if($userBank[0]['status'] == MemberBanks::BANK_STATUS_FREEZED){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_BANK_FREEZED);
+                }
+            }
+            $timer->stop('check_old_bank_num');
+            //验证该银行卡是否重复
+            $timer->start('check_bank_num_repeat');
+            $objMemBank = new MemberBanks();
+            if($objMemBank->checkBankRepeat($newBkNum, MemberBanks::BANK_STATUS_UNBIND)){
+                throw new ApiBaseException(ApiErrorDescs::ERR_BANK_NUM_NOT_REPEAT);
+            }
+            $timer->stop('check_bank_num_repeat');
+            $userIp = ApiUtils::get_client_ip();
+
+            $timer->start('add_bank_num');
+            MemberBanks::add($request['user_id'], $newBkNum, $bankName, $privince, $city, $bankAddr, $userIp);
+            $timer->stop('add_bank_num');
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success'
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
 }

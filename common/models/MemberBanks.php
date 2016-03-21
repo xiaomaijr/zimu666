@@ -38,6 +38,8 @@ class MemberBanks extends RedisActiveRecord
         return 'lzh_member_banks';
     }
 
+    public static $tableName = 'lzh_member_banks';
+
     const BANK_KEY_DEFAULT = 'xiaomaijr2016';//银行卡秘钥
 
     /**
@@ -141,14 +143,17 @@ class MemberBanks extends RedisActiveRecord
 
     /*
      * 获取某个用户绑定银行卡列表
+     * @param $uid int
+     * @param $replace int replace by '****' when $replace eq 1
+     * return $data array
      */
-    public static function getListByUid($uid){
+    public static function getListByUid($uid, $replace = 1){
         $data = [];
         if(empty($uid)) return $data;
         $field = 'uid:' . $uid;
         $cache = self::getCache();
         if(!$cache->hExists(self::$tableName, $field)){
-            $infos = self::getDataByConditions(['uid' => $uid, 'status' => [1, 2, 3]]);
+            $infos = self::getDataByConditions(['uid' => $uid, 'status' => [1, -2, -3]]);
             if(empty($infos)) return $data;
             $ids = ApiUtils::getCols($infos, 'id');
             $cache->hSet(self::$tableName, $field, $ids);
@@ -157,18 +162,20 @@ class MemberBanks extends RedisActiveRecord
             $infos = self::gets($ids);
         }
         foreach($infos as $info){
-            $data[] = self::toApiArr($info);
+            $data[] = self::toApiArr($info, $replace);
         }
         return $data;
     }
     //api过滤参数
-    public static function toApiArr($arr){
+    public static function toApiArr($arr, $replace = 1){
         $factor = ApiUtils::getStrParam('factor', $arr, self::BANK_KEY_DEFAULT);
+        $bankNum = ApiUtils::getStrParam('bank_num', $arr);
         return [
             'bank_name' => self::getBankName(ApiUtils::getIntParam('bank_name', $arr)),
-            'bank_num' => self::getBankNum(ApiUtils::getStrParam('bank_num', $arr), $factor),
+            'bank_num' => $replace?self::getBankNum($bankNum, $factor):self::decode($bankNum, $factor),
             'bank_address' => ApiUtils::getStrParam('bank_address', $arr),
             'add_time' => date("Y-m-d H:i:s", ApiUtils::getIntParam('add_time', $arr)),
+            'status' => ApiUtils::getIntParam('status', $arr),
         ];
     }
 
@@ -177,6 +184,55 @@ class MemberBanks extends RedisActiveRecord
         $decodeBankNum = self::decode($bankNum, $factor);
         $len = strlen($decodeBankNum) - 8;
         return substr_replace($decodeBankNum, str_repeat('*', $len), 4, -4);
+    }
+    /*
+     * 添加新银行卡
+     */
+    public static function add($uid, $newBkNum, $bankName, $privince, $city, $bankAddr, $ip){
+        $new = false;
+        if(!($obj = self::find()->where(['uid' => $uid])->andWhere('status > -4')->one())){
+            $obj = new self;
+            $obj->uid = $uid;
+            $new = true;
+        }
+        $factor = $obj->_generRandom($newBkNum, 5);
+        $obj->bank_num = self::encode($newBkNum, $factor);
+        $obj->bank_name = $bankName;
+        $obj->bank_province = $privince;
+        $obj->bank_city = $city;
+        $obj->bank_address = $bankAddr;
+        $obj->add_ip = $ip;
+        $obj->add_time = time();
+        $obj->status = self::BANK_STATUS_BIND_SUCCESS;
+        $obj->platform = 0;
+        $obj->factor = $factor;
+        $ret = $new?$obj->save():$obj->update();
+        if(!$ret){
+            throw new ApiBaseException(ApiErrorDescs::ERR_BANK_BIND_FAIL);
+        }
+        return $obj->id;
+    }
+
+    //生成银行卡加密秘钥
+    private function _generRandom($bankNum, $length = 5){
+        if($length < 5 || $length > 10){
+            $length = 5;
+        }
+        $key = substr($bankNum, -$length);
+        $keyArr = str_split($key, 1);
+        foreach($keyArr as $k => $row){
+            if($row > 5){
+                $keyArr[$k] = chr($row + 92);
+            }
+        }
+        rsort($keyArr);
+        return implode('', $keyArr);
+    }
+
+    public function checkBankRepeat($bankNum, $status){
+        $factor = $this->_generRandom($bankNum);
+        $encodeBankNum = $this->encode($bankNum, $factor);
+        return self::checkExistByCondition(['bank_num' => $encodeBankNum, 'status > ' . $status]);
     }
 
 }

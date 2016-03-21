@@ -56,16 +56,19 @@ class Area extends RedisActiveRecord
     public function insertEvent(){
         $cache = self::getCache();
         $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'reid:' . $this->reid);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
         $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'reid:' . $this->reid);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
         $cache->hDel(self::$tableName, 'id:' . $this->id);
+        $cache->hDel(self::$tableName, 'reid:' . $this->reid);
     }
     /*
      * 根据reid获取area

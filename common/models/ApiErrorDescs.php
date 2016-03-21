@@ -56,6 +56,10 @@ class ApiErrorDescs
 
     //3000-4000资金账户及银行卡
     const ERR_BANK_FREEZED = 3000;//银行卡被绑定
+    const ERR_BANK_NUM_INPUT_ERR = 3001;//银行卡号两次输入错误
+    const ERR_OLD_BANK_NUM_INPUT_ERR = 3002;//旧银行卡号输入错误
+    const ERR_BANK_NUM_NOT_REPEAT = 3003;//银行卡号不能重复绑定
+    const ERR_BANK_BIND_FAIL = 3004;//绑定银行卡失败
 
 
 
@@ -110,7 +114,11 @@ class ApiErrorDescs
         self::ERR_INVEST_FAIL => '投资失败',
 
             //3000-4000资金账户及银行卡
-        self::ERR_BANK_FREEZED => '银行卡被绑定',
+        self::ERR_BANK_FREEZED => '银行卡被冻结',
+        self::ERR_BANK_NUM_INPUT_ERR => '两次输入银行卡不一致',
+        self::ERR_OLD_BANK_NUM_INPUT_ERR => '旧银行卡号输入错误',
+        self::ERR_BANK_NUM_NOT_REPEAT => '银行卡不能重复绑定',
+        self::ERR_BANK_BIND_FAIL => '绑定银行卡失败',
     ];
 
 
