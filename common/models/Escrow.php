@@ -1,0 +1,111 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: zhangxiao-pc
+ * Date: 2016/3/21
+ * Time: 16:09
+ */
+
+namespace common\models;
+
+
+use yii\base\Component;
+
+class Escrow extends Component
+{
+    public $urlArr = []; //接口URL地址
+
+    private $platFormMoneyMoremore = ''; // 平台乾多多标识
+
+    private $antistate = 0;
+
+    private $rsa = null;
+
+    private $urlPrefix = '';
+
+    public function __construct(){
+        $apiConf = QddConfig::getConfig();
+        $loan = $apiConf['payment'];
+        $this->platFormMoneyMoremore = $loan['pfmmm'];
+        $this->rsa = new RSA($loan['private_key'], $loan['public_key']);
+        $this->urlArr = $apiConf['platform'];
+        $this->urlPrefix = $apiConf['platform']['base_host'];
+    }
+    /**
+     * 注册账户
+     *
+     * @param string $mobile  //手机号
+     * @param string $email  //email
+     * @param string $realname // 真实姓名
+     * @param string  $identification_no // 身份证/营业执照号
+     * @param string $loan_plat_form_account //用户在网贷平台账号
+     * @param string  $plat_form_money_moremore //乾多多标识
+     * @param integer $register_type  // 1:全自动， 2:半自动
+     * @param integer $account_type  //账户类型  空：个人账户，1：企业账户
+     * @param string $image1 // 身份证/营业执照正面
+     * @param string $image2 // 身份证/营业执照背面
+     * @param string $remark1 // 备注1
+     * @param string $remark2 // 备注2
+     * @param string $remark3 // 备注3
+     *
+     *
+     */
+    public function registerAccount($loanUsername,$remark='',$returnBackUrl = ''){
+        $data['RegisterType'] = 2;
+        $data['AccountType'] = '';
+        $data['Mobile'] = '';
+        $data['Email']  = '';
+        $data['RealName'] = '';
+        $data['IdentificationNo'] = '';
+        $data['Image1'] = '';
+        $data['Image2'] = '';
+        $data['LoanPlatformAccount'] = $loanUsername;
+        $data['PlatformMoneymoremore'] = $this->platFormMoneyMoremore;  // 平台乾多多标识
+        $data['RandomTimeStamp'] = '';   // 随机时间戳，启用防抵赖时必填
+        $data['Remark1'] = $remark;
+        $data['Remark2'] = '';
+        $data['Remark3'] = '';
+        $backUrlTemp = !empty($returnBackUrl) ? $returnBackUrl : '/Notice/bindReturn';
+        if(!empty($backUrl)) {
+            $backUrlTemp=$backUrl;
+        }
+        $qddUrl = UrlConfig::getUrl('qdd_notify');
+        $data['ReturnURL'] = $qddUrl . $backUrlTemp;       //返回地址
+        $data['NotifyURL'] = $qddUrl . '/Notify/bind';  //后台通知地址
+        $str = implode('',$data);
+        if($this->antistate == 1){
+            $str = strtoupper(md5($str));
+        }
+        $data['SignInfo']  = $this->rsa->sign($str);
+        return $data;
+    }
+    /**
+     * registerAccount回调的时候验证签名
+     * @param $data
+     * @return bool
+     */
+    public function registerVerify($data){
+        $AccountType = $data['AccountType'];
+        $AccountNumber = $data['AccountNumber'];
+        $Mobile = $data['Mobile'];
+        $Email =  $data['Email'];
+        $RealName = $data['RealName'];
+        $IdentificationNo = $data['IdentificationNo'];
+        $LoanPlatformAccount = $data['LoanPlatformAccount'];
+        $loanId = $data['MoneymoremoreId'];
+        $PlatformId = $data['PlatformMoneymoremore'];
+        $RandomTimeStamp = $data['RandomTimeStamp'];
+        $AuthFee = $data['AuthFee'];
+        $AuthState = $data['AuthState'];
+        $Remark1 = $data['Remark1'];
+        $Remark2 = $data['Remark2'];
+        $Remark3 = $data['Remark3'];
+        $ResultCode = $data['ResultCode'];
+        $SignInfo   = $data['SignInfo'];
+        $dataStr = $AccountType.$AccountNumber.$Mobile.$Email.$RealName.$IdentificationNo.$LoanPlatformAccount.$loanId.$PlatformId.$AuthFee.$AuthState.$RandomTimeStamp.$Remark1.$Remark2.$Remark3.$ResultCode;
+        if($this->antistate == 1) {
+            $dataStr = strtoupper(md5($dataStr));
+        }
+        return $this->rsa->verify($dataStr,$SignInfo);
+    }
+}

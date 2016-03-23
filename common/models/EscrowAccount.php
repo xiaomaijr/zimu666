@@ -131,4 +131,12 @@ class EscrowAccount extends RedisActiveRecord
         return $data;
     }
 
+    public function add($params){
+        $this->attributes = $params;
+        $ret = $this->save();
+        if(!$ret){
+            throw new ApiBaseException(ApiErrorDescs::ERR_QDD_REGISTER_FAIL);
+        }
+        return true;
+    }
 }

@@ -124,7 +124,7 @@ class MemberInfo extends RedisActiveRecord
          $idcard = ApiUtils::getStrParam('idcard', $arr);
         return [
             'mobile' => ApiUtils::getStrParam('cell_phone', $arr),
-            'idcard' => ApiUtils::replaceByLength($idcard, strlen($idcard)-8, 4, -4),
+            'idcard' => $idcard?ApiUtils::replaceByLength($idcard, strlen($idcard)-8, 4, -4):'',
             'real_name' => ApiUtils::getStrParam('real_name', $arr),
             'up_time' => ApiUtils::getStrTimeByUnix(ApiUtils::getIntParam('up_time', $arr)),
         ];

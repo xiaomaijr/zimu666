@@ -79,8 +79,9 @@ class IndexController extends ApiBaseController
 //        $incode = BorrowInvest::getDataByConditions(['investor_uid' => intval(236716), "loanno != ''"], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);;exit;
 
 //        echo \Yii::$app->redis->hostname;exit;
-        $obj = new MemberBanks();
-        var_dump($obj->encode('6225880141357777', 'lt63p'));
+//        $obj = new MemberBanks();
+//        var_dump($obj->encode('6225880141357777', 'lt63p'));
+        echo $a;
         exit;
     }
 }

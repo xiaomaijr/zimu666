@@ -141,7 +141,7 @@ class UserController extends UserBaseController
             $timer->start('third_pay_bind');
             $thirdPayInfo = EscrowAccount::getUserBindInfo($userId);
             if(!$thirdPayInfo['qddBind'] && !$thirdPayInfo['yeeBind']){
-                $this->redirect('/escrow/register-bind');
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
             }
             $timer->stop('third_pay_bind');
             //银行列表
@@ -195,7 +195,6 @@ class UserController extends UserBaseController
             }
             $timer->start('check_old_bank_num');
             $userBank = MemberBanks::getListByUid($request['user_id'], 0);
-//            echo json_encode($userBank);exit;
             if($userBank){
                 if($userBank[0]['bank_num'] != $oldBkNuM){
                     throw new ApiBaseException(ApiErrorDescs::ERR_OLD_BANK_NUM_INPUT_ERR);

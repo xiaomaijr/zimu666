@@ -158,6 +158,7 @@ class MemberBanks extends RedisActiveRecord
             $ids = ApiUtils::getCols($infos, 'id');
             $cache->hSet(self::$tableName, $field, $ids);
         }else{
+            echo 2;
             $ids = $cache->hGet(self::$tableName, $field);
             $infos = self::gets($ids);
         }

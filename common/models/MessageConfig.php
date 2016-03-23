@@ -62,6 +62,29 @@ class MessageConfig
         'register' => '您正在进行注册，本次的验证码是#CODE#。 如非本人操作，请与客服联系：400-6688-122【小麦金融】',
     ];
 
+    private static $notice = [
+        'invest' => [
+            'title' => '恭喜您投资#BORROW_ID#号项目#INVEST_MONEY#元成功！',
+            'content' => '恭喜您投资#BORROW_ID#号项目#INVEST_MONEY#元成功！',
+        ],
+        'recharge' => [
+            'title' => '您刚刚成功充值#RECHARGE#元',
+            'content' => '您刚刚成功充值#RECHARGE#元，流水号#TRAND_NO#',
+        ],
+        'withdraw' => [
+            'title' => '您刚刚成功提现#WITHDRAW#元',
+            'content' => '您刚刚成功提现#WITHDRAW#元，如不是自己操作,请尽快联系客服',
+        ],
+        'changeAccount' => [
+            'title' => '您刚刚修改了提现的银行帐户',
+            'content' => '您刚刚修改了提现的银行帐户,如不是自己操作,请尽快联系客服',
+        ],
+        'modifyPwd' => [
+            'title' => '您刚刚修改了登录密码',
+            'content' => '您刚刚修改了登录密码，如不是自己操作,请尽快联系客服',
+        ],
+    ];
+
     //需要验证用户已注册的短信请求参数key
     public static $checkExistMsgKeys = [
         'forgetpass',
@@ -124,15 +147,41 @@ class MessageConfig
                 ];
                 $objPhoneSend->saveSendMessageLog($infos);
                 return $ret;
+            case 3 :            //投资成功添加通知
+                if(empty($data['invest_id'])){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_INVEST_ID_EMPTY);
+                }
+                if(empty($data['invest_money'])){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_INVEST_MONEY_EMPTY);
+                }
+                $notice = self::_getNoticeByKey('invest');
+                $contents = [
+                    'title' => $notice['title'],
+                    'msg' => $notice['msg'],
+                    'uid' => $userId
+                ];
+                $objInMsg = new InnerMsg();
+                $objInMsg->add($contents);//总表
+                $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
+                $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
+                return $objSubInMsg->add($contents);//分表
+            case 4 :   //提现成功
+
         }
     }
-
+    //获取短信信息
     private static function _getMessageByKey($key){
         if(empty(self::$messages[$key])){
             throw new ApiBaseException(ApiErrorDescs::ERR_MESSAGE_INFO_EMPTY);
         }
         return self::$messages[$key];
     }
-
+    //获取通知信息
+    private static function _getNoticeByKey($key){
+        if(empty(self::$notice[$key])){
+            throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_INFO_EMPTY);
+        }
+        return self::$notice[$key];
+    }
 
 }

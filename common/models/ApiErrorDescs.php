@@ -46,6 +46,9 @@ class ApiErrorDescs
     const ERR_MESSAGE_INFO_EMPTY = 1000;//信息配置为空
     const ERR_MESSAGE_CODE_EMPTY = 1001;//注册短信验证码为空
     const ERR_MESSAGE_PHONE_EMPTY = 1002;//用户手机号不能为空
+    const ERR_NOTICE_INFO_EMPTY = 1003;//通知信息为空
+    const ERR_NOTICE_INVEST_ID_EMPTY = 1004;//通知内容标ID不能为空
+    const ERR_NOTICE_INVEST_MONEY_EMPTY = 1005;//通知投标金额不能为空
 
     //2000-3000投资错误信息
     const ERR_BORROW_DATA_NOT_EXIST = 2000;//借款信息不存在
@@ -60,6 +63,11 @@ class ApiErrorDescs
     const ERR_OLD_BANK_NUM_INPUT_ERR = 3002;//旧银行卡号输入错误
     const ERR_BANK_NUM_NOT_REPEAT = 3003;//银行卡号不能重复绑定
     const ERR_BANK_BIND_FAIL = 3004;//绑定银行卡失败
+
+    //4000-5000第三方错误
+    const ERR_ALREADY_REGISTER_QDD = 4000;//用户已注册钱多多
+    const ERR_QDD_REGISTER_PARAMS_ERR = 4001;//钱多多开户参数有误
+    const ERR_QDD_REGISTER_FAIL = 4002;//钱多多开户失败
 
 
 
@@ -105,6 +113,9 @@ class ApiErrorDescs
         self::ERR_MESSAGE_INFO_EMPTY => '信息配置为空',
         self::ERR_MESSAGE_CODE_EMPTY => '注册短信验证码为空',
         self::ERR_MESSAGE_PHONE_EMPTY => '用户手机号不能为空',
+        self::ERR_NOTICE_INFO_EMPTY => '通知信息为空',
+        self::ERR_NOTICE_INVEST_ID_EMPTY => '通知内容标ID不能为空',
+        self::ERR_NOTICE_INVEST_MONEY_EMPTY => '通知投标金额不能为空',
 
         //2000-3000借款错误信息
         self::ERR_BORROW_DATA_NOT_EXIST => '借款信息不存在',
@@ -119,6 +130,11 @@ class ApiErrorDescs
         self::ERR_OLD_BANK_NUM_INPUT_ERR => '旧银行卡号输入错误',
         self::ERR_BANK_NUM_NOT_REPEAT => '银行卡不能重复绑定',
         self::ERR_BANK_BIND_FAIL => '绑定银行卡失败',
+        //4000-5000第三方错误
+        self::ERR_ALREADY_REGISTER_QDD => '用户已注册钱多多',
+        self::ERR_QDD_REGISTER_PARAMS_ERR => '钱多多开户参数有误',
+        self::ERR_QDD_REGISTER_FAIL => '钱多多开户失败',
+
     ];
 
 

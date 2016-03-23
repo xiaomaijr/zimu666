@@ -85,6 +85,8 @@ class InnerMsg extends RedisActiveRecord
             throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '通知内容不能为空');
         }
         $this->attributes = $attrs;
+        $this->send_time = time();
+        $this->status = 0;
         $ret = $this->save();
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
