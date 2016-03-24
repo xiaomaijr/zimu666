@@ -49,7 +49,10 @@ class EscrowController extends UserBaseController
                 $result = [
                     'code' => ApiErrorDescs::SUCCESS,
                     'message' => 'success',
-                    'result' => $qddRegParams,
+                    'result' => [
+                        'params' => http_build_query($qddRegParams),
+                        'request_url' => $objEsc->urlArr['register']
+                    ],
                 ];
             }else{
                 throw new ApiBaseException(ApiErrorDescs::ERR_ALREADY_REGISTER_QDD);
@@ -60,7 +63,7 @@ class EscrowController extends UserBaseController
                 'message' => $e->getMessage()
             ];
         }
-        echo $result;
+        echo json_encode($result);
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
     }

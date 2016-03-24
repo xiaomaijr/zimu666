@@ -10,6 +10,11 @@ namespace api\controllers;
 
 
 
+use api\models\GetParam;
+use api\models\jiemen;
+use api\models\RequestFilter;
+use api\models\Xiaohei;
+use api\models\XiaoHong;
 use common\models\Ad;
 use common\models\BorrowInfo;
 use common\models\BorrowInvest;
@@ -81,7 +86,10 @@ class IndexController extends ApiBaseController
 //        echo \Yii::$app->redis->hostname;exit;
 //        $obj = new MemberBanks();
 //        var_dump($obj->encode('6225880141357777', 'lt63p'));
-        echo $a;
+        $request = $_REQUEST;
+        $objParam = new GetParam(['param' => 'account', 'request' => $request]);
+        $account = $objParam->getStrParam(new RequestFilter());
+        echo $account;
         exit;
     }
 }

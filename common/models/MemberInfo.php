@@ -129,4 +129,10 @@ class MemberInfo extends RedisActiveRecord
             'up_time' => ApiUtils::getStrTimeByUnix(ApiUtils::getIntParam('up_time', $arr)),
         ];
     }
+
+    //添加记录
+    public function add($attrs){
+        $this->attributes = $attrs;
+        return $this->save();
+    }
 }

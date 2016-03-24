@@ -161,9 +161,9 @@ class MemberController extends ApiBaseController
             $timer->start('check_message_code');
             $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' .  $request['user_name'], self::CACHE_KEY_GET_MESSAGE_CODE);
             $cache = new Cache();
-            if(!$cache->exists($codeCacheKey['key_name']) || $cache->get($codeCacheKey['key_name']) != $request['phone_code']){
-                throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
-            }
+//            if(!$cache->exists($codeCacheKey['key_name']) || $cache->get($codeCacheKey['key_name']) != $request['phone_code']){
+//                throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
+//            }
             $timer->stop('check_message_code');
             //校验用户密码
             ApiUtils::checkPwd($request['passwd']);
@@ -375,6 +375,7 @@ class MemberController extends ApiBaseController
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
             ];
+            MessageConfig::Notice(7, $request['user_name']);
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

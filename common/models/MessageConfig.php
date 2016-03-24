@@ -148,13 +148,58 @@ class MessageConfig
                 $objPhoneSend->saveSendMessageLog($infos);
                 return $ret;
             case 3 :            //投资成功添加通知
-                if(empty($data['invest_id'])){
+                if(empty($data['borrow_id'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_INVEST_ID_EMPTY);
                 }
                 if(empty($data['invest_money'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_INVEST_MONEY_EMPTY);
                 }
                 $notice = self::_getNoticeByKey('invest');
+                $contents = [
+                    'title' => str_replace(['#BORROW_ID#', '#INVEST_MONEY#'], [$data['borrow_id'], $data['invest_money']], $notice['title']),
+                    'msg' => str_replace(['#BORROW_ID#', '#INVEST_MONEY#'], [$data['borrow_id'], $data['invest_money']], $notice['msg']),
+                    'uid' => $userId
+                ];
+                $objInMsg = new InnerMsg();
+                $objInMsg->add($contents);//总表
+                $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
+                $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
+                return $objSubInMsg->add($contents);//分表
+            case 4 :   //充值成功
+                if(empty($data['trade_no'])){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_RECHARGE_TRADE_NO_EMPTY);
+                }
+                if(empty($data['recharge_money'])){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_RECHARGE_MONEY_EMPTY);
+                }
+                $notice = self::_getNoticeByKey('recharge');
+                $contents = [
+                    'title' => str_replace(['#RECHARGE#'], [$data['recharge_money']], $notice['title']),
+                    'msg' => str_replace(['#RECHARGE#', '#TRAND_NO#'], [$data['recharge_money'], $data['trade_no']], $notice['msg']),
+                    'uid' => $userId
+                ];
+                $objInMsg = new InnerMsg();
+                $objInMsg->add($contents);//总表
+                $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
+                $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
+                return $objSubInMsg->add($contents);//分表
+            case 5 : //提现
+                if(empty($data['withdraw'])){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_WITHDRAW_MONEY_EMPTY);
+                }
+                $notice = self::_getNoticeByKey('recharge');
+                $contents = [
+                    'title' => str_replace('#WITHDRAW#', $data['withdraw_money'], $notice['title']),
+                    'msg' => str_replace('#WITHDRAW#', $data['withdraw_money'], $notice['msg']),
+                    'uid' => $userId
+                ];
+                $objInMsg = new InnerMsg();
+                $objInMsg->add($contents);//总表
+                $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
+                $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
+                return $objSubInMsg->add($contents);//分表
+            case 6://修改提现账户
+                $notice = self::_getNoticeByKey('changeAccount');
                 $contents = [
                     'title' => $notice['title'],
                     'msg' => $notice['msg'],
@@ -165,8 +210,18 @@ class MessageConfig
                 $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
                 $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
                 return $objSubInMsg->add($contents);//分表
-            case 4 :   //提现成功
-
+            case 7://修改登录密码
+                $notice = self::_getNoticeByKey('modifyPwd');
+                $contents = [
+                    'title' => $notice['title'],
+                    'msg' => $notice['msg'],
+                    'uid' => $userId
+                ];
+                $objInMsg = new InnerMsg();
+                $objInMsg->add($contents);//总表
+                $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
+                $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
+                return $objSubInMsg->add($contents);//分表
         }
     }
     //获取短信信息

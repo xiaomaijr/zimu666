@@ -47,6 +47,8 @@ class NoticeController extends Controller
                 'message' => $e->getMessage()
             ];
         }
-        echo $result;
+        echo json_encode($result);
+//        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
     }
 }

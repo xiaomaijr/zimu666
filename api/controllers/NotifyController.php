@@ -13,6 +13,9 @@ use common\models\Escrow;
 use common\models\EscrowAccount;
 use common\models\MemberInfo;
 use common\models\Members;
+use common\models\MembersStatus;
+use common\models\NameApply;
+use common\models\Notify;
 use yii\web\Controller;
 
 class NotifyController extends Controller
@@ -75,22 +78,18 @@ class NotifyController extends Controller
                 $data_apply['up_time'] = time();
                 $data_apply['uid'] = $userid;
                 $data_apply['status'] = 0;
-//                $b = M('name_apply') -> where("uid = {$userid}") -> count('uid');
-//                if ($b == 1) {
-//                    M('name_apply') -> where("uid ={$userid}") -> save($data_apply);
-//                } else {
-//                    M('name_apply') -> add($data_apply);
-//                }
-//                $ms = M('members_status') -> where("uid={$userid}") -> setField('id_status', 1);
-//                if ($ms != 1) {
-//                    $dt['uid'] = $userid;
-//                    $dt['id_status'] = 1;
-//                    M('members_status') -> add($dt);
-//                }
+                NameApply::add($data_apply);//实名认证更新
+                MembersStatus::add(['uid' => $userid, 'id_status' => 1]);//会员认证状态更新
+                $notifyData = [
+                    'data_md5' => md5($_POST),
+                    'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                    'data' => json_encode($_POST),
+                    'type' => '绑定账号',
+                ];
+                Notify::add($notifyData);
                 //用户状态
 //                setMemberStatus($userid, 'phone', 1, 10, '手机');
 //                setMemberStatus($userid, 'email', 1, 9, '邮箱');
-//                notifyMsg('绑定账号',$_POST, 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], $str);
                 echo $str;exit;
             }
         }
