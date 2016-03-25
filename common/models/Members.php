@@ -201,7 +201,7 @@ class Members extends RedisActiveRecord
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_REGISTER_PHONE_EXIST);
         } elseif(in_array($key, MessageConfig::$checkExistMsgKeys) && !self::checkExistByCondition(['user_name' => $userName])){
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
-        }else{
+        }elseif(!in_array($key, array_merge(MessageConfig::$checkNotExistMsgKeys, MessageConfig::$checkExistMsgKeys))){
             throw new ApiBaseException(ApiErrorDescs::ERR_ILL_REQUEST_MESSAGE);
         }
     }

@@ -166,7 +166,7 @@ class MemberController extends ApiBaseController
 //            }
             $timer->stop('check_message_code');
             //校验用户密码
-            ApiUtils::checkPwd($request['passwd']);
+//            ApiUtils::checkPwd($request['passwd']);
             //用户注册
             $timer->start('register_member');
             $objMember = new Members();
@@ -202,7 +202,7 @@ class MemberController extends ApiBaseController
     public function actionLogin(){
         try{
             $request = $_REQUEST;
-            ApiUtils::checkPwd($request['passwd']);
+//            ApiUtils::checkPwd($request['passwd']);
             ApiUtils::checkPhoneFormat($request['user_name']);
             $key = CacheKey::getCacheKey($request['user_name'], self::CACHE_KEY_LOGIN_ERR_LIMIT);
             $timer = new TimeUtils();
