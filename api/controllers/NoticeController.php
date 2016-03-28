@@ -51,4 +51,10 @@ class NoticeController extends Controller
 //        $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
     }
+
+    public function actionInvestReturn(){
+        $request = $_REQUEST;
+        $resultCode = htmlspecialchars(ApiUtils::getIntParam('ResultCode', $request));
+//        if()
+    }
 }

@@ -86,10 +86,9 @@ class IndexController extends ApiBaseController
 //        echo \Yii::$app->redis->hostname;exit;
 //        $obj = new MemberBanks();
 //        var_dump($obj->encode('6225880141357777', 'lt63p'));
-        $request = $_REQUEST;
-        $objParam = new GetParam(['param' => 'account', 'request' => $request]);
-        $account = $objParam->getStrParam(new RequestFilter());
-        echo $account;
+//        $request = $_REQUEST;
+//        $objParam = new GetParam(['param' => 'account', 'request' => $request]);
+//        $account = $objParam->getStrParam(new RequestFilter());
         exit;
     }
 }

@@ -139,4 +139,33 @@ class EscrowAccount extends RedisActiveRecord
         }
         return true;
     }
+    /*
+     * 获取用户第三方账户
+     * @param $uid int
+     * @param $platform int 0 qdd 1 yee
+     * return $data array
+     */
+    public static function getUserThirdAccout($uid, $platform = 0){
+        $data = [];
+        if(empty($uid)){
+            return $data;
+        }
+        $cache = self::getCache();
+        $field = 'uid:' . $uid;
+        if($cache->hExists(self::$tableName, $field)){
+            $ids = $cache->hGet(self::$tableName, $field);
+            $accountInfos = self::gets($ids);
+        }else{
+            $accountInfos = self::getDataByConditions(['uid' => $uid]);
+            if(empty($accountInfos)) return $data;
+            $ids = ApiUtils::getCols($accountInfos, 'id');
+            $cache->hSet(self::$tableName, $field, $ids);
+        }
+        foreach($accountInfos as $row){
+            if($row['platform'] == $platform){
+                $data[] = $row;
+            }
+        }
+        return $data;
+    }
 }

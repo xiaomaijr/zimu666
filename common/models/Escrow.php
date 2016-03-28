@@ -108,4 +108,63 @@ class Escrow extends Component
         }
         return $this->rsa->verify($dataStr,$SignInfo);
     }
+    /**
+     * loanJsonList 方法
+     *
+     * @param string $LoanOutMoneymoremore  付款人乾多多标识 m或p开头
+     * @param string $LoanInMoneymoremore   收款人乾多多标识 m或p开头
+     * @param string $OrderNo        网贷平台订单号
+     * @param string $BatchNo        网贷平台标号
+     * @param double $Amount         金额
+     * @param double $FullAmount     满标金额
+     * @param string $TransferName   用途
+     * @param string $Remark         备注
+     * @param string $SecondaryJsonList   二次分配列表 转换成的json对象
+     */
+    public function loanJsonList($LoanOutMoneymoremore,$LoanInMoneymoremore, $OrderNo, $BatchNo, $Amount, $FullAmount='', $TransferName='', $Remark='', $SecondaryJsonList=''){
+        $data = array();
+        $data['LoanOutMoneymoremore'] = $LoanOutMoneymoremore;
+        $data['LoanInMoneymoremore'] = $LoanInMoneymoremore;
+        $data['OrderNo'] = $OrderNo;
+        $data['BatchNo'] = $BatchNo;
+        $data['Amount'] =  $Amount;
+        $data['FullAmount'] = $FullAmount;
+        $data['TransferName'] = $TransferName;
+        $data['Remark']  = $Remark;
+        $data['SecondaryJsonList'] = $SecondaryJsonList;
+        return $data;
+    }
+    /**
+     * 转账接口
+     *
+     * @param string $LoanJsonList    json 格式转账类型  参与签名是源字符串  提交用urlencode编码为utf8
+     * @param string $ReturnURL       返回地址
+     * @param string $NotifyURL       后台通知地址
+     * @param int $TransferAction     转账类型 1：投标  2：还款
+     * @param int $Action             操作类型 1：手动转账 2：自动转账
+     * @param int $TransferType       转账方式 1：桥连 2:直连
+     * @param int $NeedAudit          是否通过审核 空：需要审核 1：自动通过
+     * @param string $Remark          备注
+     */
+    public function transfer($LoanJsonList, $ReturnURL, $NotifyURL, $TransferAction=1, $Action=1, $TransferType=2, $NeedAudit='', $Remark1='',$Remark2='',$Remark3=''){
+        $data['LoanJsonList'] = $LoanJsonList;
+        $data['PlatformMoneymoremore'] =  $this->plat_form_money_moremore;
+        $data['TransferAction'] = $TransferAction;
+        $data['Action'] = $Action;
+        $data['TransferType'] = $TransferType;
+        $data['NeedAudit'] = $NeedAudit;
+        $data['Remark1'] = $Remark1;
+        $data['Remark2'] = $Remark2;
+        $data['Remark3'] = $Remark3;
+        $data['RandomTimeStamp'] = '';
+        $data['ReturnURL'] = $ReturnURL ; //返回地址
+        $data['NotifyURL'] = $NotifyURL ; //通知地址
+        $dataStr = implode('',$data);
+        if($this->antistate == 1) {
+            $dataStr = strtoupper(md5($dataStr));
+        }
+        $data['SignInfo'] =  $this->rsa->sign($dataStr);
+        $data['LoanJsonList'] =  urlencode($data['LoanJsonList']);
+        return $data;
+    }
 }

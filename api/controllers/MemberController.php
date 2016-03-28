@@ -408,7 +408,7 @@ class MemberController extends ApiBaseController
             $timer = new TimeUtils();
             //检查用户登录信息
             $timer->start('check_access_token');
-            $this->checkAccessToken($request['access_token'], $request['user_id']);
+//            $this->checkAccessToken($request['access_token'], $request['user_id']);
             $timer->stop('check_access_token');
             //获取用户资金
             $timer->start('get_mm_money');

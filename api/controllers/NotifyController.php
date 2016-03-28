@@ -88,8 +88,8 @@ class NotifyController extends Controller
                 ];
                 Notify::add($notifyData);
                 //用户状态
-//                setMemberStatus($userid, 'phone', 1, 10, '手机');
-//                setMemberStatus($userid, 'email', 1, 9, '邮箱');
+                MembersStatus::setMemberStatus($userid, 'phone', 1, 10, '手机');
+                MembersStatus::setMemberStatus($userid, 'email', 1, 9, '邮箱');
                 echo $str;exit;
             }
         }

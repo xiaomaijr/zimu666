@@ -97,7 +97,14 @@ class MemberMoney extends RedisActiveRecord
      *获取用户账户总额
      */
     public static function getUserMoney($memberId, $platform = 'qdd'){
-        $data = [];
+        $data = [
+            'qdd' => [
+                'invest_money' => 0.00,
+                'back_money' => 0.00,
+                'available_money' => 0.00,
+                'expected_assets' => 0.00,
+            ],
+        ];
         $cache = self::getCache();
         $field = 'uid:' . $memberId;
         if($cache->hExists(self::$tableName, $field)){
@@ -122,7 +129,7 @@ class MemberMoney extends RedisActiveRecord
                 $data['yee'] = [];
             }
         }
-        $money = in_array($platform, ['qdd', 'yee'])?$data[$platform]:$data;
+        $money = $data[$platform];
         return $money;
     }
 }

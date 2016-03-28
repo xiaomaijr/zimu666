@@ -185,7 +185,7 @@ class BorrowInvest extends RedisActiveRecord
         $key = self::$tableName;
         $field = 'borrow_id:' . $borrowId;
         if(!$cache->hExists($key, $field)){
-            $infos = self::find()->select('investor_capital')->from($this->tableName)->where("loanno != ''")->andWhere(['borrow_id' => $borrowId])
+            $infos = self::find()->select('investor_capital')->from(self::$tableName)->where("loanno != ''")->andWhere(['borrow_id' => $borrowId])
                 ->asArray()->all();
             if(empty($infos)) return $info;
             $ids = ApiUtils::getCols($infos, 'id');
@@ -210,10 +210,47 @@ class BorrowInvest extends RedisActiveRecord
             throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资信息不能为空');
         }
         $this->attributes = $attrs;
+        $this->add_time = time();
         $ret = $this->save();
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
         }
         return $this->id;
+    }
+    /*
+     * 获取投标记录
+     */
+    public function getInvestRecordByBid($borrowId, $page = 1, $pageSize = 100){
+        $data = [];
+        $field = 'borrow_id:' . $borrowId;
+        $cache = self::getCache();
+        if(!$cache->hExists(self::$tableName, $field)){
+            $ids = $cache->hGet(self::$tableName, $field);
+            $infos = self::gets($ids);
+        }else{
+            $infos = self::getDataByConditions(['borrow_id' => $borrowId], 'id desc');
+            if(empty($infos)) return $infos;
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->hSet(self::$tableName, $field, $ids);
+        }
+        $investorUids = array_unique(ApiUtils::getCols($infos, 'investor_uid'));
+        $userInfos = ApiUtils::getMap(Members::gets($investorUids), 'id');
+        foreach($infos as $info){
+            $tmp = self::toApiArr($info);
+            $tmp['user_name'] = ApiUtils::replaceByLength($userInfos[$info['investor_uid']]['user_name'],4, 4, -4);
+            $data[] = $tmp;
+        }
+        return $data;
+    }
+    /*
+     * api返回结构过滤字段
+     */
+    private static function toApiArr($arr){
+        return [
+            'add_time' => ApiUtils::getStrTimeByUnix($arr['add_time']),
+            'money' => ApiUtils::getFloatParam('investor_capital', $arr),
+            'invest_type' => '手动',
+        ];
+
     }
 }
