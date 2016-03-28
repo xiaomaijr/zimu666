@@ -133,6 +133,7 @@ class MemberInfo extends RedisActiveRecord
     //添加记录
     public function add($attrs){
         $this->attributes = $attrs;
+        $this->up_time = time();
         return $this->save();
     }
 }

@@ -163,7 +163,7 @@ class EscrowAccount extends RedisActiveRecord
         }
         foreach($accountInfos as $row){
             if($row['platform'] == $platform){
-                $data[] = $row;
+                $data = $row;
             }
         }
         return $data;

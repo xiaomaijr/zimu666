@@ -399,47 +399,6 @@ class MemberController extends ApiBaseController
         return $this->keyTypeMap[$key];
     }
 
-    /*
-     * 个人账户
-     */
-    public function actionAccount(){
-        try{
-            $request = $_REQUEST;
-            $timer = new TimeUtils();
-            //检查用户登录信息
-            $timer->start('check_access_token');
-//            $this->checkAccessToken($request['access_token'], $request['user_id']);
-            $timer->stop('check_access_token');
-            //获取用户资金
-            $timer->start('get_mm_money');
-            $data = MemberMoney::getUserMoney($request['user_id']);
-            $timer->stop('get_mm_money');
-            //用户累计收益
-            $timer->start('accumulated_income');
-            $data['income'] = BorrowInvest::getTotalIncomeByInvestId($request['user_id']);
-            $timer->stop('accumulated income');
-            //检查用户是否在钱多多绑定账户
-            $timer->start('escrow_account');
-            $escrow = EscrowAccount::getUserBindInfo($request['user_id']);
-            $data['escrow'] = $escrow['yeeBind'] | $escrow['qddBind'];
-            $timer->stop('escrow_account');
-            $result = [
-                'code' => ApiErrorDescs::SUCCESS,
-                'message' => 'success',
-                'result'  => $data
-            ];
 
-        }catch(ApiBaseException $e){
-            $result = [
-                'code' => $e->getCode(),
-                'message' => $e->getMessage()
-            ];
-        }
-        header('Content-type: application/json');
-        echo json_encode($result);
-
-        $this->logApi(__CLASS__, __FUNCTION__, $result);
-        \Yii::$app->end();
-    }
 
 }

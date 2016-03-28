@@ -53,7 +53,6 @@ abstract class RedisActiveRecord extends ActiveRecord
         $cache = self::getCache();
         $tableName = $tableName?$tableName:static::tableName();
         $module = [];
-
         if(!$cache->hExists($tableName, 'id:' . $id)){
             $module = self::find()->where(['id' => $id])->asArray()->one();
             $module AND $cache->hSet($tableName,  'id:' . $id, $module);

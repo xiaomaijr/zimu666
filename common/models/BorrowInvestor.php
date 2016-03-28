@@ -2,13 +2,10 @@
 
 namespace common\models;
 
-use common\models\ApiUtils;
-use common\models\BaseModel;
 use Yii;
-use yii\redis\Cache;
 
 /**
- * This is the model class for table "lzh_borrow_invest".
+ * This is the model class for table "lzh_borrow_investor_0".
  *
  * @property string $id
  * @property integer $status
@@ -36,23 +33,23 @@ use yii\redis\Cache;
  * @property string $borrow_fee
  * @property string $hongbao_id
  * @property integer $is_statics
- * @property integer $recommend_id
+ * @property string $bonus_id
  */
-class BorrowInvest extends RedisActiveRecord
+class BorrowInvestor extends BorrowInvest
 {
-
-    const BORROW_AND_INVEST_TOTAL = 'borrow_invest_total';//投资收益总额
-    const CACHE_KEY_USER_TOTAL_INCODE = 'user_total_income'; //用户累计收益缓存key
-    const CACHE_KEY_BORROW_INVESTOR_AND_MONEY_TOTAL = 'brw_intor_a_mny_ttl'; //
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'lzh_borrow_invest';
+        return self::$tableName;
     }
 
-    public static $tableName = 'lzh_borrow_invest';
+    public static $tableName = 'lzh_borrow_investor_0';
+    //设置分表tablename
+    public function setTableName($tableName){
+        self::$tableName = $tableName;
+    }
 
     /**
      * @inheritdoc
@@ -60,10 +57,11 @@ class BorrowInvest extends RedisActiveRecord
     public function rules()
     {
         return [
-            [['status', 'borrow_id', 'investor_uid', 'borrow_uid', 'add_time', 'audit_time', 'audit_notify', 'repayment_time', 'deadline_last', 'integral_days', 'debt_status', 'debt_uid', 'hongbao_id', 'is_statics', 'recommend_id'], 'integer'],
-            [['borrow_id', 'investor_uid', 'borrow_uid', 'investor_capital', 'investor_interest', 'invest_fee', 'add_time'], 'required'],
+            [['id', 'borrow_id', 'investor_uid', 'borrow_uid', 'investor_capital', 'investor_interest', 'invest_fee'], 'required'],
+            [['id', 'status', 'borrow_id', 'investor_uid', 'borrow_uid', 'add_time', 'audit_time', 'audit_notify', 'repayment_time', 'deadline_last', 'integral_days', 'debt_status', 'debt_uid', 'hongbao_id', 'is_statics'], 'integer'],
             [['investor_capital', 'investor_interest', 'receive_capital', 'receive_interest', 'substitute_money', 'expired_money', 'invest_fee', 'paid_fee', 'reward_money', 'borrow_fee'], 'number'],
             [['loanno'], 'string', 'max' => 100],
+            [['bonus_id'], 'string', 'max' => 4000],
         ];
     }
 
@@ -99,87 +97,91 @@ class BorrowInvest extends RedisActiveRecord
             'borrow_fee' => 'Borrow Fee',
             'hongbao_id' => 'Hongbao ID',
             'is_statics' => 'Is Statics',
-            'recommend_id' => 'Recommend ID',
+            'bonus_id' => 'Bonus ID',
         ];
-    }
-    /*
-     * 查询投资总额和收益总额
-     */
-    public static function getBorrowAndInvestTotal(){
-        $key = CacheKey::getCacheKey('', self::BORROW_AND_INVEST_TOTAL);
-        $cache = new Cache();
-        if($cache->exists($key['key_name'])){
-            $info = $cache->get($key['key_name']);
-        }else{
-            $condition = "loanno != '\'\''";
-            $info = self::find()
-                ->select(['sum(investor_capital) as borrow_money', 'sum(investor_interest) as borrow_interest '])
-                ->where($condition)
-                ->asArray()
-                ->one();
-            $cache->set($key['key_name'], $info, $key['expire']);
-        }
-        return $info;
     }
 
     public function insertEvent(){
         $cache = self::getCache();
         $cache->hDel(self::$tableName, 'id:' . $this->id);
         $cache->hDel(self::$tableName, 'investor_uid:' . $this->investor_uid);
+        $cache->hDel(self::$tableName, 'borrow_id:' . $this->borrow_id);
     }
 
     public function updateEvent(){
         $cache = self::getCache();
         $cache->hDel(self::$tableName, 'id:' . $this->id);
         $cache->hDel(self::$tableName, 'investor_uid:' . $this->investor_uid);
+        $cache->hDel(self::$tableName, 'borrow_id:' . $this->borrow_id);
     }
 
     public function deleteEvent(){
         $cache = self::getCache();
         $cache->hDel(self::$tableName, 'id:' . $this->id);
         $cache->hDel(self::$tableName, 'investor_uid:' . $this->investor_uid);
+        $cache->hDel(self::$tableName, 'borrow_id:' . $this->borrow_id);
     }
 
     /*
-     * 查询用户总收益
+     * 获取某个标投标总人数及投资总额
      */
-    public static function getTotalIncomeByInvestId($investUid){
-        $income = 0;
+    public function getInvestPersonAndMoneyTotal($borrowId){
+        $info = ['c' => 0, 's' => 0];
         $cache = self::getCache();
-        if($cache->hExists(self::$tableName, 'investor_uid:' . $investUid)){
-            $ids = $cache->hget(self::$tableName, 'investor_uid:' . $investUid);
-            $incomeInfos = self::gets($ids);
+        $key = self::$tableName;
+        $field = 'borrow_id:' . $borrowId;
+        if(!$cache->hExists($key, $field)){
+            $infos = self::find()->select('investor_capital')->from(self::$tableName)->where("loanno != ''")->andWhere(['borrow_id' => $borrowId])
+                ->asArray()->all();
+            if(empty($infos)) return $info;
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->hSet($key, $field, $ids);
         }else{
-            $incomeInfos = self::getDataByConditions(['investor_uid' => intval($investUid), "loanno != ''"], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);
-            if(empty($incomeInfos)) return $income;
-            $ids = ApiUtils::getCols($incomeInfos, 'id');
-            $cache->hset(self::$tableName, 'investor_uid:' . $investUid, $ids);
+            $ids = $cache->hGet($key, $field);
+            $infos = self::gets($ids);
         }
-        $tmp = [];
-        foreach($incomeInfos as $info){
-            $diffDay = ApiUtils::getDiffDay($info['add_time'], time());
-            if($diffDay > $info['integral_days']){
-                $tmp[] = $info['investor_interest'];
-                continue;
-            }
-            $tmp[] = $info['investor_interest']/$info['integral_days'] * $diffDay;
+        $info['c'] = count($infos);
+        $intorTotal = 0;
+        foreach($infos as $row){
+            $intorTotal += $row['investor_capital'];
         }
-        $income = sprintf("%.02f", array_sum($tmp));
-        return $income;
+        $info['s'] = $intorTotal;
+        return $info;
     }
     /*
-     * 添加新投资记录
+     * 获取投标记录
      */
-    public function add($attrs = []){
-        if(empty($attrs)){
-            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资信息不能为空');
+    public function getInvestRecordByBid($borrowId, $page = 1, $pageSize = 100){
+        $data = [];
+        $field = 'borrow_id:' . $borrowId;
+        $cache = self::getCache();
+        if(!$cache->hExists(self::$tableName, $field)){
+            $ids = $cache->hGet(self::$tableName, $field);
+            $infos = self::gets($ids);
+        }else{
+            $infos = self::getDataByConditions(['borrow_id' => $borrowId], 'id desc');
+            if(empty($infos)) return $infos;
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->hSet(self::$tableName, $field, $ids);
         }
-        $this->attributes = $attrs;
-        $this->add_time = time();
-        $ret = $this->save();
-        if(!$ret){
-            throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
+        $investorUids = array_unique(ApiUtils::getCols($infos, 'investor_uid'));
+        $userInfos = ApiUtils::getMap(Members::gets($investorUids), 'id');
+        foreach($infos as $info){
+            $tmp = self::toApiArr($info);
+            $tmp['user_name'] = ApiUtils::replaceByLength($userInfos[$info['investor_uid']]['user_name'],4, 4, -4);
+            $data[] = $tmp;
         }
-        return $this->id;
+        return $data;
+    }
+    /*
+     * api返回结构过滤字段
+     */
+    private static function toApiArr($arr){
+        return [
+            'add_time' => ApiUtils::getStrTimeByUnix($arr['add_time']),
+            'money' => ApiUtils::getFloatParam('investor_capital', $arr),
+            'invest_type' => '手动',
+        ];
+
     }
 }

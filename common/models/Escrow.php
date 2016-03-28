@@ -148,7 +148,7 @@ class Escrow extends Component
      */
     public function transfer($LoanJsonList, $ReturnURL, $NotifyURL, $TransferAction=1, $Action=1, $TransferType=2, $NeedAudit='', $Remark1='',$Remark2='',$Remark3=''){
         $data['LoanJsonList'] = $LoanJsonList;
-        $data['PlatformMoneymoremore'] =  $this->plat_form_money_moremore;
+        $data['PlatformMoneymoremore'] =  $this->platFormMoneyMoremore;
         $data['TransferAction'] = $TransferAction;
         $data['Action'] = $Action;
         $data['TransferType'] = $TransferType;

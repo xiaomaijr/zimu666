@@ -13,10 +13,12 @@ use common\models\ApiBaseException;
 use common\models\ApiConfig;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
+use common\models\BorrowInvest;
 use common\models\EscrowAccount;
 use common\models\InnerMsg;
 use common\models\MemberBanks;
 use common\models\MemberInfo;
+use common\models\MemberMoney;
 use common\models\MemberMoneylog;
 use common\models\TimeUtils;
 
@@ -220,6 +222,48 @@ class UserController extends UserBaseController
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success'
             ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+    * 个人账户
+    */
+    public function actionAccount(){
+        try{
+            $request = $_REQUEST;
+            $timer = new TimeUtils();
+            //检查用户登录信息
+            $timer->start('check_access_token');
+//            $this->checkAccessToken($request['access_token'], $request['user_id']);
+            $timer->stop('check_access_token');
+            //获取用户资金
+            $timer->start('get_mm_money');
+            $data = MemberMoney::getUserMoney($request['user_id']);
+            $timer->stop('get_mm_money');
+            //用户累计收益
+            $timer->start('accumulated_income');
+            $data['income'] = BorrowInvest::getTotalIncomeByInvestId($request['user_id']);
+            $timer->stop('accumulated income');
+            //检查用户是否在钱多多绑定账户
+            $timer->start('escrow_account');
+            $escrow = EscrowAccount::getUserBindInfo($request['user_id']);
+            $data['escrow'] = $escrow['yeeBind'] | $escrow['qddBind'];
+            $timer->stop('escrow_account');
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result'  => $data
+            ];
+
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

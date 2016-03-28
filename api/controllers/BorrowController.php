@@ -15,6 +15,7 @@ use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\BorrowInfo;
 use common\models\BorrowInvest;
+use common\models\BorrowInvestor;
 use common\models\EscrowAccount;
 use common\models\MemberMoney;
 use common\models\TimeUtils;
@@ -42,7 +43,7 @@ class BorrowController extends ApiBaseController
             //获取投标记录
             $timer->start('investor_record');
             $investorTabName = 'lzh_borrow_investor_' . intval($id%3);
-            $objInvestor = new BorrowInvest(['tableName' => $investorTabName]);
+            $objInvestor = new BorrowInvestor(['tableName' => $investorTabName]);
             $records = $objInvestor->getInvestRecordByBid($id);
             $timer->stop('investor_record');
             //风控及其它信息
@@ -140,7 +141,7 @@ class BorrowController extends ApiBaseController
             $money = ApiUtils::getFloatParam('money', $request);
             $timer = new TimeUtils();
             $timer->start('check_access_token');
-            $this->checkAccessToken($request['access_token'], $uid);
+//            $this->checkAccessToken($request['access_token'], $uid);
             $timer->stop('check_access_token');
             //投标过程
             $timer->start('invest');

@@ -55,7 +55,7 @@ class InvestDeta extends RedisActiveRecord
     {
         return [
             [['repayment_time', 'callback_time', 'borrow_id', 'invest_id', 'investor_uid', 'borrow_uid', 'status', 'sort_order', 'total', 'deadline', 'expired_days', 'substitute_time', 'pay_status', 'repay_status', 'add_time'], 'integer'],
-            [['borrow_id', 'invest_id', 'investor_uid', 'borrow_uid', 'capital', 'interest', 'interest_fee', 'status', 'receive_interest', 'receive_capital', 'sort_order', 'total', 'deadline', 'expired_money', 'substitute_money'], 'required'],
+            [['borrow_id', 'invest_id', 'investor_uid', 'borrow_uid', 'capital', 'interest', 'interest_fee', 'status', 'sort_order', 'total'], 'required'],
             [['capital', 'interest', 'interest_fee', 'receive_interest', 'receive_capital', 'expired_money', 'call_fee', 'substitute_money'], 'number'],
             [['ts'], 'safe'],
         ];
@@ -116,9 +116,11 @@ class InvestDeta extends RedisActiveRecord
             throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资还款信息不能为空');
         }
         $this->attributes = $attrs;
+        $this->add_time = time();
         $ret = $this->save();
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_DETAIL_ADD_FAIL);
         }
+        return $this->id;
     }
 }

@@ -242,7 +242,7 @@ class BorrowInfo extends RedisActiveRecord
      * 更新has_borrow并验证其是否小于borrow_money
      */
     public static function updateHasBorrow($id ,$money){
-        $sql = "update " . self::$tableName . " set has_money = has_money + " . $money . " where id = " . $id . " and has_money + " . $money . " < borrow_money";
+        $sql = "update " . self::$tableName . " set has_borrow = has_borrow + " . $money . " where id = " . $id . " and has_borrow + " . $money . " < borrow_money";
         $db = self::getDb();
         return $db->createCommand($sql)->execute();
     }
