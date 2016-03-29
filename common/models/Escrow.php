@@ -167,4 +167,48 @@ class Escrow extends Component
         $data['LoanJsonList'] =  urlencode($data['LoanJsonList']);
         return $data;
     }
+
+    /**
+     * 乾多多充值
+     *
+     * @param mixed $RechargeMoneymoremore    要充值的账号的钱多多标识 m1 p1以m或p开头
+     * @param mixed $PlatformMoneymoremore    P1开通钱多多账号为平台账号时生成，以p开头
+     * @param mixed $OrderNo                  平台钱多多单号
+     * @param mixed $Amount                   金额 必须大于1
+     * @param mixed $ReturnURL                页面返回地址
+     * @param mixed $NotifyURL                后台通知地址
+     * @param mixed $RechargeType             充值类型 空：网银充值 1：代扣充值
+     * @param mixed $CardNo                   银行卡号 代扣时必填
+     * @param mixed $RandomTimeStamp          随即时间戳 防抵御时必填
+     * @param mixed $Remark1     备注1
+     * @param mixed $Remark2     备注2
+     * @param mixed $Remark3     备注3
+     * @return string
+     */
+    public function expressCharge($qddMarked, $OrderNo, $Amount,$Remark=''){
+        $data = array();
+        $data['RechargeMoneymoremore'] = $qddMarked;
+        $data['PlatformMoneymoremore'] = $this->platFormMoneyMoremore;
+        $data['OrderNo'] = $OrderNo;
+        $data['Amount'] = $Amount;
+        $data['RechargeType'] =  2;
+        $data['FeeType'] =  2;
+        $data['CardNo'] = '';
+        $data['RandomTimestamp'] = '';
+        $data['Remark1'] = $Remark;
+        $data['Remark2'] = '';
+        $data['Remark3'] = '';
+        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') .'/member/Notice/chargeReturn';
+        $data['NotifyURL'] = UrlConfig::getUrl('qdd_notify') . '/Notify/charge';
+        $str = implode('',$data);
+        if($this->antistate == 1){
+            $str = strtoupper(md5($str));
+        }
+        if (!empty($data['CardNo'])) {
+            //银行卡号加密
+            $data['CardNo'] = $this->rsa->encrypt($data['CardNo']);
+        }
+        $data['SignInfo']  = $this->rsa->sign($str);
+        return $data;
+    }
 }

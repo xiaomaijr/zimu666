@@ -14,6 +14,7 @@ use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\Escrow;
 use common\models\EscrowAccount;
+use common\models\MemberPayonline;
 use common\models\Members;
 use common\models\TimeUtils;
 use yii\web\Response;
@@ -57,6 +58,54 @@ class EscrowController extends UserBaseController
             }else{
                 throw new ApiBaseException(ApiErrorDescs::ERR_ALREADY_REGISTER_QDD);
             }
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        echo json_encode($result);
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+     * 充值
+     */
+    public function actionRecharge(){
+        try{
+            $request = $_REQUEST;
+            $userId = ApiUtils::getIntParam('user_id', $request);
+            $money = ApiUtils::getFloatParam('money', $request);
+            $timer = new TimeUtils();
+
+            if($money <= 0){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '充值金额不能小于0元');
+            }
+
+            $timer->start('user_third_bind');
+            $userEscrow = EscrowAccount::getUserThirdAccout($userId);
+            if(empty($userEscrow)){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
+            }
+            $timer->stop('user_third_bind');
+
+            //添加充值记录
+            $objMemPay = new MemberPayonline();
+            $memPayId = $objMemPay->addRecord($userId, $money);
+            $orderId = 'charge' . date('YmdHi') . '_' . $memPayId;
+
+            if(!MemberPayonline::updateAll(['order_no' => $orderId], ['id' => $memPayId])){
+                throw new ApiBaseException(ApiErrorDescs::ERR_RECHARGE_ADD_ORDER_FAIL);
+            }
+            $objEsc = new Escrow();
+            $params = $objEsc->expressCharge($userEscrow['qdd_marked'],$orderId, $money, 'uid:' . $userId);
+            $url = $objEsc->urlArr['charge'];
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'params' => http_build_query($params),
+                'url' => $url,
+            ];
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

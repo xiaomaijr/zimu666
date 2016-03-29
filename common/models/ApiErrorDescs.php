@@ -55,7 +55,6 @@ class ApiErrorDescs
 
     //2000-3000投资错误信息
     const ERR_BORROW_DATA_NOT_EXIST = 2000;//借款信息不存在
-    const ERR_USER_UNBIND_THIRD_PAY = 2001;//未绑定第三方支付
     const ERR_INVEST_RECORD_ADD_FAIL = 2002;//投资记录保存失败
     const ERR_INVEST_DETAIL_ADD_FAIL = 2003;//投资还款保存失败
     const ERR_INVEST_FAIL = 2004;//投资失败
@@ -71,6 +70,8 @@ class ApiErrorDescs
     const ERR_ALREADY_REGISTER_QDD = 4000;//用户已注册钱多多
     const ERR_QDD_REGISTER_PARAMS_ERR = 4001;//钱多多开户参数有误
     const ERR_QDD_REGISTER_FAIL = 4002;//钱多多开户失败
+    const ERR_USER_UNBIND_THIRD_PAY = 4003;//未绑定第三方支付
+    const ERR_RECHARGE_ADD_ORDER_FAIL = 4004;//充值订单添加失败
 
 
 
@@ -125,7 +126,6 @@ class ApiErrorDescs
 
         //2000-3000借款错误信息
         self::ERR_BORROW_DATA_NOT_EXIST => '借款信息不存在',
-        self::ERR_USER_UNBIND_THIRD_PAY => '未绑定第三方支付',
         self::ERR_INVEST_RECORD_ADD_FAIL => '投资记录保存失败',
         self::ERR_INVEST_DETAIL_ADD_FAIL => '投资还款保存失败',
         self::ERR_INVEST_FAIL => '投资失败',
@@ -140,6 +140,8 @@ class ApiErrorDescs
         self::ERR_ALREADY_REGISTER_QDD => '用户已注册钱多多',
         self::ERR_QDD_REGISTER_PARAMS_ERR => '钱多多开户参数有误',
         self::ERR_QDD_REGISTER_FAIL => '钱多多开户失败',
+        self::ERR_USER_UNBIND_THIRD_PAY => '未绑定第三方支付',
+        self::ERR_RECHARGE_ADD_ORDER_FAIL => '充值订单添加失败',
 
     ];
 
