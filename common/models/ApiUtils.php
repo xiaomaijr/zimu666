@@ -545,4 +545,79 @@ class ApiUtils
         $ip = (false !== ip2long($ip)) ? $ip : '0.0.0.0';
         return $ip;
     }
+    //参数过滤，防sql、js注入
+    public static function filter($params, $method = 'get'){
+        if(is_array($params)){
+            foreach($params as &$param){
+                self::filterSpecialChars($param);
+            }
+        }
+        return $params;
+    }
+    /**
+     * 字符串参数过滤：对单个或数组进行替换过滤
+     * 1、替换字符串中的'和\
+     * 2、检测js注入
+     * 3、检测sql注入
+     *
+     * @param string $string	被替换、过滤的字符串
+     * @param string $method	参数传递的方法
+     *
+     * @return string 替换后的字符串，或抛出异常
+     */
+    function filterSpecialChars($string, $method)
+    {
+        if (!is_array($string))
+        {
+            return self::filterSpecialChar($string, $method);
+        }
+        else
+        {
+            foreach ($string as $key => $value)
+            {
+                if($key !== '_URL_'){
+                    $ret[$key] = self::filterSpecialChars($value, $method);
+                }
+            }
+            return $ret;
+        }
+    }
+
+    /**
+     * 字符串参数过滤：仅针对单个字符串进行替换、过滤
+     * 1、替换字符串中的'和\
+     * 2、检测js注入
+     * 3、检测sql注入
+     *
+     * @param string $string	被替换、过滤的字符串
+     * @param string $method	参数传递的方法
+     *
+     * @return string 替换后的字符串，或抛出异常
+     */
+    function filterSpecialChar($string, $method = 'GET')
+    {
+        $string = get_magic_quotes_gpc() == 1 ? $string : addslashes($string);
+
+        $addon_filter = "^\\+\/v(8|9)|";
+        //		$filter = "\b(alert|confirm|prompt)\b|(<|%3C|%253C)\\s*(script|iframe|object)\\b|onerror|expression|onmouseover|onload|GARANT.+?ON|INSERT.+?INTO|(CREATE|DROP).+?TABLE|DELETE.+?FROM|UNION|SELECT|floor|ExtractValue|UpdateXml|UPDATE.+?SET|(ALTER|CREATE|DROP|TRUNCATE)\\s+(DATABASE|USER)";
+
+        $filter = "(<|%3C|%253C)\\s*(script|iframe|object)\\b";
+        $filter .= "|\b(alert|confirm|prompt|expression)\\s*\(|(onerror|onmouseover|onload)\\s*=";
+        $filter .= "|.+?\b(OR|AND)\b.+?|GARANT.+?ON|INSERT.+?INTO|(CREATE|DROP).+?TABLE|(SELECT|DELETE).+?FROM|\bORD|IFNULL|\b(SELECT|UNION|ExtractValue|UpdateXml|SLEEP)\b|UPDATE.+?SET|(ALTER|CREATE|DROP|TRUNCATE)\\s+(DATABASE|USER)";
+        if (strcasecmp($method, 'COOKIE') !== 0)
+        {
+            $filter = $addon_filter.$filter;
+        }
+
+        if (preg_match("/".$filter."/is", $string, $match))
+        {
+            if (preg_match("/".$filter."/is", $string, $match))
+            {
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '参数中含有非法字符，你的操作已被记入网监日志');
+            }
+        }
+
+        return $string;
+    }
+
 }

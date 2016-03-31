@@ -9,11 +9,16 @@
 namespace api\controllers;
 
 
+use common\models\ApiUtils;
 use common\models\Escrow;
 use common\models\EscrowAccount;
+use common\models\Logger;
 use common\models\MemberInfo;
+use common\models\MemberMoneylog;
+use common\models\MemberPayonline;
 use common\models\Members;
 use common\models\MembersStatus;
+use common\models\MessageConfig;
 use common\models\NameApply;
 use common\models\Notify;
 use yii\web\Controller;
@@ -84,7 +89,7 @@ class NotifyController extends Controller
                     'data_md5' => md5($_POST),
                     'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
                     'data' => json_encode($_POST),
-                    'type' => '绑定账号',
+                    'type' => '绑定账号' . $str,
                 ];
                 Notify::add($notifyData);
                 //用户状态
@@ -93,5 +98,66 @@ class NotifyController extends Controller
                 echo $str;exit;
             }
         }
+    }
+
+    /**
+     * 充值回调地址
+     *
+     */
+    public function charge(){
+        $loan = new Escrow();
+
+        //验证签名
+        $_POST = ApiUtils::filter($_POST);
+        $verify = $loan->chargeVerify($_POST);
+
+        //订单id
+        $orders = $_POST['OrderNo'];
+        $id = intval(substr($orders,12));
+        $info = array();
+
+        //更新回调状态
+        if($id > 0){
+            $info = $obj = MemberPayonline::findOne($id);
+            $obj->updateNotifyStatus();
+        }
+
+        //更新订单和金额，并返回结果
+        $str = 'ERROR';
+        if($verify && $_POST['ResultCode']=='88' && $info){
+            if($info['status']==1){
+                $str = 'SUCCESS';
+            }else{
+                $updata = array(
+                    'status'=>'1',
+                    'loan_no'=> $_POST['LoanNo'],
+                );
+                if(intval($_POST['Fee'])>0) {
+                    $realMoney = $_POST['Amount'] - $_POST['Fee'];
+                } else {
+                    $realMoney = $_POST['Amount'];
+                }
+                $moneyLogTabName = 'lzh_member_moneylog_' . intval($info['uid']%10);
+                $objMonLog = new MemberMoneylog(['tableName' => $moneyLogTabName]);
+                if($objMonLog->memberMoneyLog($info['uid'],3,$realMoney,"在线充值")) {
+                    MemberPayonline::updateAllCounters($updata, ['id' => $id]);//核实成功，
+                    MessageConfig::Notice(11, '',$info['uid'], ['real_money' => $realMoney]);
+                    $str = "SUCCESS";
+                }
+            }
+            $notifyData = [
+                'data_md5' => md5($_POST),
+                'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                'data' => json_encode($_POST),
+                'type' => '充值' . $str,
+            ];
+            Notify::add($notifyData);
+        }
+
+        //返回结果并记录日志
+        echo $str;
+        $log = sprintf('tag : charge_callback_notify | verify : %s | result : %s | post : %s', var_export($verify, true), $str, json_encode($_POST));
+        \Yii::$app->logging->debug($log);
+        exit;
     }
 }

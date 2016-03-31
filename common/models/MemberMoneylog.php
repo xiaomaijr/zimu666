@@ -252,4 +252,91 @@ class MemberMoneylog extends RedisActiveRecord
         }
         return ApiConfig::$moneyLogAffectTypeMap[$affectType];
     }
+
+    /*
+    * @param $uid
+    * @param $type
+    * @param $amoney
+    * @param string $info
+    * @param string $target_uid
+    * @param string $target_uname
+    * @param int $fee
+    * @param int $invest_id
+    * @return bool
+    *记录资金流水
+    */
+    public function memberMoneyLog($uid,$type,$amoney,$info="",$targetUid="",$targetUname="",$fee=0,$invest_id=0){
+        $amoney = floatval($amoney);
+        if(empty($amoney)) return false;
+
+        $done = false;
+        $memInfo = Members::get($uid);
+        $rewardMoney = ApiUtils::getFloatParam('reward_money', $memInfo);
+
+        $memberMoney = MemberMoney::getUserPlatformMoney($uid, 0);
+        $totalMoney = ApiUtils::getFloatParam('total_money', $memberMoney);
+        $collectMoney = ApiUtils::getFloatParam('collect_money', $memberMoney);
+        $freezeMoney = ApiUtils::getFloatParam('freeze_money', $memberMoney);
+        $backMoney = ApiUtils::getFloatParam('back_money', $memberMoney);
+
+        $typeSave = in_array($type,["71","72","73"])?7:$type;
+        if($targetUname=="" && $targetUid>0){
+            $tUser = Members::get($targetUid);
+            $tname = ApiUtils::getStrTime('user_name', $tUser);
+        }else{
+            $tname = $targetUname;
+        }
+        if($targetUid=="" && $targetUname==""){
+            $targetUid=0;
+            $tname = '@网站管理员@';
+        }
+        $db = \Yii::$app->getDb();
+        $transaction = $db->beginTransaction();
+        $data['uid'] = $uid;
+        $data['type'] = $typeSave;
+        $data['info'] = $info;
+        $data['target_uid'] = $targetUid;
+        $data['target_uname'] = $tname;
+        $data['add_time'] = time();
+        $data['add_ip'] = ApiUtils::get_client_ip();
+        $data['invest_id'] = $invest_id;
+        $data['platform'] = 0;
+        switch($type){
+            case 3: //充值
+                $data['affect_money'] = $amoney;
+                if(($totalMoney+$amoney)<0){
+                    $data['account_money'] = 0;
+                    $data['back_money'] = $totalMoney+$backMoney+$amoney;
+                }else{
+                    $data['account_money'] = $totalMoney+$amoney;
+                    $data['back_money'] = $backMoney;
+                }
+                $data['collect_money'] = $collectMoney;
+                $data['freeze_money'] = $freezeMoney;
+                break;
+        }
+
+        $newid = $this->add($data);
+        //帐户更新
+        $mmoney['money_freeze']=$data['freeze_money'];
+        $mmoney['money_collect']=$data['collect_money'];
+        $mmoney['account_money']=$data['account_money'];
+        $mmoney['back_money']=$data['back_money'];
+        //$mmoney['platform'] = 0;
+        $objMberMny = MemberMoney::find()->where(['uid'=>$uid,'platform'=>0])->one();
+        $objMberMny->attributes = $mmoney;
+        if($newid) $xid = $objMberMny->save();
+        //更新奖金
+        if(!empty($dd)){
+            Members::updateAll($dd, ['id' => $uid]);
+        }
+        //更新奖金结束
+        if($xid){
+            $done = true;
+            $transaction->commit();
+        }else{
+            $transaction->rollback();
+        }
+        return $done;
+    }
 }

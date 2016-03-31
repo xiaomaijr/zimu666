@@ -15,7 +15,7 @@ use Yii;
  * @property integer $num
  * @property string $type
  */
-class Notify extends \yii\db\ActiveRecord
+class Notify extends RedisActiveRecord
 {
     /**
      * @inheritdoc
@@ -52,5 +52,35 @@ class Notify extends \yii\db\ActiveRecord
             'num' => 'Num',
             'type' => 'Type',
         ];
+    }
+
+    public function insertEvent(){
+//        $cache = self::getCache();
+//        $cache->hDel(self::$tableName, 'id:' . $this->id);
+    }
+
+    public function updateEvent(){
+//        $cache = self::getCache();
+//        $cache->hDel(self::$tableName, 'id:' . $this->id);
+    }
+
+    public function deleteEvent(){
+//        $cache = self::getCache();
+//        $cache->hDel(self::$tableName, 'id:' . $this->id);
+    }
+    //添加新纪录
+    public static function add($attrs){
+        if(empty($attrs['data_md5'])){
+            return false;
+        }
+        if(!($obj = self::findOne(['data_md5' => $attrs['data_md5']]))){
+            $obj = new self;
+            $obj->num = 1;
+        }else{
+            $obj->num += 1;
+        }
+        $obj->attributes = $attrs;
+        $obj->addtime = time();
+        return $obj->save();
     }
 }

@@ -189,7 +189,7 @@ class Members extends RedisActiveRecord
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
         }
         $obj->user_pass =  md5('a2m'.$passwd .'1df');
-        if(!$obj->update()){
+        if($obj->update() === false){
             throw new ApiBaseException(ApiErrorDescs::ERR_RESET_PASSWD_FAIL);
         }
     }

@@ -73,6 +73,11 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'logging' => [
+            'class' => 'common\models\Logger',
+            'dir' => dirname(__DIR__) . '/../runtime/logs/',
+            'prefix' => 'api_',
+        ],
     ],
     'params' => $params,
 ];

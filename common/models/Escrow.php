@@ -198,7 +198,7 @@ class Escrow extends Component
         $data['Remark1'] = $Remark;
         $data['Remark2'] = '';
         $data['Remark3'] = '';
-        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') .'/member/Notice/chargeReturn';
+        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') .'/Notice/rechargeReturn';
         $data['NotifyURL'] = UrlConfig::getUrl('qdd_notify') . '/Notify/charge';
         $str = implode('',$data);
         if($this->antistate == 1){
@@ -210,5 +210,33 @@ class Escrow extends Component
         }
         $data['SignInfo']  = $this->rsa->sign($str);
         return $data;
+    }
+    /**
+     * 充值验证签名
+     * @param $data
+     * @return bool
+     */
+    public function chargeVerify($data){
+        $RechargeMoneymoremore = $data['RechargeMoneymoremore'];
+        $PlatformMoneymoremore = $data['PlatformMoneymoremore'];
+        $LoanNo = $data['LoanNo'];
+        $OrderNo = $data['OrderNo'];
+        $Amount = $data['Amount'];
+        $Fee = $data['Fee'];
+        $FeePlatform = $data['FeePlatform'];
+        $RechargeType = $data['RechargeType'];
+        $FeeType = $data['FeeType'];
+        $CardNoList = $data['CardNoList'];
+        $RandomTimeStamp = $data['RandomTimeStamp'];
+        $Remark1 = $data['Remark1'];
+        $Remark2 = $data['Remark2'];
+        $Remark3 = $data['Remark3'];
+        $ResultCode  = $data['ResultCode'];
+        $dataStr = $RechargeMoneymoremore.$PlatformMoneymoremore.$LoanNo.$OrderNo.$Amount.$Fee.$FeePlatform.$RechargeType.$FeeType.$CardNoList.$RandomTimeStamp.$Remark1.$Remark2.$Remark3.$ResultCode;
+        if($this->antistate == 1) {
+            $dataStr = strtoupper(md5($dataStr));
+        }
+        $SignInfo = $data['SignInfo'];
+        return  $this->rsa->verify($dataStr,$SignInfo);
     }
 }

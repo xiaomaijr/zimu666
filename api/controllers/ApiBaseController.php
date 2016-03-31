@@ -51,11 +51,12 @@ class ApiBaseController extends \yii\web\Controller
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
         header('Content-type: application/json');
         echo json_encode($result);
+        \Yii::$app->logging->error(__CLASS__ . '_' . __FUNCTION__ . json_encode($_REQUEST));
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
     }

@@ -105,17 +105,7 @@ class MemberMoney extends RedisActiveRecord
                 'expected_assets' => 0.00,
             ],
         ];
-        $cache = self::getCache();
-        $field = 'uid:' . $memberId;
-        if($cache->hExists(self::$tableName, $field)){
-            $ids = $cache->hGet(self::$tableName, $field);
-            $infos = self::gets($ids);
-        }else{
-            $infos = self::getDataByConditions(['uid' => $memberId]);
-            if(empty($infos)) return $data;
-            $ids = ApiUtils::getCols($infos, 'id');
-            $cache->hSet(self::$tableName, $field, $ids);
-        }
+        $infos = self::_getUserMoney($memberId);
         foreach($infos as $info){
             if($info['platform'] == 0){
                 $data['qdd'] = [
@@ -131,5 +121,62 @@ class MemberMoney extends RedisActiveRecord
         }
         $money = $data[$platform];
         return $money;
+    }
+    /*
+     * 获取用户相应平台资金池
+     * @param $uid int
+     * @param $platform int default 0 qdd, 1 yee
+     * return array
+     */
+    public static function getUserPlatformMoney($uid, $platform = 0){
+        $moneyAccount = self::_getUserMoney($uid);
+        if(!$moneyAccount){
+            return [];
+        }
+        foreach($moneyAccount as $record){
+            if($record['platform'] == $platform){
+                return $record;
+            }
+        }
+        return [];
+    }
+    /*
+     * 获取用户账户信息
+     */
+    private static function _getUserMoney($memberId){
+        $cache = self::getCache();
+        $field = 'uid:' . $memberId;
+        if($cache->hExists(self::$tableName, $field)){
+            $ids = $cache->hGet(self::$tableName, $field);
+            $infos = self::gets($ids);
+        }else{
+            $infos = self::getDataByConditions(['uid' => $memberId]);
+            if(empty($infos)) return $infos;
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->hSet(self::$tableName, $field, $ids);
+        }
+        return $infos;
+    }
+    /*
+     * 添加新纪录
+     */
+    public function add($attrs, $params = []){
+        $attributes = [
+            'uid' => ApiUtils::getIntParam('uid', $params),
+            'platform' => ApiUtils::getIntParam('platform', $params),
+            'withdraw_freeze' => ApiUtils::getFloatParam('withdraw_freeze', $params),
+            'credit_limit' => ApiUtils::getFloatParam('credit_limit', $params),
+            'credit_cuse' => ApiUtils::getFloatParam('credit_cuse', $params),
+            'borrow_vouch_limit' => ApiUtils::getFloatParam('borrow_vouch_limit', $params),
+            'borrow_vouch_cuse' => ApiUtils::getFloatParam('borrow_vouch_cuse', $params),
+            'invest_vouch_limit' => ApiUtils::getFloatParam('invest_vouch_limit', $params),
+            'invest_vouch_cuse' => ApiUtils::getFloatParam('invest_vouch_cuse', $params),
+        ];
+        $this->attributes = array_merge($attributes, $attrs);
+        $ret = $this->save();
+        if(!$ret){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '资金账户初始化失败');
+        }
+        return $this->id;
     }
 }

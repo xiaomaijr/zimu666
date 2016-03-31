@@ -65,23 +65,23 @@ class MessageConfig
     private static $notice = [
         'invest' => [
             'title' => '恭喜您投资#BORROW_ID#号项目#INVEST_MONEY#元成功！',
-            'content' => '恭喜您投资#BORROW_ID#号项目#INVEST_MONEY#元成功！',
+            'msg' => '恭喜您投资#BORROW_ID#号项目#INVEST_MONEY#元成功！',
         ],
         'recharge' => [
             'title' => '您刚刚成功充值#RECHARGE#元',
-            'content' => '您刚刚成功充值#RECHARGE#元，流水号#TRAND_NO#',
+            'msg' => '您刚刚成功充值#RECHARGE#元，流水号#TRAND_NO#',
         ],
         'withdraw' => [
             'title' => '您刚刚成功提现#WITHDRAW#元',
-            'content' => '您刚刚成功提现#WITHDRAW#元，如不是自己操作,请尽快联系客服',
+            'msg' => '您刚刚成功提现#WITHDRAW#元，如不是自己操作,请尽快联系客服',
         ],
         'changeAccount' => [
             'title' => '您刚刚修改了提现的银行帐户',
-            'content' => '您刚刚修改了提现的银行帐户,如不是自己操作,请尽快联系客服',
+            'msg' => '您刚刚修改了提现的银行帐户,如不是自己操作,请尽快联系客服',
         ],
         'modifyPwd' => [
             'title' => '您刚刚修改了登录密码',
-            'content' => '您刚刚修改了登录密码，如不是自己操作,请尽快联系客服',
+            'msg' => '您刚刚修改了登录密码，如不是自己操作,请尽快联系客服',
         ],
     ];
 
@@ -135,7 +135,8 @@ class MessageConfig
                 $message = self::_getMessageByKey('forgetpass');
                 $content = str_replace('#CODE#', $data['code'], $message);
                 $objPhoneSend = new PhonesmsLog();
-                $ret = $objPhoneSend->sendSms($phone, $content);
+//                $ret = $objPhoneSend->sendSms($phone, $content);
+                $ret = true;
                 $infos = [
                     'uid' => $userId,
                     'phone' => $phone,
@@ -222,6 +223,24 @@ class MessageConfig
                 $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
                 $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
                 return $objSubInMsg->add($contents);//分表
+            case 11://充值
+                $message = self::_getMessageByKey('payonline');
+                $content = $message['content'];
+                $content = str_replace( array( "#USERANEM#","#MONEY#" ), array( $user['user_name'],$data['real_money'] ), $content );
+                $phone = $user['user_phone'];
+                $objPhoneSend = new PhonesmsLog();
+                $ret = $objPhoneSend->sendSms($phone, $content);
+                $infos = [
+                    'uid' => $userId,
+                    'phone' => $phone,
+                    'contents' => $content,
+                    'sendtime' => time(),
+                    'desc'   => '',
+                    'types'  => $type,
+                    'stauts' => 1
+                ];
+                $objPhoneSend->saveSendMessageLog($infos);
+                return $ret;
         }
     }
     //获取短信信息

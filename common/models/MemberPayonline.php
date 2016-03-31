@@ -111,4 +111,13 @@ class MemberPayonline extends RedisActiveRecord
         }
         return $this->id;
     }
+    /*
+     * 更新回调状态
+     */
+    public function updateNotifyStatus(){
+        if($this->is_notify == 0){
+            $this->is_notify = 1;
+            return $this->update();
+        }
+    }
 }

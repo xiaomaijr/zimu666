@@ -353,8 +353,6 @@ class MemberController extends ApiBaseController
             $timer = new TimeUtils();
             $timer->start('param_check');
             ApiUtils::checkPhoneFormat($request['user_name']);
-            ApiUtils::checkPwd($request['first_passwd']);
-            ApiUtils::checkPwd($request['second_passwd']);
             if(strcmp($request['first_passwd'], $request['second_passwd']) != 0){
                 throw new ApiBaseException(ApiErrorDescs::ERR_FORGET_PASS_DIFF);
             }
@@ -385,7 +383,7 @@ class MemberController extends ApiBaseController
         header('Content-type: application/json');
         echo json_encode($result);
 
-        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        $this->logApi(__CLASS__, __FUNCTION__, $result, $request);
         \Yii::$app->end();
     }
 
