@@ -54,6 +54,10 @@ class BorrowInvest extends RedisActiveRecord
 
     public static $tableName = 'lzh_borrow_invest';
 
+    public function setTableName($tableName){
+        self::$tableName = $tableName;
+    }
+
     /**
      * @inheritdoc
      */

@@ -155,7 +155,7 @@ class BorrowInvestor extends BorrowInvest
         $data = [];
         $field = 'borrow_id:' . $borrowId;
         $cache = self::getCache();
-        if(!$cache->hExists(self::$tableName, $field)){
+        if($cache->hExists(self::$tableName, $field)){
             $ids = $cache->hGet(self::$tableName, $field);
             $infos = self::gets($ids);
         }else{

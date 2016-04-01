@@ -231,7 +231,7 @@ class BorrowInfo extends RedisActiveRecord
         if(empty($info)){
             throw new ApiBaseException(ApiErrorDescs::ERR_BORROW_DATA_NOT_EXIST);
         }
-        $objInvest = new BorrowInvest(['tableName' => 'lzh_borrow_investor_' . $id%3]);
+        $objInvest = new BorrowInvestor(['tableName' => 'lzh_borrow_investor_' . $id%3]);
         $investInfo = $objInvest->getInvestPersonAndMoneyTotal($id);
         $data = self::toApiArr($info);
         $data['person_count'] = ApiUtils::getIntParam('c', $investInfo);

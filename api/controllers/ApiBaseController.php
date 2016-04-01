@@ -31,6 +31,7 @@ class ApiBaseController extends \yii\web\Controller
             $this->timeStart = microtime(true) * 1000;
             $strControllerId = $action->controller->id;
             $strActionId = $action->id;
+            \Yii::$app->logging->trace($strControllerId . '/' . $strActionId . json_encode($_REQUEST));
             $checkNeed = isset(ApiConfig::$arrNoNeedCheckApiSign[$strControllerId][$strActionId]);
             if(parent::beforeAction($action)){
                 //做参数校验

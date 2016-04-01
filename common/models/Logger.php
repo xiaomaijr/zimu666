@@ -51,7 +51,7 @@ class Logger extends Component
                 break;
         }
 
-        $now = date('Y-n-j H:i:s');
+        $now = date('Y-m-d H:i:s');
         $record = sprintf("%s %s# %s\n", $level_str, $now, $message);
         error_log($record, 3, $this->_file);
 

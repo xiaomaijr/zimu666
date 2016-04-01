@@ -78,8 +78,8 @@ class EscrowController extends UserBaseController
             $money = ApiUtils::getFloatParam('money', $request);
             $timer = new TimeUtils();
 
-            if($money <= 0){
-                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '充值金额不能小于0元');
+            if($money < 100){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '充值金额不能小于100元');
             }
 
             $timer->start('user_third_bind');

@@ -22,7 +22,9 @@ use common\models\TimeUtils;
 
 class BorrowController extends ApiBaseController
 {
-    //标详情页
+    /*
+     * 标详情页
+     */
     public function actionDetail(){
         try{
             $request = $_REQUEST;
@@ -71,7 +73,9 @@ class BorrowController extends ApiBaseController
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
     }
-    //投标信息验证
+    /*
+     * 投标信息验证
+     */
     public function actionInvestCheck(){
         try{
             $request = $_REQUEST;
@@ -132,7 +136,9 @@ class BorrowController extends ApiBaseController
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
     }
-    //投标
+    /*
+     * 投标
+     */
     public function actionInvest(){
         try{
             $request = $_REQUEST;
