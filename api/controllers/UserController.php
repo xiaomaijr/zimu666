@@ -15,6 +15,7 @@ use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\BorrowInvest;
 use common\models\EscrowAccount;
+use common\models\Feedback;
 use common\models\InnerMsg;
 use common\models\MemberBanks;
 use common\models\MemberInfo;
@@ -264,6 +265,46 @@ class UserController extends UserBaseController
                 'result'  => $data
             ];
 
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+     * 用户反馈
+     */
+    public function actionFeedback(){
+        try{
+            $request = $_REQUEST;
+            $mobile = ApiUtils::getStrParam('mobile', $request);
+            ApiUtils::checkPhoneFormat($mobile);
+            $msg = ApiUtils::getStrParam('msg', $request);
+            if(ApiUtils::getStrLen($msg) > 100){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '反馈内容不能超过100字');
+            }
+            ApiUtils::filterSpecialChar($msg);
+            $timer = new TimeUtils();
+
+            $timer->start('add_feedback');
+            $attrs = [
+                'mobile' => $mobile,
+                'msg' => $msg,
+            ];
+            $objFback = new Feedback();
+            $objFback->add($attrs);
+            $timer->stop('add_feedback');
+
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+            ];
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

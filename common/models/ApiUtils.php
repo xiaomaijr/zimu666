@@ -565,7 +565,7 @@ class ApiUtils
      *
      * @return string 替换后的字符串，或抛出异常
      */
-    function filterSpecialChars($string, $method)
+    public static function filterSpecialChars($string, $method)
     {
         if (!is_array($string))
         {
@@ -594,7 +594,7 @@ class ApiUtils
      *
      * @return string 替换后的字符串，或抛出异常
      */
-    function filterSpecialChar($string, $method = 'GET')
+    public static function filterSpecialChar($string, $method = 'GET')
     {
         $string = get_magic_quotes_gpc() == 1 ? $string : addslashes($string);
 
@@ -611,13 +611,22 @@ class ApiUtils
 
         if (preg_match("/".$filter."/is", $string, $match))
         {
-            if (preg_match("/".$filter."/is", $string, $match))
-            {
-                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '参数中含有非法字符，你的操作已被记入网监日志');
-            }
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '参数中含有非法字符，你的操作已被记入网监日志');
         }
 
         return $string;
     }
 
+    /*
+     * 统计字符串长度
+     */
+    public static function getStrLen($str){
+        if(function_exists('mb_strlen')){
+            return mb_strlen($str, 'utf-8');
+        }elseif(function_exists('iconv_strlen')){
+            return iconv_strlen($str);
+        }else{
+            return strlen($str);
+        }
+    }
 }
