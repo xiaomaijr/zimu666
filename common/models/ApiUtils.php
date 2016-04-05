@@ -521,6 +521,13 @@ class ApiUtils
         return date("Y-m-d H:i:s");
     }
     /*
+     * 获取年月日
+     */
+    public static function getDateByUnix($unixTime = 0){
+        $unixTime = $unixTime?$unixTime:time();
+        return date("Y-m-d");
+    }
+    /*
      * replace by ****
      */
     public static function replaceByLength($str, $length, $start, $end, $replace = "*"){

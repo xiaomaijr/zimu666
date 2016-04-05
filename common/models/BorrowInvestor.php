@@ -178,7 +178,7 @@ class BorrowInvestor extends BorrowInvest
      */
     private static function toApiArr($arr){
         return [
-            'add_time' => ApiUtils::getStrTimeByUnix($arr['add_time']),
+            'add_time' => ApiUtils::getDateByUnix($arr['add_time']),
             'money' => ApiUtils::getFloatParam('investor_capital', $arr),
             'invest_type' => '手动',
         ];

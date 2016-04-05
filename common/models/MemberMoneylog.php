@@ -269,7 +269,6 @@ class MemberMoneylog extends RedisActiveRecord
         $amoney = floatval($amoney);
         if(empty($amoney)) return false;
 
-        $done = false;
         $memInfo = Members::get($uid);
         $rewardMoney = ApiUtils::getFloatParam('reward_money', $memInfo);
 
@@ -290,8 +289,7 @@ class MemberMoneylog extends RedisActiveRecord
             $targetUid=0;
             $tname = '@网站管理员@';
         }
-        $db = \Yii::$app->getDb();
-        $transaction = $db->beginTransaction();
+
         $data['uid'] = $uid;
         $data['type'] = $typeSave;
         $data['info'] = $info;
@@ -317,26 +315,21 @@ class MemberMoneylog extends RedisActiveRecord
         }
 
         $newid = $this->add($data);
+        if(!$newid){
+            throw new ApiBaseException(ApiErrorDescs::ERR_RECHARGE_MMLOG_ADD_FAIL);
+        }
         //帐户更新
         $mmoney['money_freeze']=$data['freeze_money'];
         $mmoney['money_collect']=$data['collect_money'];
         $mmoney['account_money']=$data['account_money'];
         $mmoney['back_money']=$data['back_money'];
         //$mmoney['platform'] = 0;
-        $objMberMny = MemberMoney::find()->where(['uid'=>$uid,'platform'=>0])->one();
-        $objMberMny->attributes = $mmoney;
-        if($newid) $xid = $objMberMny->save();
+        if(!MemberMoney::updateAll($mmoney, ['uid'=>$uid,'platform'=>0])){
+            throw new ApiBaseException(ApiErrorDescs::ERR_RECHARGE_NOTIFY_FAIL);
+        }
         //更新奖金
         if(!empty($dd)){
             Members::updateAll($dd, ['id' => $uid]);
         }
-        //更新奖金结束
-        if($xid){
-            $done = true;
-            $transaction->commit();
-        }else{
-            $transaction->rollback();
-        }
-        return $done;
     }
 }

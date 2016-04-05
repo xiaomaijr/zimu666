@@ -198,8 +198,8 @@ class Escrow extends Component
         $data['Remark1'] = $Remark;
         $data['Remark2'] = '';
         $data['Remark3'] = '';
-        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') .'/Notice/rechargeReturn';
-        $data['NotifyURL'] = UrlConfig::getUrl('qdd_notify') . '/Notify/charge';
+        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') . '/notice/recharge-return';
+        $data['NotifyURL'] = UrlConfig::getUrl('qdd_notify') . '/notify/charge';
         $str = implode('',$data);
         if($this->antistate == 1){
             $str = strtoupper(md5($str));

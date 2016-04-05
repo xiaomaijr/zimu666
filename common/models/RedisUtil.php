@@ -11,11 +11,13 @@ namespace common\models;
 
 use yii\base\Component;
 
-class RedisUtil extends Component
+class RedisUtil 
 {
     private $redis;
+    
+    private static $instance;
 
-    public function __construct(){
+    private function __construct(){
         $config = \Yii::$app->redis;
         try{
             $this->redis = new \Redis();
@@ -28,9 +30,14 @@ class RedisUtil extends Component
             exit;
         }
     }
-
-    public function getRedis(){
-        return $this->redis;
+    
+    public static function getRedis(){
+        if(self::$instance instanceof self){
+            return self::$instance;
+        }else{
+            self::$instance = new self;
+            return self::$instance;
+        }
     }
 
     public function hSet($key, $field, $value){
@@ -48,5 +55,25 @@ class RedisUtil extends Component
 
     public function hExists($key, $field){
         return $this->redis->hExists($key, $field);
+    }
+
+    public function lPush($key, $val){
+        return $this->redis->lPush($key, $val);
+    }
+
+    public function lLen($key){
+        return $this->redis->lLen($key);
+    }
+
+    public function lPop($key){
+        return $this->redis->lPop($key);
+    }
+
+    public function rPush($key, $val){
+        return $this->redis->rPush($key, $val);
+    }
+
+    public function rPop($key){
+        return $this->redis->rPop($key);
     }
 }

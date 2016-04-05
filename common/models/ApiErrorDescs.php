@@ -72,6 +72,9 @@ class ApiErrorDescs
     const ERR_QDD_REGISTER_FAIL = 4002;//钱多多开户失败
     const ERR_USER_UNBIND_THIRD_PAY = 4003;//未绑定第三方支付
     const ERR_RECHARGE_ADD_ORDER_FAIL = 4004;//充值订单添加失败
+    const ERR_RECHARGE_NOTIFY_FAIL = 4005;//充值回调更新mmoney失败
+    const ERR_RECHARGE_MMLOG_ADD_FAIL = 4006;//充值回调添加mmlog失败
+    const ERR_RECHARGE_NOTIFY_PAYLINE_UPDATE_FAIL = 4007;//充值回调更新payline失败
 
 
 
@@ -142,6 +145,9 @@ class ApiErrorDescs
         self::ERR_QDD_REGISTER_FAIL => '钱多多开户失败',
         self::ERR_USER_UNBIND_THIRD_PAY => '未绑定第三方支付',
         self::ERR_RECHARGE_ADD_ORDER_FAIL => '充值订单添加失败',
+        self::ERR_RECHARGE_NOTIFY_FAIL => '充值回调更新mmoney失败',
+        self::ERR_RECHARGE_MMLOG_ADD_FAIL => '充值回调添加mmlog失败',
+        self::ERR_RECHARGE_NOTIFY_PAYLINE_UPDATE_FAIL => '充值回调更新payline失败',
 
     ];
 

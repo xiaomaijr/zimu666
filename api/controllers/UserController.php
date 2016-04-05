@@ -242,10 +242,6 @@ class UserController extends UserBaseController
         try{
             $request = $_REQUEST;
             $timer = new TimeUtils();
-            //检查用户登录信息
-            $timer->start('check_access_token');
-//            $this->checkAccessToken($request['access_token'], $request['user_id']);
-            $timer->stop('check_access_token');
             //获取用户资金
             $timer->start('get_mm_money');
             $data = MemberMoney::getUserMoney($request['user_id']);
@@ -305,6 +301,31 @@ class UserController extends UserBaseController
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
             ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+     * 修改用户名
+     */
+    public function actionModifyUserName(){
+        try{
+            $request = $_REQUEST;
+            $userName = ApiUtils::getStrParam('user_name', $request);
+            $userId = ApiUtils::getIntParam('user_id', $request);
+
+            $timer = new TimeUtils();
+            $timer->start('modify_user_name');
+
+            $timer->stop('modify_user_name');
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

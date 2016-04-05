@@ -22,7 +22,7 @@ abstract class RedisActiveRecord extends ActiveRecord
     public static function getCache()
     {
         if (null == self::$cache) {
-            self::$cache = new RedisUtil();
+            self::$cache = RedisUtil::getRedis();
         }
         return self::$cache;
     }
