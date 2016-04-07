@@ -154,6 +154,7 @@ class UserController extends UserBaseController
             //用户信息
             $timer->start('user_info');
             $userInfo = MemberInfo::get($userId);
+            $userInfo['real_name'] = '*' . mb_substr($userInfo['real_name'], 1, -1, 'utf-8');
             $timer->stop('user_info');
 
             $result = [
@@ -255,6 +256,10 @@ class UserController extends UserBaseController
             $escrow = EscrowAccount::getUserBindInfo($request['user_id']);
             $data['escrow'] = $escrow['yeeBind'] | $escrow['qddBind'];
             $timer->stop('escrow_account');
+            //是否绑定银行卡
+            $timer->start('bind_bank');
+            $data['bank'] = MemberBanks::getListByUid($request['user_id'])?1:0;
+            $timer->stop('bind_bank');
             $result = [
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',

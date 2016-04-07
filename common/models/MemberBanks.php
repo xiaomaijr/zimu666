@@ -48,7 +48,7 @@ class MemberBanks extends RedisActiveRecord
     public function rules()
     {
         return [
-            [['uid', 'bank_num', 'bank_province', 'bank_city', 'bank_address', 'bank_name', 'add_time', 'add_ip'], 'required'],
+            [['uid', 'bank_num', 'bank_province', 'bank_city', 'bank_name', 'add_time', 'add_ip'], 'required'],
             [['uid', 'add_time', 'status', 'platform'], 'integer'],
             [['bank_num', 'bank_name'], 'string', 'max' => 50],
             [['bank_province', 'bank_city', 'factor'], 'string', 'max' => 20],
@@ -185,6 +185,7 @@ class MemberBanks extends RedisActiveRecord
     private static function getBankNum($bankNum, $factor){
         $decodeBankNum = self::decode($bankNum, $factor);
         $len = strlen($decodeBankNum) - 8;
+        $len = $len > 0?$len:0;
         return substr_replace($decodeBankNum, str_repeat('*', $len), 4, -4);
     }
     /*
