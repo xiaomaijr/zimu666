@@ -179,4 +179,104 @@ class MemberMoney extends RedisActiveRecord
         }
         return $this->id;
     }
+    /**
+     * @param $uid
+     * @param $type
+     * @param $realMoney
+     * @param $info
+     *
+     */
+    public function setUserWithdrawMoneyInfo($uid, $realMoney,$info='用户提现'){
+        if(empty($uid) || empty($realMoney)){
+            return false;
+        }
+        $MM = self::getUserPlatformMoney($uid);
+        if(empty($MM) || !is_array($MM)){
+            $mmoneyId = $this->add(['uid'=>$uid,'platform'=>0]);
+            $MM = self::getUserPlatformMoney($uid);
+        }
+        $tableEnd = intval($uid%10);
+        $Moneylog = new MemberMoneylog(['tableName' => 'member_moneylog_'.$tableEnd]);
+        $money = [
+            'total_money'    => $MM['total_money']-$realMoney,
+            'withdraw_money' => $MM['withdraw_money']+$realMoney,
+        ];
+        $moneylog = [
+            'uid'      =>  $uid,
+            'platform' =>  0,
+            'type'     =>  MemberMoneylog::WITHDRAW_MONEY_SUCCESS,
+
+            'affect_money'  => 0-$realMoney,
+            'affect_type'   => MemberMoneylog::AFFECT_WITHDRAW_OK,
+            'affect_before' => $MM['total_money'],
+
+            'total_money'   => $MM['total_money']-$realMoney,
+            'charge_money'  => $MM['charge_money'],
+            'invest_money'  => $MM['invest_money'],
+            'withdraw_money'=> $MM['withdraw_money']+$realMoney,
+            'back_money'    => $MM['back_money'],
+            'collect_money' => $MM['collect_money'],
+            'freeze_money'  => $MM['freeze_money'],
+
+            'info' => $info,
+            'add_time' => time(),
+            'add_ip' => ApiUtils::get_client_ip(),
+            'target_uid' => 0,
+            'target_uname' => '在线提现',
+        ];
+        MemberMoney::updateAll($money, ['id' => $mmoneyId]);
+        $Moneylog->add($moneylog);
+        return true;
+    }
+
+
+    /**
+     * @param $uid
+     * @param $type
+     * @param $realMoney
+     * @param $info
+     *
+     */
+    public function setUserWithdrawRollMoneyInfo($uid, $realMoney,$info='用户提现退回'){
+        if(empty($uid) || empty($realMoney)){
+            return false;
+        }
+        $MM = self::getUserPlatformMoney($uid);
+        if(empty($MM) || !is_array($MM)){
+            $mmoneyId = $this->add(['uid'=>$uid,'platform'=>0]);
+            $MM = self::getUserPlatformMoney($uid);
+        }
+        $tableEnd = intval($uid%10);
+        $Moneylog = new MemberMoneylog(['tableName' => 'member_moneylog_'.$tableEnd]);
+        $money = [
+            'total_money'    => $MM['total_money']+$realMoney,
+            'withdraw_money' => $MM['withdraw_money']-$realMoney,
+        ];
+        $moneylog = [
+            'uid'      =>  $uid,
+            'platform' =>  0,
+            'type'     =>  MemberMoneylog::WITHDRAW_MONEY_ROLLBACK,
+
+            'affect_money'  => $realMoney,
+            'affect_type'   => 5,
+            'affect_before' =>  MemberMoneylog::AFFECT_WITHDRAW_NO,
+
+            'total_money'   => $MM['total_money']+$realMoney,
+            'charge_money'  => $MM['charge_money'],
+            'invest_money'  => $MM['invest_money'],
+            'withdraw_money'=> $MM['withdraw_money']-$realMoney,
+            'back_money'    => $MM['back_money'],
+            'collect_money' => $MM['collect_money'],
+            'freeze_money'  => $MM['freeze_money'],
+
+            'info' => $info,
+            'add_time' => time(),
+            'add_ip' => ApiUtils::get_client_ip(),
+            'target_uid' => 0,
+            'target_uname' => '在线提现退回',
+        ];
+        MemberMoney::updateAll($money, ['id' => $mmoneyId]);
+        $Moneylog->add($moneylog);
+        return true;
+    }
 }

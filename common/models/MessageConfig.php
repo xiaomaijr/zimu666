@@ -72,8 +72,12 @@ class MessageConfig
             'msg' => '您刚刚成功充值#RECHARGE#元，流水号#TRAND_NO#',
         ],
         'withdraw' => [
-            'title' => '您刚刚成功提现#WITHDRAW#元',
-            'msg' => '您刚刚成功提现#WITHDRAW#元，如不是自己操作,请尽快联系客服',
+            'title' => '您在小麦金融申请了提现',
+            'msg' => '您刚刚申请了提现,申请提现金额:￥#AMOUNT#,扣除手续费:￥#FEE#,实际提现金额:￥#INCOMEAMOUNT#,请等待银行放款!',
+        ],
+        'withdraw_refuse' => [
+            'title' => '您在小麦金融申请了提现',
+            'msg' => '您申请的提现被银行退回,退回金额:￥#AMOUNT#,请核对您的提现银行卡信息后再重新申请提现!',
         ],
         'changeAccount' => [
             'title' => '您刚刚修改了提现的银行帐户',
@@ -185,13 +189,13 @@ class MessageConfig
                 $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
                 return $objSubInMsg->add($contents);//分表
             case 5 : //提现成功
-                if(empty($data['withdraw'])){
+                if(!isset($data['withdraw_money']) || !isset($data['fee'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_WITHDRAW_MONEY_EMPTY);
                 }
-                $notice = self::_getNoticeByKey('recharge');
+                $notice = self::_getNoticeByKey('withdraw');
                 $contents = [
-                    'title' => str_replace('#WITHDRAW#', $data['withdraw_money'], $notice['title']),
-                    'msg' => str_replace('#WITHDRAW#', $data['withdraw_money'], $notice['msg']),
+                    'title' => $notice['title'],
+                    'msg' => str_replace(['#AMOUNT#', '#FEE#', '#INCOMEAMOUNT#'], [$data['withdraw_money'], $data['fee'], $data['withdraw_money'] - $data['fee']], $notice['msg']),
                     'uid' => $userId
                 ];
                 $objInMsg = new InnerMsg();
@@ -245,6 +249,21 @@ class MessageConfig
                 ];
                 $objPhoneSend->saveSendMessageLog($infos);
                 return $ret;
+            case 9 ://提现退回
+                if(!isset($data['withdraw_money'])){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_WITHDRAW_MONEY_EMPTY);
+                }
+                $notice = self::_getNoticeByKey('withdraw');
+                $contents = [
+                    'title' => $notice['title'],
+                    'msg' => str_replace('#AMOUNT#', $data['withdraw_money'], $notice['msg']),
+                    'uid' => $userId
+                ];
+                $objInMsg = new InnerMsg();
+                $objInMsg->add($contents);//总表
+                $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
+                $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
+                return $objSubInMsg->add($contents);//分表
             case 11://充值
                 $message = self::_getMessageByKey('payonline');
                 $content = $message['content'];

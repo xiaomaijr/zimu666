@@ -257,8 +257,6 @@ class Escrow extends Component
      *
      */
     public function withdraw($arr){
-
-
         $arr['PlatformMoneymoremore'] = $this->platFormMoneyMoremore;  // 平台乾多多标识
         $dataStr = [
             'WithdrawMoneymoremore',
@@ -281,7 +279,7 @@ class Escrow extends Component
         ];
         $str = '';
         foreach($dataStr as $v){
-            $str .= isset($arr[$v])?"$arr[$v]":"";
+            $str .= isset($arr[$v])?"$arr[$v]":'""';
         }
         if($this->antistate == 1) {
             $str = strtoupper(md5($str));
@@ -289,5 +287,23 @@ class Escrow extends Component
         $arr['SignInfo'] = $this->rsa->sign($str);
         $arr['CardNo'] = $this->rsa->encrypt($arr['CardNo']);
         return $arr;
+    }
+
+    /*
+     * 提现回调验证签名
+     * @return bool
+     */
+    public function withdrawVerify($data){
+        $dataStr = '';
+        $tempArr = ['WithdrawMoneymoremore', 'PlatformMoneymoremore', 'LoanNo', 'OrderNo', 'Amount', 'FeeMax', 'FeeWithdraws', 'FeePercent', 'Fee', 'FreeLimit', 'FeeRate', 'FeeSplitting', 'RandomTimeStamp', 'Remark1', 'Remark2', 'Remark3', 'ResultCode'];
+        foreach($tempArr as $val){
+            $dataStr .= isset($data[$val])?$data[$val]:'';
+        }
+        $SignInfo = $data['SignInfo'];
+        if($this->antistate == 1) {
+            $dataStr = strtoupper(md5($dataStr));
+        }
+        $verifySignature = $this->rsa->verify($dataStr,$SignInfo);
+        return $verifySignature;
     }
 }
