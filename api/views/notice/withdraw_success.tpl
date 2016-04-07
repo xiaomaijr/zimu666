@@ -5,7 +5,7 @@
     <meta name="viewport" charset="UTF-8" content="user-scalable=no"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <script src="/assets/js/jquery-1.8.3.min.js"></script>
-    <title>充值失败</title>
+    <title>充值成功</title>
     <style>
         @charset "utf-8";
         /* CSS Document */
@@ -37,7 +37,6 @@
         .demandScc dt{float:left;margin-left:15%;width:4rem;}
         .demandScc dt img{width:4rem;height:4rem;}
         .demandScc dd{float:left;margin-left:1rem;line-height:5rem;font-size:1.5rem;color:#242424;}
-
     </style>
 </head>
 <body>
@@ -49,12 +48,12 @@
         </article>
         <article class="contact">
             <dl class="demandScc cf">
-                <dt><img src="/assets/img/notice/y_fail.gif" alt="充值失败"/></dt>
-                <dd>充值失败!参数有误, 异常编码：<{$resultCode|default:''}></dd>
+                <dt><img src="/assets/img/notice/y_suc.gif" alt="提现申请成功"/></dt>
+                <dd>提现申请成功，请等待银行处理!</dd>
             </dl>
         </article>
     </section>
-    <footer><a href="xiaomai://recharge">点击返回APP</a></footer>
+    <footer><a href="xiaomai://withdraw">点击返回APP</a></footer>
 </div>
 
 </body>
@@ -63,7 +62,7 @@
 <script>
     $(function(){
         var time = setTimeout(function(){
-            window.location.href = "xiaomai://recharge";
+            window.location.href = "xiaomai://withdraw";
         },5000)
     })
 </script>

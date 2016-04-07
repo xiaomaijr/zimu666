@@ -65,6 +65,9 @@ class ApiErrorDescs
     const ERR_OLD_BANK_NUM_INPUT_ERR = 3002;//旧银行卡号输入错误
     const ERR_BANK_NUM_NOT_REPEAT = 3003;//银行卡号不能重复绑定
     const ERR_BANK_BIND_FAIL = 3004;//绑定银行卡失败
+    const ERR_USER_UNBIND_BANK = 3005;//未绑定银行卡
+    const ERR_USER_MONEY_NOT_ENOUGH = 3006;//可用余额不足提现
+    const ERR_WITHDRAW_ADD_FAIL = 3007;//提现记录添加失败
 
     //4000-5000第三方错误
     const ERR_ALREADY_REGISTER_QDD = 4000;//用户已注册钱多多
@@ -139,6 +142,9 @@ class ApiErrorDescs
         self::ERR_OLD_BANK_NUM_INPUT_ERR => '旧银行卡号输入错误',
         self::ERR_BANK_NUM_NOT_REPEAT => '银行卡不能重复绑定',
         self::ERR_BANK_BIND_FAIL => '绑定银行卡失败',
+        self::ERR_USER_UNBIND_BANK => '用户未绑定银行卡',
+        self::ERR_USER_MONEY_NOT_ENOUGH => '可用余额不足提现',
+        self::ERR_WITHDRAW_ADD_FAIL => '提现记录添加失败',
         //4000-5000第三方错误
         self::ERR_ALREADY_REGISTER_QDD => '用户已注册钱多多',
         self::ERR_QDD_REGISTER_PARAMS_ERR => '钱多多开户参数有误',

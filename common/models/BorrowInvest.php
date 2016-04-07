@@ -149,16 +149,7 @@ class BorrowInvest extends RedisActiveRecord
      */
     public static function getTotalIncomeByInvestId($investUid){
         $income = 0;
-        $cache = self::getCache();
-        if($cache->hExists(self::$tableName, 'investor_uid:' . $investUid)){
-            $ids = $cache->hget(self::$tableName, 'investor_uid:' . $investUid);
-            $incomeInfos = self::gets($ids);
-        }else{
-            $incomeInfos = self::getDataByConditions(['investor_uid' => intval($investUid), "loanno != ''"], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);
-            if(empty($incomeInfos)) return $income;
-            $ids = ApiUtils::getCols($incomeInfos, 'id');
-            $cache->hset(self::$tableName, 'investor_uid:' . $investUid, $ids);
-        }
+        $incomeInfos = self::_getUserInvestInfo($investUid);
         $tmp = [];
         foreach($incomeInfos as $info){
             $diffDay = ApiUtils::getDiffDay($info['add_time'], time());
@@ -185,5 +176,33 @@ class BorrowInvest extends RedisActiveRecord
             throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_RECORD_ADD_FAIL);
         }
         return $this->id;
+    }
+    /*
+     * 获取用户投资记录
+     */
+    private static function _getUserInvestInfo($investUid){
+        $cache = self::getCache();
+        if($cache->hExists(self::$tableName, 'investor_uid:' . $investUid)){
+            $ids = $cache->hget(self::$tableName, 'investor_uid:' . $investUid);
+            $incomeInfos = self::gets($ids);
+        }else{
+            $incomeInfos = self::getDataByConditions(['investor_uid' => intval($investUid), "loanno != ''"], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);
+            if(empty($incomeInfos)) return $incomeInfos;
+            $ids = ApiUtils::getCols($incomeInfos, 'id');
+            $cache->hset(self::$tableName, 'investor_uid:' . $investUid, $ids);
+        }
+        return $incomeInfos;
+    }
+    /*
+     * 获取用户总投资额
+     */
+    public static function getInvestTotal($userId){
+        $investInfos = self::_getUserInvestInfo($userId);
+        $total = 0;
+        if(!$investInfos) return $total;
+        foreach($investInfos as $info){
+            $total += $info['investor_capital'];
+        }
+        return $total;
     }
 }

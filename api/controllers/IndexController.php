@@ -84,8 +84,8 @@ class IndexController extends ApiBaseController
     {
 //        $obj = MemberPayonline::findOne(5358);
 //        $obj->updateNotifyStatus();
-        echo md5('api_ver=1app_name=小麦金融app_ver=1.0.0channel=豌豆荚key=registermobile_type=androidXIAOMAI_API_SIGN_SECRET');
-        \Yii::$app->logging->debug(__CLASS__ . '_' . __FUNCTION__ . json_encode($_REQUEST));
+        echo md5('zx123456');
+//        \Yii::$app->logging->debug(__CLASS__ . '_' . __FUNCTION__ . json_encode($_REQUEST));
         exit;
     }
 }

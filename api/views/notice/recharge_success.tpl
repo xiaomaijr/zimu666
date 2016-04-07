@@ -53,7 +53,7 @@
             </dl>
         </article>
     </section>
-    <footer><a href="xiaomai://recharge">www.xiaomaijr.com</a></footer>
+    <footer><a href="xiaomai://recharge">点击返回APP</a></footer>
 </div>
 
 </body>

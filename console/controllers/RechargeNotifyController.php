@@ -50,12 +50,12 @@ class RechargeNotifyController extends Controller
                 if(!MemberPayonline::updateAll($updata, ['id' => $id])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_RECHARGE_NOTIFY_PAYLINE_UPDATE_FAIL);
                 }//核实成功，
+                $transaction->commit();
                 MessageConfig::Notice(11, '',$info['uid'], ['real_money' => $realMoney]);
                 $str = "SUCCESS";
             }
         }catch(ApiBaseException $e){
             $transaction->rollback();
-            RedisUtil::getRedis()->lPush('rechargeNotifyList', json_encode($data));
         }
     }
 }

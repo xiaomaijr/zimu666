@@ -49,12 +49,12 @@
         </article>
         <article class="contact">
             <dl class="demandScc cf">
-                <dt><img src="/assets/img/notice/y_fail.gif" alt="充值失败"/></dt>
-                <dd>充值失败!参数有误, 异常编码：<{$resultCode|default:''}></dd>
+                <dt><img src="/assets/img/notice/y_fail.gif" alt="提现失败"/></dt>
+                <dd>提现失败!参数有误, 异常编码：<{$resultCode|default:''}></dd>
             </dl>
         </article>
     </section>
-    <footer><a href="xiaomai://recharge">点击返回APP</a></footer>
+    <footer><a href="xiaomai://withdraw">点击返回APP</a></footer>
 </div>
 
 </body>
@@ -63,7 +63,7 @@
 <script>
     $(function(){
         var time = setTimeout(function(){
-            window.location.href = "xiaomai://recharge";
+            window.location.href = "xiaomai://withdraw";
         },5000)
     })
 </script>

@@ -198,7 +198,8 @@ class Escrow extends Component
         $data['Remark1'] = $Remark;
         $data['Remark2'] = '';
         $data['Remark3'] = '';
-        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') . '/notice/recharge-return';
+//        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') . '/notice/recharge-return';
+        $data['ReturnURL'] = 'http://192.168.101.198/notice/recharge-return';
         $data['NotifyURL'] = UrlConfig::getUrl('qdd_notify') . '/notify/charge';
         $str = implode('',$data);
         if($this->antistate == 1){
@@ -238,5 +239,55 @@ class Escrow extends Component
         }
         $SignInfo = $data['SignInfo'];
         return  $this->rsa->verify($dataStr,$SignInfo);
+    }
+    /**
+     ***提现
+     *
+     * @param string $WithdrawMoneymoremore  提现人
+     * @param string $OrderNo 订单号
+     * @param string $CardNo  卡号
+     * @param string $CardType 卡类型
+     * @param string $BankCode 银行代码
+     * @param string $BranchBankName 开户行名称
+     * @param string $Province 开户行省份
+     * @param string $city  开户行城市
+     * @param string $FeePercent 平台承担手续费比例
+     * @param string $Amount  提现金额
+     * @param string $PlatformMoneymoremore = "p67";
+     *
+     */
+    public function withdraw($arr){
+
+
+        $arr['PlatformMoneymoremore'] = $this->platFormMoneyMoremore;  // 平台乾多多标识
+        $dataStr = [
+            'WithdrawMoneymoremore',
+            'PlatformMoneymoremore',
+            'OrderNo',
+            'Amount',
+            'FeeQuota',
+            'CardNo',
+            'CardType',
+            'BankCode',
+            'BranchBankName',
+            'Province',
+            'City',
+            'RandomTimeStamp',
+            'Remark1',
+            'Remark2',
+            'Remark3',
+            'ReturnURL',
+            'NotifyURL'
+        ];
+        $str = '';
+        foreach($dataStr as $v){
+            $str .= isset($arr[$v])?"$arr[$v]":"";
+        }
+        if($this->antistate == 1) {
+            $str = strtoupper(md5($str));
+        }
+        $arr['SignInfo'] = $this->rsa->sign($str);
+        $arr['CardNo'] = $this->rsa->encrypt($arr['CardNo']);
+        return $arr;
     }
 }

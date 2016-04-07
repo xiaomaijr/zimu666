@@ -29,14 +29,11 @@ class MemberController extends ApiBaseController
 {
 
     private $keyTypeMap = [
-        'register'  =>   1,
-        'forgetpass'  =>   2
+        'register' => 1,
+        'forgetpass' => 2,
+        'withdraw' => 8,
     ];
-
-    const CACHE_KEY_RESET_PASSWD = 'reset_passwd'; //密码重置有效期
-    const CACHE_KEY_GET_MESSAGE_CODE = 'get_message_code';//短信验证码有效期
-    const CACHE_KEY_GET_MESSAGE_LIMIT = 'get_message_limit';//短信验证码请求频率限制
-    const CACHE_KEY_LOGIN_ERR_LIMIT = 'login_err_limit';//登录失败限制
+    
     /*
      * 获取图形验证码
      */
@@ -85,8 +82,8 @@ class MemberController extends ApiBaseController
             //手机号码格式验证
             ApiUtils::checkPhoneFormat($userName);
 
-            $reqLimitCacheKey = CacheKey::getCacheKey($request['key'] . '_' . $userName, self::CACHE_KEY_GET_MESSAGE_LIMIT);
-            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' . $userName, self::CACHE_KEY_GET_MESSAGE_CODE);
+            $reqLimitCacheKey = CacheKey::getCacheKey($request['key'] . '_' . $userName, CacheKey::CACHE_KEY_GET_MESSAGE_LIMIT);
+            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' . $userName, CacheKey::CACHE_KEY_GET_MESSAGE_CODE);
             $timer = new TimeUtils();
             $cache = new Cache();
             //请求频率限制，1分钟间隔
@@ -153,17 +150,17 @@ class MemberController extends ApiBaseController
             $timer->start('check_register_code');
             $objVer = new Verify();
             $ret = $objVer->check($request['verify_code'], $request['key'] . '_' . $request['verify_id']);
-            $timer->stop('check_register_code');
             if(!$ret){
                 throw new ApiBaseException(ApiErrorDescs::ERR_VERIFY_CODE_WRONG);
             }
+            $timer->stop('check_register_code');
             //短信验证码校验
             $timer->start('check_message_code');
-            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' .  $request['user_name'], self::CACHE_KEY_GET_MESSAGE_CODE);
+            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' .  $request['user_name'], CacheKey::CACHE_KEY_GET_MESSAGE_CODE);
             $cache = new Cache();
-//            if(!$cache->exists($codeCacheKey['key_name']) || $cache->get($codeCacheKey['key_name']) != $request['phone_code']){
-//                throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
-//            }
+            if(!$cache->exists($codeCacheKey['key_name']) || $cache->get($codeCacheKey['key_name']) != $request['phone_code']){
+                throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
+            }
             $timer->stop('check_message_code');
             //校验用户密码
 //            ApiUtils::checkPwd($request['passwd']);
@@ -204,7 +201,7 @@ class MemberController extends ApiBaseController
             $request = $_REQUEST;
 //            ApiUtils::checkPwd($request['passwd']);
             ApiUtils::checkPhoneFormat($request['user_name']);
-            $key = CacheKey::getCacheKey($request['user_name'], self::CACHE_KEY_LOGIN_ERR_LIMIT);
+            $key = CacheKey::getCacheKey($request['user_name'], CacheKey::CACHE_KEY_LOGIN_ERR_LIMIT);
             $timer = new TimeUtils();
 //            $cache = new Cache();
             $redis = new \Redis();
@@ -310,7 +307,7 @@ class MemberController extends ApiBaseController
             }
             //短信验证码校验
             $timer->start('check_message_code');
-            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' . $request['user_name'], self::CACHE_KEY_GET_MESSAGE_CODE);
+            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' . $request['user_name'], CacheKey::CACHE_KEY_GET_MESSAGE_CODE);
             $cache = new Cache();
             if(!$cache->exists($codeCacheKey['key_name']) || $cache->get($codeCacheKey['key_name']) != $request['phone_code']){
                 throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
@@ -321,7 +318,7 @@ class MemberController extends ApiBaseController
             if(!Members::checkExistByCondition(['user_name' => $request['user_name']])){
                 throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
             }
-            $resetCacheKey = CacheKey::getCacheKey($request['user_name'], self::CACHE_KEY_RESET_PASSWD);
+            $resetCacheKey = CacheKey::getCacheKey($request['user_name'], CacheKey::CACHE_KEY_RESET_PASSWD);
             $cache->set($resetCacheKey['key_name'], 1, $resetCacheKey['expire']);
             $timer->stop('check_user_name');
 
@@ -359,7 +356,7 @@ class MemberController extends ApiBaseController
             $timer->stop('param_check');
             //检查重置密码的信息是否过期
             $timer->start('check_reset_token');
-            $resetCacheKey = CacheKey::getCacheKey($request['user_name'], self::CACHE_KEY_RESET_PASSWD);
+            $resetCacheKey = CacheKey::getCacheKey($request['user_name'], CacheKey::CACHE_KEY_RESET_PASSWD);
             $cache = new Cache();
             if(!$cache->exists($resetCacheKey['key_name'])){
                 throw new ApiBaseException(ApiErrorDescs::ERR_RESET_USERPASS_OVERDUE);

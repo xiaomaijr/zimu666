@@ -106,20 +106,9 @@ class EscrowAccount extends RedisActiveRecord
      */
     public static function getUserBindInfo($uid){
         $data = ['yeeBind'=>0,'qddBind'=>0];
-        if(empty($uid)){
-            return $data;
-        }
-        $cache = self::getCache();
-        $field = 'uid:' . $uid;
-        if($cache->hExists(self::$tableName, $field)){
-            $ids = $cache->hGet(self::$tableName, $field);
-            $accountInfos = self::gets($ids);
-        }else{
-            $accountInfos = self::getDataByConditions(['uid' => $uid]);
-            if(empty($accountInfos)) return $data;
-            $ids = ApiUtils::getCols($accountInfos, 'id');
-            $cache->hSet(self::$tableName, $field, $ids);
-        }
+        if(empty($uid)) return $data;
+        $accountInfos = self::_getUserAccount($uid);
+        if(!$accountInfos) return $data;
         foreach($accountInfos as $info){
             if(empty($info) || empty($info['qdd_marked'])) continue;
             if($info['platform'] == 0){
@@ -147,9 +136,20 @@ class EscrowAccount extends RedisActiveRecord
      */
     public static function getUserThirdAccout($uid, $platform = 0){
         $data = [];
-        if(empty($uid)){
-            return $data;
+        if(empty($uid)) return $data;
+        $accountInfos = self::_getUserAccount($uid);
+        if(!$accountInfos) return $data;
+        foreach($accountInfos as $row){
+            if($row['platform'] == $platform){
+                $data = $row;
+            }
         }
+        return $data;
+    }
+    /*
+     * 获取用户账户记录
+     */
+    private static function _getUserAccount($uid){
         $cache = self::getCache();
         $field = 'uid:' . $uid;
         if($cache->hExists(self::$tableName, $field)){
@@ -157,15 +157,10 @@ class EscrowAccount extends RedisActiveRecord
             $accountInfos = self::gets($ids);
         }else{
             $accountInfos = self::getDataByConditions(['uid' => $uid]);
-            if(empty($accountInfos)) return $data;
+            if(empty($accountInfos)) return $accountInfos;
             $ids = ApiUtils::getCols($accountInfos, 'id');
             $cache->hSet(self::$tableName, $field, $ids);
         }
-        foreach($accountInfos as $row){
-            if($row['platform'] == $platform){
-                $data = $row;
-            }
-        }
-        return $data;
+        return $accountInfos;
     }
 }

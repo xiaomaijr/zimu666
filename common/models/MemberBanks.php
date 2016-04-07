@@ -158,7 +158,6 @@ class MemberBanks extends RedisActiveRecord
             $ids = ApiUtils::getCols($infos, 'id');
             $cache->hSet(self::$tableName, $field, $ids);
         }else{
-            echo 2;
             $ids = $cache->hGet(self::$tableName, $field);
             $infos = self::gets($ids);
         }
@@ -177,6 +176,8 @@ class MemberBanks extends RedisActiveRecord
             'bank_address' => ApiUtils::getStrParam('bank_address', $arr),
             'add_time' => date("Y-m-d H:i:s", ApiUtils::getIntParam('add_time', $arr)),
             'status' => ApiUtils::getIntParam('status', $arr),
+            'bank_province' => ApiUtils::getIntParam('bank_province', $arr),
+            'bank_city' => ApiUtils::getIntParam('bank_city', $arr),
         ];
     }
 

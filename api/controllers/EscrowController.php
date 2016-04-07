@@ -12,11 +12,18 @@ namespace api\controllers;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
+use common\models\CacheKey;
 use common\models\Escrow;
 use common\models\EscrowAccount;
+use common\models\MemberBanks;
+use common\models\MemberMoney;
 use common\models\MemberPayonline;
 use common\models\Members;
+use common\models\MemberWithdraw;
 use common\models\TimeUtils;
+use common\models\UrlConfig;
+use common\models\Verify;
+use yii\redis\Cache;
 use yii\web\Response;
 
 class EscrowController extends UserBaseController
@@ -115,5 +122,218 @@ class EscrowController extends UserBaseController
         echo json_encode($result);
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
+    }
+    /*
+     * 提现
+     */
+    public function actionWithdrawDetail(){
+        try{
+            $request = $_REQUEST;
+            $userId = ApiUtils::getIntParam('user_id', $request);
+            $timer = new TimeUtils();
+            //验证是否绑定第三方账户
+            $timer->start('check_third_bind');
+            $userEscrow = EscrowAccount::getUserThirdAccout($userId);
+            if(empty($userEscrow)){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
+            }
+            $timer->stop('check_third_bind');
+            //验证是否绑定提现银行卡
+            $timer->start('bind_bank');
+            $userBank = MemberBanks::getListByUid($userId);
+            if(empty($userBank)){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_BANK);
+            }
+            $timer->stop('bind_bank');
+            //获取用户资金账户信息
+            $timer->start('user_money');
+            $userMoney = MemberMoney::getUserPlatformMoney($userId);
+            if(empty($userMoney) || $userMoney['total_money'] < 100){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_MONEY_NOT_ENOUGH);
+            }
+            $timer->stop('user_money');
+            //获取用户手机号
+            $timer->start('user_name');
+            $userInfo = Members::get($userId);
+            $timer->stop('user_name');
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => [
+                    'user_bank' => $userBank[0],
+                    'user_money' => $userMoney['total_money'],
+                    'user_name' => $userInfo['user_name'],
+                ],
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        echo json_encode($result);
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+     * 提现接口
+     */
+    public function actionWithdraw(){
+        try{
+            $request = $_REQUEST;
+            $userId = ApiUtils::getIntParam('user_id', $request);
+            $money = ApiUtils::getIntParam('money', $request);
+
+            $timer = new TimeUtils();
+            if($money < 100.00){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现金额不能小于100元');
+            }
+            //最大提现额
+            if($money > 5000000.00){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现金额不能大于500万元');
+            }
+            //校验图形验证码
+//            $timer->start('check_withdraw_code');
+//            $objVer = new Verify();
+//            $ret = $objVer->check($request['verify_code'], $request['key'] . '_' . $request['verify_id']);
+//            if(!$ret){
+//                throw new ApiBaseException(ApiErrorDescs::ERR_VERIFY_CODE_WRONG);
+//            }
+//            $timer->stop('check_withdraw_code');
+//            //短信验证码校验
+//            $timer->start('check_message_code');
+//            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' .  $request['user_name'], CacheKey::CACHE_KEY_GET_MESSAGE_CODE);
+//            $cache = new Cache();
+//            if(!$cache->exists($codeCacheKey['key_name']) || $cache->get($codeCacheKey['key_name']) != $request['phone_code']){
+//                throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
+//            }
+//            $timer->stop('check_message_code');
+            //检查用户是否被加入黑名单
+            $timer->start('withdraw_limit');
+            $memberInfo = Members::get($userId);
+            if(!$memberInfo['is_withdraw']){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '您与平台之间已有约定，暂时不能直接提现！');
+            }
+            if($memberInfo['withdraw_limit'] > 0 && $money > $memberInfo['withdraw_limit']){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '您的提现金额超过您与平台约定的限额，请修改！');
+            }
+            $timer->stop('withdraw_limit');
+            //获取用户资金账户信息
+            $timer->start('user_money');
+            $userMoney = MemberMoney::getUserPlatformMoney($userId);
+            if(empty($userMoney) || $userMoney['total_money'] < $money){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_MONEY_NOT_ENOUGH);
+            }
+            $timer->stop('user_money');
+            //计算手续费
+            $timer->start('withdraw_fee');
+            $withdrawFee = $this->statWithdrawFee($money, $memberInfo);
+            $timer->stop('withdraw_fee');
+            //添加提现记录
+            $timer->start('add_withdraw');
+            $objWithDraw = new MemberWithdraw();
+            $orderId = $objWithDraw->add(['uid' => $userId, 'withdraw_money' => $money, 'withdraw_fee' => $withdrawFee]);
+            $timer->stop('add_withdraw');
+            //获取用户第三方账户
+            $timer->start('user_third');
+            $userEsc = EscrowAccount::getUserThirdAccout($userId);
+            if(!$userEsc){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
+            }
+            $timer->stop('user_third');
+            //获取用户提现银行卡
+            $timer->start('bind_bank');
+            $userBank = MemberBanks::getListByUid($userId, 0);
+            if(empty($userBank)){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_BANK);
+            }
+            $timer->stop('bind_bank');
+            //获取第三方提现接口及参数
+            $timer->start('third_withdraw');
+            $data = self::_getThirdWithdrawApi($orderId, $userBank[0], $userEsc, $money, $withdrawFee);
+            $timer->stop('third_withdraw');
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'params' => $data['params'],
+                'url' => $data['url'],
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        echo json_encode($result);
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+     * 计算第三方提现手续费
+     */
+    private function statWithdrawFee($money, array $user){
+        $withDrawFee = 0;
+        if($user['user_type'] == 0){
+            $todayWithDraw = MemberWithdraw::getUserDayWithDraw($user['id']);
+            $fee1 = $fee2 = $fee3 = $fee4 = 0;
+
+            //单日次数
+            if($todayWithDraw['count'] >= MemberWithdraw::WITHDRAW_DAY_MAX_TIMES){
+                $fee1 = ($money * 2.5)/1000;
+                if($fee1 < 1.00){
+                    $fee1 = 1;
+                }
+            }
+
+            //单日免额 5万
+            if($todayWithDraw['total'] >= MemberWithdraw::WITHDRAW_DAY_MAX_MONNEY){
+                $fee2 = ($money * 2.5)/1000;
+                if($fee2 < 1.00){
+                    $fee2 = 1;
+                }
+            }else{
+                if(($money+$todayWithDraw['total']) > 50000){
+                    $feeAmount = ($money+$todayWithDraw['total'])-50000;
+                    $fee4 = ($feeAmount * 2.5)/1000;
+                    if($fee4 < 1.00){
+                        $fee4 = 1;
+                    }
+                }
+            }
+
+            //充值提现比
+            if($todayWithDraw['scale']<0.4){
+                $fee3 = ($money * 2.5)/1000;
+                if($fee3 < 1.00){
+                    $fee3 = 1;
+                }
+            }
+            $withDrawFee = max($fee1,$fee2,$fee3,$fee4);
+        }
+        return $withDrawFee;
+    }
+    /*
+     * 获取提现第三方接口及参数
+     */
+    private function _getThirdWithdrawApi($orderId, $bank, $escrow, $money, $withDrawFee){
+        $submitdata = [];
+        $submitdata['WithdrawMoneymoremore'] = $escrow['qdd_marked'];
+        $submitdata['OrderNo']               = date("YmdHi") . '-' . $escrow['uid'] .'-' . $orderId;
+        $submitdata['Amount']                = $money;
+        $submitdata['FeeQuota']              = $withDrawFee;
+        $submitdata['CardNo']                = $bank['bank_num'];
+        $submitdata['CardType']              = 0;//(0.借记卡 1.信用卡)
+        $submitdata['BankCode']              = $bank['bank_name'];//银行代码
+        $submitdata['BranchBankName']        = '';
+        $submitdata['Province']              = $bank['bank_province'];
+        $submitdata['City']                  = $bank['bank_city'];
+//        $submitdata['ReturnURL']             = UrlConfig::getUrl('qdd_notify') . '/notice/withdraw';
+        $submitdata['ReturnURL']             = 'http://192.168.101.198/notice/withdraw';
+        $submitdata['NotifyURL']             = UrlConfig::getUrl('qdd_notify') . '/notify/withdraw'; // 通知地址
+        $objEsc = new Escrow();
+        $params = $objEsc->withdraw($submitdata);
+        $data['params'] = http_build_query($params);
+        $data['url'] = $objEsc->urlArr['withdraw'];
+        return $data;
     }
 }

@@ -103,7 +103,7 @@ class PhonesmsLog extends RedisActiveRecord
             'dstime'    => $sendTime,
         );
         $params = array_merge($bindParam,$this->account);
-        $ret = ApiUtils::curlByPost($this->baseUrl.'/sendSms.do',$params);
+        $ret = defined('yii_debug')?true:ApiUtils::curlByPost($this->baseUrl.'/sendSms.do',$params);
         return $ret;
     }
 

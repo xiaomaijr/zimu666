@@ -67,7 +67,10 @@ class NoticeController extends Controller
         $remark1 = htmlspecialchars(ApiUtils::getStrParam('Remark1', $request));
         $tmp = explode(':', $remark1);
         $uid = $tmp[1];
-        $data = ['orderNo' => $orderNo];
+        $data = [
+            'orderNo' => $orderNo,
+            'resultCode' => $resultCode,
+        ];
         if ($resultCode == 88) {
             //判断首次充值送红包活动
             $act_valid = PlatformActivityManage::getActivityValid(PlatformActivityManage::FIRST_CHARGE_BONUS);
@@ -96,5 +99,24 @@ class NoticeController extends Controller
             'orderNo' => '123456asdf'
         ];
         return $this->render('recharge_success.tpl', $data);
+    }
+    /*
+     * 提现返回页
+     */
+    public function actionWithdraw(){
+        $request = $_REQUEST;
+        $resultCode = htmlspecialchars(ApiUtils::getIntParam('ResultCode', $request));
+        $orderNo = htmlspecialchars(ApiUtils::getStrParam('OrderNo', $request));
+
+        $data = [
+            'orderNo' => $orderNo,
+            'resultCode' => $resultCode,
+        ];
+        if ($resultCode == 88) {
+            return $this->render('withdraw_success.tpl', $data);
+        }
+        return $this->render('withdraw_fail.tpl', $data);
+
+
     }
 }

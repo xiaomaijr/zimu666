@@ -120,4 +120,34 @@ class MemberPayonline extends RedisActiveRecord
             return $this->update();
         }
     }
+    /*
+     * 获取用户提现记录
+     * @param $uid int
+     * return array
+     */
+    private static function _getUserInfos($uid){
+        $cache = self::getCache();
+        if($cache->hExists(self::$tableName, 'uid:' . $uid)){
+            $ids = $cache->hget(self::$tableName, 'uid:' . $uid);
+            $infos = self::gets($ids);
+        }else{
+            $infos = self::getDataByConditions(['uid' => intval($uid), 'status' => 1], null, 0, 0);
+            if(empty($infos)) return $infos;
+            $ids = ApiUtils::getCols($infos, 'id');
+            $cache->hset(self::$tableName, 'uid:' . $uid, $ids);
+        }
+        return $infos;
+    }
+    /*
+     * 获取用户提现总额
+     */
+    public static function getUserTotal($uid){
+        $total = 0;
+        $infos = self::_getUserInfos($uid);
+        if(empty($infos)) return $total;
+        foreach($infos as $info){
+            $total =+ $info['money'];
+        }
+        return $total;
+    }
 }

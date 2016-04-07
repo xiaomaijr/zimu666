@@ -88,6 +88,7 @@ class MessageConfig
     //需要验证用户已注册的短信请求参数key
     public static $checkExistMsgKeys = [
         'forgetpass',
+        'withdraw',
     ];
     //需要验证用户未注册的短信请求参数key
     public static $checkNotExistMsgKeys = [
@@ -135,8 +136,7 @@ class MessageConfig
                 $message = self::_getMessageByKey('forgetpass');
                 $content = str_replace('#CODE#', $data['code'], $message);
                 $objPhoneSend = new PhonesmsLog();
-//                $ret = $objPhoneSend->sendSms($phone, $content);
-                $ret = true;
+                $ret = $objPhoneSend->sendSms($phone, $content);
                 $infos = [
                     'uid' => $userId,
                     'phone' => $phone,
@@ -184,7 +184,7 @@ class MessageConfig
                 $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
                 $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
                 return $objSubInMsg->add($contents);//分表
-            case 5 : //提现
+            case 5 : //提现成功
                 if(empty($data['withdraw'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_WITHDRAW_MONEY_EMPTY);
                 }
@@ -223,6 +223,28 @@ class MessageConfig
                 $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
                 $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
                 return $objSubInMsg->add($contents);//分表
+            case 8://提现申请短信验证码发送
+                if(empty($data['code'])){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_MESSAGE_CODE_EMPTY);
+                }
+                if(empty($phone)){
+                    throw new ApiBaseException(ApiErrorDescs::ERR_MESSAGE_PHONE_EMPTY);
+                }
+                $message = self::_getMessageByKey('extcash');
+                $content = str_replace('#CODE#', $data['code'], $message);
+                $objPhoneSend = new PhonesmsLog();
+                $ret = $objPhoneSend->sendSms($phone, $content);
+                $infos = [
+                    'uid' => $userId,
+                    'phone' => $phone,
+                    'contents' => $content,
+                    'sendtime' => time(),
+                    'desc'   => '',
+                    'types'  => $type,
+                    'stauts' => 1
+                ];
+                $objPhoneSend->saveSendMessageLog($infos);
+                return $ret;
             case 11://充值
                 $message = self::_getMessageByKey('payonline');
                 $content = $message['content'];
