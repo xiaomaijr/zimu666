@@ -98,13 +98,13 @@ class BorrowController extends ApiBaseController
             //验证用户是否绑定第三方支付
             $timer->start('check_bind_qdd');
             $escrow = EscrowAccount::getUserBindInfo($userId);
-            if($escrow['yeeBind'] | $escrow['qddBind']){
+            if(!$escrow['qddBind']){
                 throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
             }
             $timer->stop('check_bind_qdd');
             //验证标状态等
             $timer->start('check_borrow_status');
-            if($borrow['status'] != 2){
+            if($borrow['borrow_status'] != 2){
                 throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '只能投正在借款中的标');
             }
             if($borrow['borrow_uid'] == $userId){

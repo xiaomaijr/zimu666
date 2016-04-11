@@ -12,9 +12,13 @@ namespace api\controllers;
 use common\models\ApiBaseException;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
+use common\models\BorrowInfo;
+use common\models\BorrowInvest;
+use common\models\BorrowInvestor;
 use common\models\Escrow;
 use common\models\EscrowAccount;
 use common\models\InnerMsg;
+use common\models\InvestDeta;
 use common\models\Logger;
 use common\models\MemberInfo;
 use common\models\MemberMoney;
@@ -239,4 +243,190 @@ class NotifyController extends Controller
             echo "ERROR";
         }
     }
+    /*
+     * 投资回调
+     */
+    public function actionInvestNotify(){
+        try{
+            $request = ApiUtils::filter($_REQUEST);
+            $objEsc = new Escrow();
+            $verify = $objEsc->transferVerify($request);
+            if($verify){
+                $loanList = json_decode(urldecode($request['LoanJsonList']), true);
+                $investInfo = isset($loanList[0])?$loanList[0]:$loanList;
+                //红包返回数组为2的数据
+                if(count($loanList)>1){
+                    $investInfo['LoanNo']=$loanList[0]['LoanNo'].','.$loanList[1]['LoanNo'];
+                }
+                $orderString  =  $investInfo['OrderNo'];
+                $orderArray  = explode('_',$orderString);
+                $orders = $orderArray[0];
+                $investId = substr($orders,12);
+                $borrowId = intval($orderArray[1]);
+                $userId = intval($orderArray[2]);
+                $borrowInvestorTable = 'borrow_investor_'.intval($borrowId%3);
+                $investorDetailTable = 'investor_detail_'.intval($userId%5);
+                if(intval($request['ResultCode']) != 88){
+//                    $this->investRollback($investId,$borrowId,$userId); //返回错误 删除投资信息  保留invest
+                    $ntyData = [
+                        'data_md5' => md5($request),
+                        'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                        'data' => json_encode($request),
+                        'type' => '投标失败',
+                    ];
+                    Notify::add($ntyData);
+                }else{ //返回成功，更新投资信息并扣除资金
+                    $objIntor = new BorrowInvestor(['tableName' => $borrowInvestorTable]);
+                    $iinfo = $objIntor->get($investId);
+                    $borrowInfo = BorrowInfo::get($borrowId);
+                    $investUserMoney = MemberMoney::getUserPlatformMoney($userId);
+                    if(ApiUtils::getIntParam('Action', $request) == 2){ // 退回投标
+                        //解除投资用户的冻结金额
+                        $userTotalMoney =  $investUserMoney['total_money']  + $iinfo['investor_capital'];
+                        $userFreezeMoney = $investUserMoney['freeze_money'] - $iinfo['investor_capital'];
+
+                        //MemberMoney
+                        $memberMoneyRecord = [
+                            'total_money'    => $userTotalMoney,
+                            'freeze_money'   => $userFreezeMoney
+                        ];
+                        //MemberMoneyLog
+                        $moneylog = [
+                            'uid'      => $userId,
+                            'platform' => 0,
+                            'type'     => MemberMoneylog::USER_INVEST_ROLLBACK,
+                            'affect_money'  => $iinfo['investor_capital'],
+                            'affect_type'   => MemberMoneylog::AFFECT_INVEST_ROLLBACK,
+                            'affect_before' => $investUserMoney['total_money'],
+                            'total_money'   => $userTotalMoney,
+                            'charge_money'  => $investUserMoney['charge_money'],
+                            'invest_money'  => $investUserMoney['invest_money'],
+                            'withdraw_money'=> $investUserMoney['withdraw_money'],
+                            'back_money'    => $investUserMoney['back_money'],
+                            'collect_money' => $investUserMoney['collect_money'],
+                            'freeze_money'  => $userFreezeMoney,
+
+                            'info' => '投资资金退回',
+                            'add_time' => time(),
+                            'add_ip' => ApiUtils::get_client_ip(),
+                            'target_uid' => $userId,
+                            'target_uname' => 'invest_rollback',
+                        ];
+
+                        // 更新借款状态
+                        $newBorrowInfo = [];
+                        if($borrowInfo['borrow_status']==4){
+                            $newBorrowInfo['borrow_status'] = 2;
+                        }
+                        $newBorrowInfo['borrow_times'] = $borrowInfo['borrow_times']-1;
+                        $newBorrowInfo['has_borrow']   = $borrowInfo['has_borrow'] - $iinfo['investor_capital'];
+
+                        $db = \Yii::$app->getDb();
+                        $transaction = $db->beginTransaction();
+                        $tableNameEnd  =  intval($userId%10);
+                        $objMMLog = new MemberMoneylog(['tableName' => $tableNameEnd]);
+                        $moneyMoneyLogId = $objMMLog->add($moneylog);
+                        $moneyMoneyId = MemberMoney::updateAll($memberMoneyRecord, ['id' => $investUserMoney['id']]);
+                        $borrowInfoId = BorrowInfo::updateAll($newBorrowInfo, ['id' => $investInfo['BatchNo']]);
+
+                        $investorStatus = $objIntor->updateAll(['loanno' => '','status' => 1], ['id' => $investId]);
+                        BorrowInvest::updateAll(['loanno'=> '','status'=>1], ['id' => $investId]);
+                        $objInvestDeta = new InvestDeta(['tableName' => $investorDetailTable]);
+                        $detailStatus = $objInvestDeta->updateAll(['pay_status' => 0], ['invest_id' => $investId]);
+                        //站内信
+                        MessageConfig::Notice(3, '', $userId, ['invest_money'=>$iinfo['investor_capital'], 'borrow_id'=>$borrowId]);
+
+                        //更新缓存
+                        if($moneyMoneyLogId && $moneyMoneyId && $borrowInfoId && $investorStatus && $detailStatus){
+                            $transaction->commit();
+//                            $this->investRollback($investId,$borrowId,$userId);
+                            echo 'SUCCESS';
+                        }else{
+                            $transaction->rollback();
+                        }
+                        exit;
+                    }
+
+
+                     // 支付成功之后 将序号更新到投资记录标，更新借款标信息
+                    $borrowId = $investInfo['BatchNo'];
+                    $money = $investInfo['Amount'];
+                    $hongbaoMoney =  0;
+                    if(!$iinfo['loanno']){
+                        $db = \Yii::$app->getDb();
+                        $transaction = $db->beginTransaction();
+                        $investorStatus = $objIntor->updateAll(['loanno'=>$investInfo['LoanNo'],'status'=>1], ['id' => $investId]);
+                        BorrowInvest::updateAll(['loanno'=>$investInfo['LoanNo'],'status'=>1], ['id' => $investId]);
+                        $objInvestDeta = new InvestDeta(['tableName' => $investorDetailTable]);
+                        $detailStatus = $objInvestDeta->updateAll(['pay_status' => 1], ['invest_id' => $investId]);
+                        $upborrowarr = [];
+                        $upborrowarr['has_borrow'] = $borrowInfo['has_borrow']+$money;
+                        $upborrowarr['borrow_times'] = $borrowInfo['borrow_times']+1;
+                        $borrowStatus = BorrowInfo::updateAll($upborrowarr, ['id' => $borrowId]);
+                        $memberMoneyRecord = [
+                            'total_money'    => $investUserMoney['total_money']  - $iinfo['investor_capital'],
+                            'freeze_money'   => $investUserMoney['freeze_money'] + $iinfo['investor_capital'],
+                        ];
+                        $moneylog = [
+                            'uid'      => $userId,
+                            'platform' => 0,
+                            'type'     => MemberMoneylog::USER_INVEST_FREEZE,
+                            'affect_money'  => 0-$iinfo['investor_capital'],
+                            'affect_type'   => MemberMoneylog::AFFECT_INVEST_FREEZE,
+                            'affect_before' => $investUserMoney['total_money'],
+                            'total_money'   => $memberMoneyRecord['total_money'],
+                            'charge_money'  => $investUserMoney['charge_money'],
+                            'invest_money'  => $investUserMoney['invest_money'],
+                            'withdraw_money'=> $investUserMoney['withdraw_money'],
+                            'back_money'    => $investUserMoney['back_money'],
+                            'collect_money' => $investUserMoney['collect_money'],
+                            'freeze_money'  => $memberMoneyRecord['freeze_money'],
+
+                            'info' => '用户投资'.$borrowId.'号标'.$money,
+                            'add_time' => time(),
+                            'add_ip' => ApiUtils::get_client_ip(),
+                            'target_uid' => $userId,
+                            'target_uname' => 'invest_freeze',
+                        ];
+                        $moneyLogTable = 'member_moneylog_'.intval($userId%10);
+                        $objMMLog = new MemberMoneylog(['tableName' => $moneyLogTable]);
+                        $moneyMoneyId = $moneyMoneyLogId = $objMMLog->add($moneylog);
+
+                        //站内信
+                        MessageConfig::Notice(3, '', $userId, ['invest_money'=>$iinfo['investor_capital'], 'borrow_id'=>$borrowId]);
+
+                        if($investorStatus && $borrowStatus && $detailStatus && $moneyMoneyId ){
+                            if( ($borrowInfo['has_borrow']+$money+$hongbaoMoney) == $borrowInfo['borrow_money']){
+                                $saveborrow = [];
+                                $saveborrow['borrow_status'] = 4;
+                                $saveborrow['full_time'] = time();
+                                BorrowInfo::updateAll($saveborrow, ['id' => $borrowId]);
+                            }
+                            $transaction->commit();
+                            $str =  "SUCCESS";
+                        }else{
+                            $transaction->rollback();
+                            $str =  'SUCCESS';
+                        }
+                    }else{
+                        $str =  "SUCCESS";
+                    }
+                    $ntyData = [
+                        'data_md5' => md5($request),
+                        'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                        'data' => json_encode($request),
+                        'type' => '普通投标' . $str,
+                    ];
+                    Notify::add($ntyData);
+                    echo $str;
+                }
+            }
+        }catch(ApiBaseException $e){
+            $log = sprintf('tag : invest_callback_notify | verify : %s | result : %s | post : %s', var_export($verify, true), $str, json_encode($_POST));
+            \Yii::$app->logging->debug($log);
+            echo "ERROR";
+        }
+    }
+
+
 }

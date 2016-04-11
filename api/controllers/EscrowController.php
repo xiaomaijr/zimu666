@@ -193,21 +193,21 @@ class EscrowController extends UserBaseController
                 throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现金额不能大于500万元');
             }
             //校验图形验证码
-//            $timer->start('check_withdraw_code');
-//            $objVer = new Verify();
-//            $ret = $objVer->check($request['verify_code'], $request['key'] . '_' . $request['verify_id']);
-//            if(!$ret){
-//                throw new ApiBaseException(ApiErrorDescs::ERR_VERIFY_CODE_WRONG);
-//            }
-//            $timer->stop('check_withdraw_code');
-//            //短信验证码校验
-//            $timer->start('check_message_code');
-//            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' .  $request['user_name'], CacheKey::CACHE_KEY_GET_MESSAGE_CODE);
-//            $cache = new Cache();
-//            if(!$cache->exists($codeCacheKey['key_name']) || $cache->get($codeCacheKey['key_name']) != $request['phone_code']){
-//                throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
-//            }
-//            $timer->stop('check_message_code');
+            $timer->start('check_withdraw_code');
+            $objVer = new Verify();
+            $ret = $objVer->check($request['verify_code'], $request['key'] . '_' . $request['verify_id']);
+            if(!$ret){
+                throw new ApiBaseException(ApiErrorDescs::ERR_VERIFY_CODE_WRONG);
+            }
+            $timer->stop('check_withdraw_code');
+            //短信验证码校验
+            $timer->start('check_message_code');
+            $codeCacheKey = CacheKey::getCacheKey($request['key'] . '_' .  $request['user_name'], CacheKey::CACHE_KEY_GET_MESSAGE_CODE);
+            $cache = new Cache();
+            if(!$cache->exists($codeCacheKey['key_name']) || $cache->get($codeCacheKey['key_name']) != $request['phone_code']){
+                throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
+            }
+            $timer->stop('check_message_code');
             //检查用户是否被加入黑名单
             $timer->start('withdraw_limit');
             $memberInfo = Members::get($userId);
@@ -327,8 +327,8 @@ class EscrowController extends UserBaseController
         $submitdata['BranchBankName']        = '';
         $submitdata['Province']              = $bank['bank_province'];
         $submitdata['City']                  = $bank['bank_city'];
-//        $submitdata['ReturnURL']             = UrlConfig::getUrl('qdd_notify') . '/notice/withdraw';
-        $submitdata['ReturnURL']             = 'http://192.168.101.198/notice/withdraw';
+        $submitdata['ReturnURL']             = UrlConfig::getUrl('qdd_notify') . '/notice/withdraw';
+//        $submitdata['ReturnURL']             = 'http://192.168.101.198/notice/withdraw';
         $submitdata['NotifyURL']             = UrlConfig::getUrl('qdd_notify') . '/notify/withdraw'; // 通知地址
         $objEsc = new Escrow();
         $params = $objEsc->withdraw($submitdata);

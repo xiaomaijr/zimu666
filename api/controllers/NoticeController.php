@@ -28,36 +28,29 @@ class NoticeController extends Controller
      * 注册绑定回跳接口
      */
     public function actionBindReturn(){
-        try{
-            $request = $_REQUEST;
-            $resultCode = htmlspecialchars(ApiUtils::getIntParam('ResultCode', $request));
-            if($resultCode == 88){
-                $result = [
-                    'code' => ApiErrorDescs::SUCCESS,
-                    'message' => 'success',
-                ];
-            }else{
-                $result = [
-                    'code' => ApiErrorDescs::SUCCESS,
-                    'message' => 'success',
-                    'result' => $resultCode
-                ];
-            }
-        }catch(ApiBaseException $e){
-            $result = [
-                'code' => $e->getCode(),
-                'message' => $e->getMessage()
-            ];
+        $request = $_REQUEST;
+        $resultCode = htmlspecialchars(ApiUtils::getIntParam('ResultCode', $request));
+        if($resultCode == 88){
+            return $this->render('bind_success.tpl');
         }
-        echo json_encode($result);
-//        $this->logApi(__CLASS__, __FUNCTION__, $result);
-        \Yii::$app->end();
+        $data = [
+            'resultCode' => $resultCode,
+        ];
+        return $this->render('bind_fail.tpl', $data);
+
+
     }
 
     public function actionInvestReturn(){
         $request = $_REQUEST;
         $resultCode = htmlspecialchars(ApiUtils::getIntParam('ResultCode', $request));
-//        if()
+        if($resultCode == 88){
+            return $this->render('invest_success.tpl');
+        }
+        $data = [
+            'resultCode' => $resultCode,
+        ];
+        return $this->render('invest_fail.tpl', $data);
     }
 
     public function actionRechargeReturn(){

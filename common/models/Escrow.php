@@ -65,13 +65,13 @@ class Escrow extends Component
         $data['Remark1'] = $remark;
         $data['Remark2'] = '';
         $data['Remark3'] = '';
-        $backUrlTemp = !empty($returnBackUrl) ? $returnBackUrl : '/Notice/bindReturn';
+        $backUrlTemp = !empty($returnBackUrl) ? $returnBackUrl : '/notice/bind-return';
         if(!empty($backUrl)) {
             $backUrlTemp=$backUrl;
         }
         $qddUrl = UrlConfig::getUrl('qdd_notify');
         $data['ReturnURL'] = $qddUrl . $backUrlTemp;       //返回地址
-        $data['NotifyURL'] = $qddUrl . '/Notify/bind';  //后台通知地址
+        $data['NotifyURL'] = $qddUrl . '/notify/bind';  //后台通知地址
         $str = implode('',$data);
         if($this->antistate == 1){
             $str = strtoupper(md5($str));
@@ -198,8 +198,8 @@ class Escrow extends Component
         $data['Remark1'] = $Remark;
         $data['Remark2'] = '';
         $data['Remark3'] = '';
-//        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') . '/notice/recharge-return';
-        $data['ReturnURL'] = 'http://192.168.101.198/notice/recharge-return';
+        $data['ReturnURL'] = UrlConfig::getUrl('qdd_notify') . '/notice/recharge-return';
+//        $data['ReturnURL'] = 'http://192.168.101.40/notice/recharge-return';
         $data['NotifyURL'] = UrlConfig::getUrl('qdd_notify') . '/notify/charge';
         $str = implode('',$data);
         if($this->antistate == 1){
@@ -305,5 +305,26 @@ class Escrow extends Component
         }
         $verifySignature = $this->rsa->verify($dataStr,$SignInfo);
         return $verifySignature;
+    }
+    /**
+     * 转账验证签名函数
+     * @param $data
+     * @return bool
+     */
+    public function transferVerify($data){
+        $LoanJsonList =  urldecode($data['LoanJsonList']);
+        $PlatformMoneymoremore = $data['PlatformMoneymoremore'];
+        $Action = $data['Action'];
+        $RandomTimeStamp = $data['RandomTimeStamp'];
+        $Remark1 = $data['Remark1'];
+        $Remark2 = $data['Remark2'];
+        $Remark3 = $data['Remark3'];
+        $ResultCode = $data['ResultCode'];
+        $dataStr = $LoanJsonList.$PlatformMoneymoremore.$Action.$RandomTimeStamp.$Remark1.$Remark2.$Remark3.$ResultCode;
+        if($this->antistate == 1) {
+            $dataStr = strtoupper(md5($dataStr));
+        }
+        $SignInfo =  $data['SignInfo'];
+        return  $this->rsa->verify($dataStr,$SignInfo);
     }
 }

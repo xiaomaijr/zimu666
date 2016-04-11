@@ -436,48 +436,45 @@ class ApiUtils
         }
     }
 
-    public static function equalEndMonth( $data = array( ) ){
-        if ( isset( $data['month_times'] ) && 0 < $data['month_times'] ){
+    public static function equalEndMonth($data = []){
+        if (isset( $data['month_times'] ) && 0 < $data['month_times']){
             $month_times = $data['month_times'];
         }
-        if ( isset( $data['account'] ) && 0 < $data['account'] ){
+        if (isset( $data['account'] ) && 0 < $data['account']){
             $account = $data['account'];
         }else{
             return "";
         }
-        if ( isset( $data['year_apr'] ) && 0 < $data['year_apr'] ){
+        if (isset( $data['year_apr'] ) && 0 < $data['year_apr']){
             $year_apr = $data['year_apr'];
         }else{
             return "";
         }
-        if ( isset( $data['borrow_time'] ) && 0 < $data['borrow_time'] ){
+        if (isset( $data['borrow_time'] ) && 0 < $data['borrow_time']){
             $borrow_time = $data['borrow_time'];
         }else{
             $borrow_time = time( );
         }
         $month_apr = $year_apr / 1200;
-        $_yes_account = 0;
-        $repayment_account = 0;
         $_all_interest = 0;
         $interest = round($account * $month_apr, 4 );
-        $i = 0;
-        for ( ;	$i < $month_times;++$i){
+        for ($i = 0;$i < $month_times;++$i){
             $capital = 0;
             if ( $i + 1 == $month_times ){
                 $capital = $account;
             }
             $_result[$i]['repayment_account'] = $interest + $capital;
-            $_result[$i]['repayment_time'] = self::get_times( array( "time" => $borrow_time, "num" => $i + 1 ) );
+            $_result[$i]['repayment_time'] = self::get_times(["time" => $borrow_time, "num" => $i + 1]);
             $_result[$i]['interest'] = $interest;
             $_result[$i]['capital'] = $capital;
             $_all_interest += $interest;
         }
-        if ( isset( $data['type'] ) && $data['type'] == "all" ){
+        if (isset($data['type']) && $data['type'] == "all"){
             $_resul['repayment_account'] = $account + $interest * $month_times;
             $_resul['monthly_repayment'] = $interest;
             $_resul['month_apr'] = round( $month_apr * 100, 4 );
             $_resul['interest'] = $_all_interest;
-            return $_result;
+            return $_resul;
         }else{
             return $_result;
         }
