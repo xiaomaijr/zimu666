@@ -8,7 +8,7 @@ $params = array_merge(
 return [
     'id' => 'app-api',
     'basePath' => dirname(__DIR__),
-    'runtimePath' => dirname(__DIR__) . '/../../runtime/mall',
+    'runtimePath' => dirname(__DIR__) . '/../runtime/api',
     'bootstrap' => ['log'],
     'controllerNamespace' => 'api\controllers',
     'components' => [

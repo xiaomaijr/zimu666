@@ -23,6 +23,15 @@ class NoticeController extends Controller
 
     public $enableCsrfValidation=false;
 
+    public function beforeAction($action)
+    {
+        if(parent::beforeAction($action)){
+            $strControllerId = $action->controller->id;
+            $strActionId = $action->id;
+            \Yii::$app->logging->trace($strControllerId . '/' . $strActionId . json_encode($_REQUEST));
+        }
+    }
+
 
     /**
      * 注册绑定回跳接口

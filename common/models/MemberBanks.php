@@ -102,7 +102,7 @@ class MemberBanks extends RedisActiveRecord
      * @param String $skey 加密KEY
      * @return String
      */
-    public  function encode($string = '', $skey = self::BANK_KEY_DEFAULT) {
+    public  static function encode($string = '', $skey = self::BANK_KEY_DEFAULT) {
         $strArr = str_split(base64_encode($string));
         $strCount = count($strArr);
         foreach (str_split($skey) as $key => $value)
@@ -117,7 +117,7 @@ class MemberBanks extends RedisActiveRecord
      * @param String $skey 解密KEY
      * @return String
      */
-    public function decode($string = '', $skey = self::BANK_KEY_DEFAULT) {
+    public static function decode($string = '', $skey = self::BANK_KEY_DEFAULT) {
         $strArr = str_split($string, 2);
         $strCount = count($strArr);
         foreach (str_split($skey) as $key => $value)
@@ -132,7 +132,7 @@ class MemberBanks extends RedisActiveRecord
      * @param number $status 支持状态（1为支持，0为不支持）
      * @return unknown
      */
-    public function getBankName($bankCode){
+    public static function getBankName($bankCode){
         $bankList = ApiConfig::$bankList;
         foreach($bankList as $row){
             if($row['bank_code'] == $bankCode){
