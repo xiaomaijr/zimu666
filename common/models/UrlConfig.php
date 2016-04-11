@@ -13,7 +13,7 @@ class UrlConfig
 {
     private static $configs = [
         'fonts_path' => 'c:/Windows/Fonts/',//字体路径
-        'verify' => 'http://192.168.101.198/static/',//验证码
+        'verify' => 'http://192.168.101.40/static/',//验证码
         'qdd_notify' => 'http://101.201.208.181:8888/', //乾多多后台回调地址
 //        'qdd_notify' => 'http://192.168.101.192/', //乾多多后台回调地址
 

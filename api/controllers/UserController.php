@@ -150,11 +150,12 @@ class UserController extends UserBaseController
             //银行列表
             $timer->start('user_bank');
             $userBank = MemberBanks::getListByUid($userId);
+            $userBank = $userBank?$userBank[0]:0;
             $timer->stop('user_bank');
             //用户信息
             $timer->start('user_info');
             $userInfo = MemberInfo::get($userId);
-            $userInfo['real_name'] = '*' . mb_substr($userInfo['real_name'], 1, -1, 'utf-8');
+            $userInfo['real_name'] = '*' . mb_substr($userInfo['real_name'], 1, mb_strlen($userInfo['real_name'], 'utf-8'), 'utf-8');
             $timer->stop('user_info');
 
             $result = [

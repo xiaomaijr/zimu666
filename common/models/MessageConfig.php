@@ -68,8 +68,11 @@ class MessageConfig
             'msg' => '恭喜您投资#BORROW_ID#号项目#INVEST_MONEY#元成功！',
         ],
         'recharge' => [
-            'title' => '您刚刚成功充值#RECHARGE#元',
-            'msg' => '您刚刚成功充值#RECHARGE#元，流水号#TRAND_NO#',
+            'title' => '您在小麦金融进行了充值操作',
+            'msg' => [
+                '您刚刚进行了充值操作,充值金额:￥#MONEY#，请您注意账户安全！',
+                '您刚刚进行了充值操作,充值金额:￥#MONEY#，其中扣除手续费￥#FEE#，实际到账￥#RECHARGE#，请您注意账户安全！',
+            ],
         ],
         'withdraw' => [
             'title' => '您在小麦金融申请了提现',
@@ -86,6 +89,10 @@ class MessageConfig
         'modifyPwd' => [
             'title' => '您刚刚修改了登录密码',
             'msg' => '您刚刚修改了登录密码，如不是自己操作,请尽快联系客服',
+        ],
+        'thirdBind' => [
+            'title' => '您在小麦金融绑定了第三方托管账户',
+            'msg' => '您刚刚绑定了第三方托管账户，如不是自己操作,请尽快联系客服',
         ],
     ];
 
@@ -170,17 +177,23 @@ class MessageConfig
                 $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
                 $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
                 return $objSubInMsg->add($contents);//分表
-            case 4 :   //充值成功
-                if(empty($data['trade_no'])){
+            case 4 :   //充值成功添加站内信
+                if(isset($data['fee'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_RECHARGE_TRADE_NO_EMPTY);
                 }
-                if(empty($data['recharge_money'])){
+                if(isset($data['real_money'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_RECHARGE_MONEY_EMPTY);
                 }
                 $notice = self::_getNoticeByKey('recharge');
+                if(empty($data['fee'])){
+                    $msg = str_replace('#MONEY#', $data['real_money'], $notice['msg'][0]);
+                }else{
+                    $recharge = $data['real_money'] + $data['fee'];
+                    $msg = str_replace(['#MONEY#', '#FEE#', '#RECHARGE#'], [$data['real_money'], $data['fee'], $recharge], $notice['msg'][1]);
+                }
                 $contents = [
                     'title' => str_replace(['#RECHARGE#'], [$data['recharge_money']], $notice['title']),
-                    'msg' => str_replace(['#RECHARGE#', '#TRAND_NO#'], [$data['recharge_money'], $data['trade_no']], $notice['msg']),
+                    'msg' => $msg,
                     'uid' => $userId
                 ];
                 $objInMsg = new InnerMsg();
@@ -249,7 +262,7 @@ class MessageConfig
                 ];
                 $objPhoneSend->saveSendMessageLog($infos);
                 return $ret;
-            case 9 ://提现退回
+            case 9 ://提现退回站内信
                 if(!isset($data['withdraw_money'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_WITHDRAW_MONEY_EMPTY);
                 }
@@ -264,7 +277,20 @@ class MessageConfig
                 $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
                 $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
                 return $objSubInMsg->add($contents);//分表
-            case 11://充值
+            case 10 ://注册成功站内信
+                $notice = self::_getNoticeByKey('thirdBind');
+                $contents = [
+                    'title' => $notice['title'],
+                    'msg' => $notice['msg'],
+                    'uid' => $userId
+                ];
+                $objInMsg = new InnerMsg();
+                $objInMsg->add($contents);//总表
+                $innerMsgTabName = 'lzh_inner_msg_' . intval($userId%5);
+                $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
+                return $objSubInMsg->add($contents);//分表
+
+            case 11://充值申请短信
                 $message = self::_getMessageByKey('payonline');
                 $content = $message['content'];
                 $content = str_replace( array( "#USERANEM#","#MONEY#" ), array( $user['user_name'],$data['real_money'] ), $content );

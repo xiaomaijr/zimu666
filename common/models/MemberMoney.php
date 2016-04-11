@@ -279,4 +279,60 @@ class MemberMoney extends RedisActiveRecord
         $Moneylog->add($moneylog);
         return true;
     }
+    /*
+     * @param $uid
+     * @param $type
+     * @param $realMoney
+     * @param $info
+     */
+    public function setUserChargeMoneyInfo($uid, $realMoney,$info='用户充值',$userType=0,$fee=0){
+        if(empty($uid) || empty($realMoney)){
+            return false;
+        }
+        $MM = self::getUserPlatformMoney($uid);
+        if(empty($MM) || !is_array($MM)){
+            $mmoneyId = $this->add(['uid'=>$uid,'platform'=>0]);
+            $MM = self::getUserPlatformMoney($uid);
+        }
+        $tableEnd = intval($uid%10);
+        $Moneylog = new MemberMoneylog(['tableName' => 'member_moneylog_'.$tableEnd]);
+        $money = [
+            'total_money'    => $MM['total_money']+$realMoney,
+            'charge_money' => $MM['charge_money']+$realMoney,
+        ];
+        if($userType){
+            $info = '您通过企业网银充值：￥'.($realMoney+$fee).'，其中扣除充值手续费:￥'.$fee.'，实际到账金额:￥'.$realMoney;
+            $chargeType = MemberMoneylog::ENTERPRISE_MONEY_CHARGE;
+        }else{
+            $info = '个人网银充值-'.$realMoney;
+            $chargeType = MemberMoneylog::PERSON_MONEY_CHARGE;
+        }
+        $moneylog = array(
+            'uid'      =>  $uid,
+            'platform' =>  0,
+            'type'     =>  $chargeType,
+
+            'affect_money'  => $realMoney,
+            'affect_type'   => MemberMoneylog::AFFECT_CHARGE,
+            'affect_before' => $MM['total_money'],
+
+            'total_money'   => $MM['total_money']+$realMoney,
+            'charge_money'  => $MM['charge_money']+$realMoney,
+            'invest_money'  => $MM['invest_money'],
+            'withdraw_money'=> $MM['withdraw_money'],
+            'back_money'    => $MM['back_money'],
+            'collect_money' => $MM['collect_money'],
+            'freeze_money'  => $MM['freeze_money'],
+
+            'info' => $info,
+            'add_time' => time(),
+            'add_ip' => ApiUtils::get_client_ip(),
+            'target_uid' => 0,
+            'target_uname' => '在线充值',
+        );
+
+        MemberMoney::updateAll($money, ['id' => $mmoneyId]);
+        $Moneylog->add($moneylog);
+        return true;
+    }
 }

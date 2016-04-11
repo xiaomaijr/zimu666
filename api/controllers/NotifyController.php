@@ -35,28 +35,30 @@ class NotifyController extends Controller
      * 注册绑定回调接口
      */
     public function actionBind(){
-        if($_POST['ResultCode']=='88'){
-            $loan = new Escrow();
-            $verify =  $loan->registerVerify($_POST);
-            if($verify){
-                $str = '';
-                $user = Members::find()->where("user_name='{$_POST['LoanPlatformAccount']}'")->one();
-                $data = array(
+        $request = ApiUtils::filter($_REQUEST);
+        $resultCode = ApiUtils::getIntParam('ResultCode', $request);
+        $loan = new Escrow();
+        try{
+            $verify =  $loan->registerVerify($request);
+            if($resultCode == 88 && $verify){
+                $userAccount = ApiUtils::getStrParam('LoanPlatformAccount', $request);
+                $user = Members::findOne(['user_name' => $userAccount]);
+                $data = [
                     'type' => 0,
-                    'account'=>$_POST['AccountNumber'],
-                    'mobile' => $_POST['Mobile'],
-                    'email' => $_POST['Email'],
-                    'real_name' => $_POST['RealName'],
-                    'id_card'  => $_POST['IdentificationNo'],
+                    'account'=>$request['AccountNumber'],
+                    'mobile' => $request['Mobile'],
+                    'email' => $request['Email'],
+                    'real_name' => $request['RealName'],
+                    'id_card'  => $request['IdentificationNo'],
                     'uid' => $user['id'],
                     'platform' => 0,
-                    'platform_marked' => $_POST['PlatformMoneymoremore'],
-                    'qdd_marked' => $_POST['MoneymoremoreId'],
+                    'platform_marked' => $request['PlatformMoneymoremore'],
+                    'qdd_marked' => $request['MoneymoremoreId'],
                     'invest_auth' => 0,
                     'repayment' => 0,
                     'secondary_percent' => 0,
                     'add_time' => time(),
-                );
+                ];
                 $objEscAcc = new EscrowAccount();
                 if($objEscAcc->add($data)){
                     $str = "SUCCESS";
@@ -64,17 +66,17 @@ class NotifyController extends Controller
                     echo 'ERROR';
                     return;
                 }
-
+                MessageConfig::Notice(10, '', $user['id']);
                 //更新用户信息和状态
                 $userid = $user['id'];//用户id
-                $member['user_phone'] = $_POST['Mobile'];
-                $member['user_email'] = $_POST['Email'];
+                $member['user_phone'] = $request['Mobile'];
+                $member['user_email'] = $request['Email'];
                 Members::updateAll($member, ['id' => $userid]);
 
                 //用户详情
-                $member_info['idcard'] = $_POST['IdentificationNo'];
-                $member_info['real_name'] = $_POST['RealName'];
-                $member_info['cell_phone'] = $_POST['Mobile'];
+                $member_info['idcard'] = $request['IdentificationNo'];
+                $member_info['real_name'] = $request['RealName'];
+                $member_info['cell_phone'] = $request['Mobile'];
                 $member_info['up_time'] = time();
                 $b = MemberInfo::getCountByCondition(['uid' => $userid]);
                 if ($b == 1) {
@@ -84,94 +86,73 @@ class NotifyController extends Controller
                     $objMemInfo = new MemberInfo();
                     $objMemInfo-> add($member_info);
                 }
-
-                $data_apply['idcard'] = $_POST['IdentificationNo'];
-                $data_apply['up_time'] = time();
-                $data_apply['uid'] = $userid;
-                $data_apply['status'] = 0;
-                NameApply::add($data_apply);//实名认证更新
-                MembersStatus::add(['uid' => $userid, 'id_status' => 1]);//会员认证状态更新
+                MembersStatus::add(['uid' => $userid, 'id_status' => 1, 'phone_status'=>1]);//会员认证状态更新
+                MemberMoney::add(['uid' => $userid, 'platform' => 0]);
                 $notifyData = [
-                    'data_md5' => md5($_POST),
+                    'data_md5' => md5($request),
                     'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                    'data' => json_encode($_POST),
+                    'data' => json_encode($request),
                     'type' => '绑定账号' . $str,
                 ];
                 Notify::add($notifyData);
-                //用户状态
-                MembersStatus::setMemberStatus($userid, 'phone', 1, 10, '手机');
-                MembersStatus::setMemberStatus($userid, 'email', 1, 9, '邮箱');
-                echo $str;exit;
             }
+
+        }catch(\Exception $e){
+
         }
     }
 
     /**
      * 充值回调地址
-     *
      */
     public function actionCharge(){
-        $loan = new Escrow();
+        try{
+            $request = ApiUtils::filter($_REQUEST);
+            $resultCode = ApiUtils::getIntParam('ResultCode', $request);
+            $loan = new Escrow();
+            $verify = $loan->chargeVerify($request);
 
-        //验证签名
-        $_POST = ApiUtils::filter($_POST);
-        $verify = $loan->chargeVerify($_POST);
-
-        //订单id
-        $orders = $_POST['OrderNo'];
-        $id = intval(substr($orders,12));
-        $info = array();
-
-        //更新回调状态
-        if($id > 0){
-            $info = $obj = MemberPayonline::findOne($id);
-            $obj->updateNotifyStatus();
-        }
-
-        //更新订单和金额，并返回结果
-        $str = 'ERROR';
-        if($verify && $_POST['ResultCode']=='88' && $info){
-            if($info['status']==1){
-                $str = 'SUCCESS';
-            }else{
-                $updata = array(
-                    'status'=>'1',
-                    'loan_no'=> $_POST['LoanNo'],
-                );
-                if(intval($_POST['Fee'])>0) {
-                    $realMoney = $_POST['Amount'] - $_POST['Fee'];
-                } else {
-                    $realMoney = $_POST['Amount'];
-                }
-                $moneyLogTabName = 'lzh_member_moneylog_' . intval($info['uid']%10);
-                $transaction = \Yii::$app->getDb()->beginTransaction();
-                try{
-                    $objMonLog = new MemberMoneylog(['tableName' => $moneyLogTabName]);
-                    if($objMonLog->memberMoneyLog($info['uid'],3,$realMoney,"在线充值")) {
-                        if(!MemberPayonline::updateAll($updata, ['id' => $id])){
-                            throw new ApiBaseException(ApiErrorDescs::ERR_RECHARGE_NOTIFY_PAYLINE_UPDATE_FAIL);
-                        }//核实成功，
-                        $transaction->commit();
-                        MessageConfig::Notice(11, '',$info['uid'], ['real_money' => $realMoney]);
-                        $str = "SUCCESS";
-                    }
-                }catch(ApiBaseException $e){
-                    $transaction->rollback();
-                }
+            $orderNo = ApiUtils::getStrParam('OrderNo', $request);
+            $id = intval(substr($orderNo,12));
+            if($id<0){
+                echo 'ERROR';
+                return;
             }
-            $notifyData = [
-                'data_md5' => md5($_POST),
-                'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                'data' => json_encode($_POST),
-                'type' => '充值' . $str,
-            ];
-            Notify::add($notifyData);
+            $pLine = MemberPayonline::findOne(['id' => $id]);
+            $userType = 0;
+            if($verify && $resultCode == 88 && $pLine){
+                if($pLine['status'] == 0){
+                    $fee = ApiUtils::getFloatParam('Fee', $request);
+                    $amount = ApiUtils::getFloatParam('Amount', $request);
+                    $realMoney = $amount - $fee;
+                    $objMM = new MemberMoney();
+                    $objMM->setUserChargeMoneyInfo($pLine['uid'], $realMoney,'用户在线充值',$userType,$fee);
+
+                    $save = [
+                        'status' => '1',
+                        'loan_no' => ApiUtils::getStrParam('LoanNo', $request),
+                    ];
+                    MemberPayonline::updateAll($save, ['id' => $id]);
+                    MessageConfig::Notice(4, '',$pLine['uid'], ['real_money' => $realMoney, 'fee' => $fee]);
+                    $notifyData = [
+                        'data_md5' => md5($_POST),
+                        'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                        'data' => json_encode($_POST),
+                        'type' => '充值SUCCESS',
+                    ];
+                    Notify::add($notifyData);
+                }
+            }else{
+                MemberPayonline::updateAll(['status' => 2], ['id' => $id]);
+            }
+            echo 'SUCCESS';
+            return ;
+
+        }catch(\Exception $e){
+            $log = sprintf('tag : charge_callback_notify | verify : %s | result : %s | post : %s', var_export($verify, true), $str, json_encode($_POST));
+            \Yii::$app->logging->debug($log);
+            exit;
         }
-        //返回结果并记录日志
-        echo $str;
-        $log = sprintf('tag : charge_callback_notify | verify : %s | result : %s | post : %s', var_export($verify, true), $str, json_encode($_POST));
-        \Yii::$app->logging->debug($log);
-        exit;
     }
     /*
      * 提现回调
@@ -179,7 +160,7 @@ class NotifyController extends Controller
     public function actionWithdraw(){
         try{
             $request = ApiUtils::filter($_REQUEST);
-            $resultCode = ApiUtils::getIntParam('resultCode', $request);
+            $resultCode = ApiUtils::getIntParam('ResultCode', $request);
             $objEsc = new Escrow();
             $str = "SUCCESS";
             $verify = $objEsc->withdrawVerify($request);
