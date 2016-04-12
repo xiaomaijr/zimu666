@@ -126,33 +126,38 @@ class BorrowInvestor extends BorrowInvest
      * 获取某个标投标总人数及投资总额
      */
     public function getInvestPersonAndMoneyTotal($borrowId){
-        $info = ['c' => 0, 's' => 0];
-        $cache = self::getCache();
-        $key = self::$tableName;
-        $field = 'borrow_id:' . $borrowId;
-        if(!$cache->hExists($key, $field)){
-            $infos = self::find()->select('investor_capital')->from(self::$tableName)->where("loanno != ''")->andWhere(['borrow_id' => $borrowId])
-                ->asArray()->all();
-            if(empty($infos)) return $info;
-            $ids = ApiUtils::getCols($infos, 'id');
-            $cache->hSet($key, $field, $ids);
-        }else{
-            $ids = $cache->hGet($key, $field);
-            $infos = self::gets($ids);
-        }
-        $info['c'] = count($infos);
+        $data = ['c' => 0, 's' => 0];
+
+        $infos = $this->_getBorrowInvestRecord($borrowId);
         $intorTotal = 0;
         foreach($infos as $row){
+            if(empty($row['loanno'])) continue;
             $intorTotal += $row['investor_capital'];
+            $data['c'] ++;
         }
-        $info['s'] = $intorTotal;
-        return $info;
+        $data['s'] = $intorTotal;
+        return $data;
     }
     /*
      * 获取投标记录
      */
     public function getInvestRecordByBid($borrowId, $page = 1, $pageSize = 100){
         $data = [];
+        $infos = $this->_getBorrowInvestRecord($borrowId);
+        $investorUids = array_unique(ApiUtils::getCols($infos, 'investor_uid'));
+        $userInfos = ApiUtils::getMap(Members::gets($investorUids), 'id');
+        foreach($infos as $info){
+            $tmp = self::toApiArr($info);
+            $tmp['user_name'] = ApiUtils::replaceByLength($userInfos[$info['investor_uid']]['user_name'],4, 4, -4);
+            $data[] = $tmp;
+        }
+        return $data;
+    }
+    /*
+     * 获取标原始投资记录
+     */
+    private function _getBorrowInvestRecord($borrowId){
+        $infos = [];
         $field = 'borrow_id:' . $borrowId;
         $cache = self::getCache();
         if($cache->hExists(self::$tableName, $field)){
@@ -164,14 +169,7 @@ class BorrowInvestor extends BorrowInvest
             $ids = ApiUtils::getCols($infos, 'id');
             $cache->hSet(self::$tableName, $field, $ids);
         }
-        $investorUids = array_unique(ApiUtils::getCols($infos, 'investor_uid'));
-        $userInfos = ApiUtils::getMap(Members::gets($investorUids), 'id');
-        foreach($infos as $info){
-            $tmp = self::toApiArr($info);
-            $tmp['user_name'] = ApiUtils::replaceByLength($userInfos[$info['investor_uid']]['user_name'],4, 4, -4);
-            $data[] = $tmp;
-        }
-        return $data;
+        return $infos;
     }
     /*
      * api返回结构过滤字段

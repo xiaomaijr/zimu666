@@ -60,10 +60,4 @@
 </body>
 
 </html>
-<script>
-    $(function(){
-        var time = setTimeout(function(){
-            window.location.href = "xiaomai://withdraw";
-        },5000)
-    })
-</script>
+

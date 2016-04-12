@@ -57,10 +57,4 @@
 </body>
 
 </html>
-<script>
-    $(function(){
-        var time = setTimeout(function(){
-            window.location.href = "xiaomai://invest";
-        },5000)
-    })
-</script>
+

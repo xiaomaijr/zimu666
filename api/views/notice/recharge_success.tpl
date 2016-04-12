@@ -59,10 +59,3 @@
 </body>
 
 </html>
-<script>
-    $(function(){
-        var time = setTimeout(function(){
-            window.location.href = "xiaomai://recharge";
-        },5000)
-    })
-</script>

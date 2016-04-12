@@ -200,7 +200,7 @@ abstract class RedisActiveRecord extends ActiveRecord
             return $ret;
         }
         $cache = self::getCache();
-        $key = static::$tableName;
+        $key = static::tableName();
         $field = '';
         foreach($ids as $id){
             $field .= 'id:' . $id . ' ';
