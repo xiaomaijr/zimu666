@@ -157,7 +157,7 @@ class BorrowInvest extends RedisActiveRecord
                 $tmp[] = $info['investor_interest'];
                 continue;
             }
-            $tmp[] = $info['investor_interest']/$info['integral_days'] * $diffDay;
+            $tmp[] = $info['integral_days']?$info['investor_interest']/$info['integral_days'] * $diffDay:1000;
         }
         $income = sprintf("%.02f", array_sum($tmp));
         return $income;

@@ -35,13 +35,17 @@ use yii\web\Controller;
 
 class NotifyController extends Controller
 {
+    public $enableCsrfValidation=false;
+
     public function beforeAction($action)
     {
         if(parent::beforeAction($action)){
             $strControllerId = $action->controller->id;
             $strActionId = $action->id;
             \Yii::$app->logging->trace($strControllerId . '/' . $strActionId . json_encode($_REQUEST));
+            return true;
         }
+        return false;
     }
     /**
      * 注册绑定回调接口
@@ -100,10 +104,11 @@ class NotifyController extends Controller
                 }
                 MembersStatus::add(['uid' => $userid, 'id_status' => 1, 'phone_status'=>1]);//会员认证状态更新
                 MemberMoney::add(['uid' => $userid, 'platform' => 0]);
+                $paramJsonStr = json_encode($request);
                 $notifyData = [
-                    'data_md5' => md5($request),
+                    'data_md5' => md5($paramJsonStr),
                     'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                    'data' => json_encode($request),
+                    'data' => $paramJsonStr,
                     'type' => '绑定账号' . $str,
                 ];
                 Notify::add($notifyData);
@@ -146,10 +151,11 @@ class NotifyController extends Controller
                     ];
                     MemberPayonline::updateAll($save, ['id' => $id]);
                     MessageConfig::Notice(4, '',$pLine['uid'], ['real_money' => $realMoney, 'fee' => $fee]);
+                    $paramJsonStr = json_encode($request);
                     $notifyData = [
-                        'data_md5' => md5($_POST),
+                        'data_md5' => md5($paramJsonStr),
                         'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                        'data' => json_encode($_POST),
+                        'data' => $paramJsonStr,
                         'type' => '充值SUCCESS',
                     ];
                     Notify::add($notifyData);
@@ -202,10 +208,11 @@ class NotifyController extends Controller
                         //Notice(12,$withdrawUid,$amount);
                         //站内信通知
                         MessageConfig::Notice(5, '', $withdrawUid, ['withdraw_money' => $amount, 'fee' => $fee]);
+                        $paramJsonStr = json_encode($request);
                         $ntyData = [
-                            'data_md5' => md5($_POST),
+                            'data_md5' => md5($paramJsonStr),
                             'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                            'data' => json_encode($_POST),
+                            'data' => $paramJsonStr,
                             'type' => '提现' . $str,
                         ];
                         Notify::add($ntyData);
@@ -225,20 +232,22 @@ class NotifyController extends Controller
                         $objMM->setUserWithdrawRollMoneyInfo($withdrawUid,$amount,$info);
                         //站内信通知
                         MessageConfig::Notice(9, '', $withdrawUid, ['withdraw_money' => $amount]);
+                        $paramJsonStr = json_encode($request);
                         $ntyData = [
-                            'data_md5' => md5($_POST),
+                            'data_md5' => md5($paramJsonStr),
                             'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                            'data' => json_encode($_POST),
+                            'data' => $paramJsonStr,
                             'type' => '提现退回' . $str,
                         ];
                         Notify::add($ntyData);
                     }
                 }else{
                     //返回的Code提示错误 但是我们也应该认为成功了
+                    $paramJsonStr = json_encode($request);
                     $ntyData = [
-                        'data_md5' => md5($_POST),
+                        'data_md5' => md5($paramJsonStr),
                         'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                        'data' => json_encode($_POST),
+                        'data' => $paramJsonStr,
                         'type' => '提现ERR' . $resultCode,
                     ];
                     Notify::add($ntyData);
@@ -272,14 +281,15 @@ class NotifyController extends Controller
                 $investId = substr($orders,12);
                 $borrowId = intval($orderArray[1]);
                 $userId = intval($orderArray[2]);
-                $borrowInvestorTable = 'borrow_investor_'.intval($borrowId%3);
-                $investorDetailTable = 'investor_detail_'.intval($userId%5);
+                $borrowInvestorTable = 'lzh_borrow_investor_'.intval($borrowId%3);
+                $investorDetailTable = 'lzh_investor_detail_'.intval($userId%5);
                 if(intval($request['ResultCode']) != 88){
 //                    $this->investRollback($investId,$borrowId,$userId); //返回错误 删除投资信息  保留invest
+                    $paramJsonStr = json_encode($request);
                     $ntyData = [
-                        'data_md5' => md5($request),
+                        'data_md5' => md5($paramJsonStr),
                         'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                        'data' => json_encode($request),
+                        'data' => $paramJsonStr,
                         'type' => '投标失败',
                     ];
                     Notify::add($ntyData);
@@ -288,6 +298,9 @@ class NotifyController extends Controller
                     $iinfo = $objIntor->get($investId);
                     $borrowInfo = BorrowInfo::get($borrowId);
                     $investUserMoney = MemberMoney::getUserPlatformMoney($userId);
+                    $moneyLogTable = 'lzh_member_moneylog_'.intval($userId%10);
+                    $objMMLog = new MemberMoneylog(['tableName' => $moneyLogTable]);
+                    $objInvestDeta = new InvestDeta(['tableName' => $investorDetailTable]);
                     if(ApiUtils::getIntParam('Action', $request) == 2){ // 退回投标
                         //解除投资用户的冻结金额
                         $userTotalMoney =  $investUserMoney['total_money']  + $iinfo['investor_capital'];
@@ -331,20 +344,16 @@ class NotifyController extends Controller
 
                         $db = \Yii::$app->getDb();
                         $transaction = $db->beginTransaction();
-                        $tableNameEnd  =  intval($userId%10);
-                        $objMMLog = new MemberMoneylog(['tableName' => $tableNameEnd]);
                         $moneyMoneyLogId = $objMMLog->add($moneylog);
                         $moneyMoneyId = MemberMoney::updateAll($memberMoneyRecord, ['id' => $investUserMoney['id']]);
                         $borrowInfoId = BorrowInfo::updateAll($newBorrowInfo, ['id' => $investInfo['BatchNo']]);
 
                         $investorStatus = $objIntor->updateAll(['loanno' => '','status' => 1], ['id' => $investId]);
                         BorrowInvest::updateAll(['loanno'=> '','status'=>1], ['id' => $investId]);
-                        $objInvestDeta = new InvestDeta(['tableName' => $investorDetailTable]);
                         $detailStatus = $objInvestDeta->updateAll(['pay_status' => 0], ['invest_id' => $investId]);
                         //站内信
                         MessageConfig::Notice(3, '', $userId, ['invest_money'=>$iinfo['investor_capital'], 'borrow_id'=>$borrowId]);
 
-                        //更新缓存
                         if($moneyMoneyLogId && $moneyMoneyId && $borrowInfoId && $investorStatus && $detailStatus){
                             $transaction->commit();
 //                            $this->investRollback($investId,$borrowId,$userId);
@@ -365,7 +374,6 @@ class NotifyController extends Controller
                         $transaction = $db->beginTransaction();
                         $investorStatus = $objIntor->updateAll(['loanno'=>$investInfo['LoanNo'],'status'=>1], ['id' => $investId]);
                         BorrowInvest::updateAll(['loanno'=>$investInfo['LoanNo'],'status'=>1], ['id' => $investId]);
-                        $objInvestDeta = new InvestDeta(['tableName' => $investorDetailTable]);
                         $detailStatus = $objInvestDeta->updateAll(['pay_status' => 1], ['invest_id' => $investId]);
                         $upborrowarr = [];
                         $upborrowarr['has_borrow'] = $borrowInfo['has_borrow']+$money;
@@ -396,14 +404,14 @@ class NotifyController extends Controller
                             'target_uid' => $userId,
                             'target_uname' => 'invest_freeze',
                         ];
-                        $moneyLogTable = 'member_moneylog_'.intval($userId%10);
-                        $objMMLog = new MemberMoneylog(['tableName' => $moneyLogTable]);
-                        $moneyMoneyId = $moneyMoneyLogId = $objMMLog->add($moneylog);
+                        $moneyMoneyLogId = $objMMLog->add($moneylog);
+                        $moneyMoneyId = MemberMoney::updateAll($memberMoneyRecord, ['id' => $investUserMoney['id']]);
+
 
                         //站内信
                         MessageConfig::Notice(3, '', $userId, ['invest_money'=>$iinfo['investor_capital'], 'borrow_id'=>$borrowId]);
 
-                        if($investorStatus && $borrowStatus && $detailStatus && $moneyMoneyId ){
+                        if($investorStatus && $borrowStatus && $detailStatus && $moneyMoneyId && $moneyMoneyLogId ){
                             if( ($borrowInfo['has_borrow']+$money+$hongbaoMoney) == $borrowInfo['borrow_money']){
                                 $saveborrow = [];
                                 $saveborrow['borrow_status'] = 4;
@@ -419,10 +427,11 @@ class NotifyController extends Controller
                     }else{
                         $str =  "SUCCESS";
                     }
+                    $paramJsonStr = json_encode($request);
                     $ntyData = [
-                        'data_md5' => md5($request),
+                        'data_md5' => md5($paramJsonStr),
                         'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                        'data' => json_encode($request),
+                        'data' => $paramJsonStr,
                         'type' => '普通投标' . $str,
                     ];
                     Notify::add($ntyData);

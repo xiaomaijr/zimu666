@@ -85,7 +85,7 @@ class MemberMoney extends RedisActiveRecord
     public function updateEvent(){
         $cache = self::getCache();
         $cache->hDel(self::$tableName, 'id:' . $this->id);
-        $cache->hDel(self::$tableName, 'uid:' . $this->uid);
+//        $cache->hDel(self::$tableName, 'uid:' . $this->uid);
     }
 
     public function deleteEvent(){

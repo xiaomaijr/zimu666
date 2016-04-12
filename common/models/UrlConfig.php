@@ -12,7 +12,7 @@ namespace common\models;
 class UrlConfig
 {
     private static $configs = [
-        'fonts_path' => 'c:/Windows/Fonts/',//字体路径
+        'fonts_path' => __DIR__ . '/../../api/web/static/ttfs/',//字体路径
         'verify' => 'http://192.168.101.40/static/',//验证码
 //        'verify' => 'http://http://101.201.208.181:8888/static/',//验证码
 

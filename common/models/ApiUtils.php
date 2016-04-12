@@ -553,7 +553,7 @@ class ApiUtils
     public static function filter($params, $method = 'get'){
         if(is_array($params)){
             foreach($params as &$param){
-                self::filterSpecialChars($param);
+                self::filterSpecialChars($param, $method);
             }
         }
         return $params;

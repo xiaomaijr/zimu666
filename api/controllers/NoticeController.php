@@ -29,7 +29,9 @@ class NoticeController extends Controller
             $strControllerId = $action->controller->id;
             $strActionId = $action->id;
             \Yii::$app->logging->trace($strControllerId . '/' . $strActionId . json_encode($_REQUEST));
+            return true;
         }
+        return false;
     }
 
 
