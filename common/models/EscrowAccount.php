@@ -44,7 +44,7 @@ class EscrowAccount extends RedisActiveRecord
     public function rules()
     {
         return [
-            [['uid', 'account', 'mobile', 'email', 'real_name', 'id_card', 'platform_marked', 'qdd_marked', 'add_time', 'type', 'repayment', 'secondary_percent'], 'required'],
+            [['uid', 'account', 'mobile', 'real_name', 'id_card', 'platform_marked', 'qdd_marked', 'add_time', 'type', 'repayment', 'secondary_percent'], 'required'],
             [['uid', 'platform', 'add_time', 'type', 'auth_state', 'invest_auth', 'repayment', 'secondary_percent'], 'integer'],
             [['auth_fee'], 'number'],
             [['account', 'real_name'], 'string', 'max' => 30],
@@ -120,8 +120,11 @@ class EscrowAccount extends RedisActiveRecord
         return $data;
     }
 
-    public function add($params){
-        $this->attributes = $params;
+    public function add($attrs, $params = []){
+        $attributes = [
+            'email' => ApiUtils::getStrParam('email', $attrs),
+        ];
+        $this->attributes = array_merge($attributes, $attrs);
         $ret = $this->save();
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_QDD_REGISTER_FAIL);

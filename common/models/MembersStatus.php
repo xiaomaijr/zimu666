@@ -139,7 +139,7 @@ class MembersStatus extends RedisActiveRecord
         return $ret;
     }
 
-    public static function get($uid){
+    public static function get($uid, $tableName = ''){
         $cache = self::getCache();
         if($cache->hExists(self::$tableName, 'uid:' . $uid)){
             $info = $cache->hGet(self::$tableName, 'uid:' . $uid);

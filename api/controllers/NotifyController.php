@@ -103,7 +103,8 @@ class NotifyController extends Controller
                     $objMemInfo-> add($member_info);
                 }
                 MembersStatus::add(['uid' => $userid, 'id_status' => 1, 'phone_status'=>1]);//会员认证状态更新
-                MemberMoney::add(['uid' => $userid, 'platform' => 0]);
+                $objMM = new MemberMoney();
+                $objMM->add(['uid' => $userid, 'platform' => 0]);
                 $paramJsonStr = json_encode($request);
                 $notifyData = [
                     'data_md5' => md5($paramJsonStr),
@@ -113,9 +114,10 @@ class NotifyController extends Controller
                 ];
                 Notify::add($notifyData);
             }
-
         }catch(\Exception $e){
-
+            $log = sprintf('tag : bind_callback_notify | verify : %s | result : %s | post : %s', $e->getCode(), $e->getMessage(), json_encode($request));
+            \Yii::$app->logging->debug($log);
+            echo "ERROR";
         }
     }
 

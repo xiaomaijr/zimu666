@@ -136,4 +136,27 @@ class MemberInfo extends RedisActiveRecord
         $this->up_time = time();
         return $this->save();
     }
+
+    public static function updateAll($attributes, $condition = '', $params = [])
+    {
+        $idInfo = static::getDataByConditions($condition, 'uid desc', 0, 0, 'uid');
+        if(!$idInfo){
+            return 0;
+        }
+        $ids = ApiUtils::getCols($idInfo, 'uid');
+        $command = self::getDb()->createCommand();
+        $command->update(self::tableName(), $attributes, ['uid' => $ids], $params);
+        $ret = $command->execute();
+        if(!$ret){
+            return $ret;
+        }
+        $cache = self::getCache();
+        $key = static::tableName();
+        $field = '';
+        foreach($ids as $id){
+            $field .= 'uid:' . $id . ' ';
+        }
+        $cache->hDel($key, rtrim($field));
+        return $ret;
+    }
 }

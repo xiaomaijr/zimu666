@@ -5,7 +5,7 @@
     <meta name="viewport" charset="UTF-8" content="user-scalable=no"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <script src="/assets/js/jquery-1.8.3.min.js"></script>
-    <title>充值成功</title>
+    <title>提现成功</title>
     <style>
         @charset "utf-8";
         /* CSS Document */
@@ -34,9 +34,9 @@
         .ven_cont_con{padding:0.5rem;margin-bottom:1rem;}
         .ven_cont_con p{padding:1rem;border:1px solid #95b7ea;border-radius:3px;background:#edf3fd;font-size:1.125rem;line-height:1.5rem;color:#242424;}
         .contact{padding:2.5rem 0.5rem;font-size:1.125rem;}
-        .demandScc dt{float:left;margin-left:15%;width:4rem;}
+        .demandScc dt{float:left;margin-left:1.5rem;width:4rem;}
         .demandScc dt img{width:4rem;height:4rem;}
-        .demandScc dd{float:left;margin-left:1rem;line-height:5rem;font-size:1.5rem;color:#242424;}
+        .demandScc dd{float:left;margin-left:1rem;line-height:2rem;font-size:1.5rem;color:#242424;}
     </style>
 </head>
 <body>
@@ -49,7 +49,7 @@
         <article class="contact">
             <dl class="demandScc cf">
                 <dt><img src="/assets/img/notice/y_suc.gif" alt="提现申请成功"/></dt>
-                <dd>提现申请成功，请等待银行处理!</dd>
+                <dd>提现申请成功，<br/>请等待银行处理!</dd>
             </dl>
         </article>
     </section>
@@ -59,3 +59,4 @@
 </body>
 
 </html>
+

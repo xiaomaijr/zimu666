@@ -50,7 +50,7 @@
         <article class="contact">
             <dl class="demandScc cf">
                 <dt><img src="/assets/img/notice/y_fail.gif" alt="提现失败"/></dt>
-                <dd>提现失败!参数有误, 异常编码：<{$resultCode|default:''}></dd>
+                <dd>提现失败!<br/>参数有误, 异常编码：<{$resultCode|default:''}></dd>
             </dl>
         </article>
     </section>
