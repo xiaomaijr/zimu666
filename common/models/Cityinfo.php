@@ -74,7 +74,7 @@ class Cityinfo extends RedisActiveRecord
             $ids = $cache->hGet(self::$tableName, $field);
             $infos = self::gets($ids);
         }else{
-            $infos = self::getDataByConditions(['parentid' => $parentId, 'id', 0, 0]);
+            $infos = self::getDataByConditions(['parentid' => $parentId], 'id', 0, 0);
             if(empty($infos)) return $infos;
             $ids = ApiUtils::getCols($infos, 'id');
             $cache->hSet(self::$tableName, $field, $ids);

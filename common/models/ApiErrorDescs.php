@@ -78,6 +78,7 @@ class ApiErrorDescs
     const ERR_RECHARGE_NOTIFY_FAIL = 4005;//充值回调更新mmoney失败
     const ERR_RECHARGE_MMLOG_ADD_FAIL = 4006;//充值回调添加mmlog失败
     const ERR_RECHARGE_NOTIFY_PAYLINE_UPDATE_FAIL = 4007;//充值回调更新payline失败
+    const ERR_THIRD_VERIFY_FAIL = 4008;//第三方秘钥验证错误
 
 
 
@@ -154,6 +155,7 @@ class ApiErrorDescs
         self::ERR_RECHARGE_NOTIFY_FAIL => '充值回调更新mmoney失败',
         self::ERR_RECHARGE_MMLOG_ADD_FAIL => '充值回调添加mmlog失败',
         self::ERR_RECHARGE_NOTIFY_PAYLINE_UPDATE_FAIL => '充值回调更新payline失败',
+        self::ERR_THIRD_VERIFY_FAIL => '第三方秘钥验证错误',
 
     ];
 

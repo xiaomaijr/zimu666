@@ -142,10 +142,10 @@ class NotifyController extends Controller
                 $fee = ApiUtils::getFloatParam('Fee', $request);
                 $amount = ApiUtils::getFloatParam('Amount', $request);
                 $loanNo = ApiUtils::getStrParam('LoanNo', $request);
-                $transaction = \Yii::$app->getDb()->beginTransaction();
                 try{
                     $realMoney = $amount - $fee;
                     $objMM = new MemberMoney();
+                    $transaction = \Yii::$app->getDb()->beginTransaction();
                     $objMM->setUserChargeMoneyInfo($pLine['uid'], $realMoney, $loanNo, '用户在线充值', $userType, $fee);
 
                     $save = [
@@ -155,8 +155,8 @@ class NotifyController extends Controller
                     if(MemberPayonline::updateAll($save, ['id' => $id]) === false){
                         throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '充值记录更新失败');
                     }
-                    MessageConfig::Notice(4, '',$pLine['uid'], ['real_money' => $realMoney, 'fee' => $fee]);
                     $transaction->commit();
+                    MessageConfig::Notice(4, '',$pLine['uid'], ['real_money' => $realMoney, 'fee' => $fee]);
                     $paramJsonStr = json_encode($request);
                     $notifyData = [
                         'data_md5' => md5($paramJsonStr),
@@ -170,7 +170,7 @@ class NotifyController extends Controller
                     $log = sprintf('tag : charge_callback_notify | verify : %s | result : %s | post : %s', $e->getCode(), $e->getMessage(), json_encode($request));
                     \Yii::$app->logging->debug($log);
                     echo 'ERROR';
-                    exit;
+                    return ;
                 }
             }
         }else{
@@ -189,80 +189,98 @@ class NotifyController extends Controller
             $objEsc = new Escrow();
             $str = "SUCCESS";
             $verify = $objEsc->withdrawVerify($request);
-            if($verify){
-                $orderNo = ApiUtils::getStrParam('orderNo', $request);
-                $ids = explode('-', $orderNo);
-                $withdrawUid = intval($ids[1]);
-                $withdrawNid = intval($ids[2]);
-                $withdrawInfo = MemberWithdraw::getDataByID($withdrawNid);
-                if($resultCode == 88 && $withdrawInfo['withdraw_status'] == MemberWithdraw::WITHDRAW_STATUS_SUBMIT){
-                    $amount = ApiUtils::getFloatParam('Amount', $request);
-                    $fee = ApiUtils::getFloatParam('FeeWithdraws', $request);
-                    $updata = [];
-                    $updata['withdraw_status'] = MemberWithdraw::WITHDRAW_STATUS_SUCCESS;
-                    $updata['first_fee']       = ApiUtils::getFloatParam('fee', $request);
-                    $updata['second_fee']      = $fee;
-                    $updata['success_money']   = ($amount-$fee);
-                    $updata['loanno']          = ApiUtils::getStrParam('LoanNo', $request);
-                    $updata['notify_time']     = time();
-                    $effectNums = MemberWithdraw::updateAll($updata, ['id' => $withdrawNid]);
-                    if($effectNums){
-                        $info   = sprintf("提现成功,扣除实际手续费%01.2f元，到账金额%01.2f元", $fee, ($amount-$fee));
-                        //更新用户的money
-                        $objMM = new MemberMoney();
-                        $objMM->setUserWithdrawMoneyInfo($withdrawUid,$amount,$info);
-                        //短信通知
-                        //Notice(12,$withdrawUid,$amount);
-                        //站内信通知
-                        MessageConfig::Notice(5, '', $withdrawUid, ['withdraw_money' => $amount, 'fee' => $fee]);
-                        $paramJsonStr = json_encode($request);
-                        $ntyData = [
-                            'data_md5' => md5($paramJsonStr),
-                            'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                            'data' => $paramJsonStr,
-                            'type' => '提现' . $str,
-                        ];
-                        Notify::add($ntyData);
-                    }
-                }elseif($resultCode == 89){ //退回资金
-                    $updata = [];
-                    $updata['withdraw_status'] = MemberWithdraw::WITHDRAW_STATUS_RETURNED;
-                    $updata['is_rollback']     = 1;
-                    $updata['rollback_time']   = time();
-                    $updata['rollback_loanno'] = ApiUtils::getStrParam('LoanNo', $request);
-                    $effectNums = MemberWithdraw::updateAll($updata, ['id' => $withdrawNid]);
-                    if($effectNums){
-                        $amount = ApiUtils::getFloatParam('Amount', $request);
-                        $info = sprintf("提现退回资金%01.2f元", $amount);
-                        //更新用户的money
-                        $objMM = new MemberMoney();
-                        $objMM->setUserWithdrawRollMoneyInfo($withdrawUid,$amount,$info);
-                        //站内信通知
-                        MessageConfig::Notice(9, '', $withdrawUid, ['withdraw_money' => $amount]);
-                        $paramJsonStr = json_encode($request);
-                        $ntyData = [
-                            'data_md5' => md5($paramJsonStr),
-                            'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                            'data' => $paramJsonStr,
-                            'type' => '提现退回' . $str,
-                        ];
-                        Notify::add($ntyData);
-                    }
-                }else{
-                    //返回的Code提示错误 但是我们也应该认为成功了
-                    $paramJsonStr = json_encode($request);
-                    $ntyData = [
-                        'data_md5' => md5($paramJsonStr),
-                        'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-                        'data' => $paramJsonStr,
-                        'type' => '提现ERR' . $resultCode,
-                    ];
-                    Notify::add($ntyData);
-                }
-                echo $str;
+            if(!$verify){
+                throw new ApiBaseException(ApiErrorDescs::ERR_THIRD_VERIFY_FAIL);
             }
+            $orderNo = ApiUtils::getStrParam('OrderNo', $request);
+            $ids = explode('-', $orderNo);
+            $withdrawUid = intval($ids[1]);
+            $withdrawNid = intval($ids[2]);
+            $withdrawInfo = MemberWithdraw::getDataByID($withdrawNid);
+            if($resultCode == 88 && $withdrawInfo['withdraw_status'] == MemberWithdraw::WITHDRAW_STATUS_SUBMIT){
+                $amount = ApiUtils::getFloatParam('Amount', $request);
+                $fee = ApiUtils::getFloatParam('FeeWithdraws', $request);
+                $loanNo = ApiUtils::getStrParam('LoanNo', $request);
+                $updata = [];
+                $updata['withdraw_status'] = MemberWithdraw::WITHDRAW_STATUS_SUCCESS;
+                $updata['first_fee']       = ApiUtils::getFloatParam('fee', $request);
+                $updata['second_fee']      = $fee;
+                $updata['success_money']   = ($amount-$fee);
+                $updata['loanno']          = $loanNo;
+                $updata['notify_time']     = time();
+                try {
+                    $transaction = \Yii::$app->getDb()->beginTransaction();
+                    $effectNums = MemberWithdraw::updateAll($updata, ['id' => $withdrawNid]);
+                    if (!$effectNums) {
+                        throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现订单更新失败');
+                    }
+                    $info = sprintf("提现成功,扣除实际手续费%01.2f元，到账金额%01.2f元", $fee, ($amount - $fee));
+                    //更新用户的money
+                    $objMM = new MemberMoney();
+                    $objMM->setUserWithdrawMoneyInfo($withdrawUid, $loanNo, $amount, $info);
+                    $transaction->commit();
+                }catch(ApiBaseException $e){
+                    $transaction->rollBack();
+                    throw new ApiBaseException($e->getCode(), $e->getMessage());
+                }
+                //短信通知
+                //Notice(12,$withdrawUid,$amount);
+                //站内信通知
+                MessageConfig::Notice(5, '', $withdrawUid, ['withdraw_money' => $amount, 'fee' => $fee]);
+                $paramJsonStr = json_encode($request);
+                $ntyData = [
+                    'data_md5' => md5($paramJsonStr),
+                    'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                    'data' => $paramJsonStr,
+                    'type' => '提现' . $str,
+                ];
+                Notify::add($ntyData);
+            }elseif($resultCode == 89){ //退回资金
+                $updata = [];
+                $updata['withdraw_status'] = MemberWithdraw::WITHDRAW_STATUS_RETURNED;
+                $updata['is_rollback']     = 1;
+                $updata['rollback_time']   = time();
+                $updata['rollback_loanno'] = ApiUtils::getStrParam('LoanNo', $request);
+                try {
+                    $transaction = \Yii::$app->getDb()->beginTransaction();
+                    $effectNums = MemberWithdraw::updateAll($updata, ['id' => $withdrawNid]);
+                    if (!$effectNums) {
+                        throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现订单更新失败');
+                    }
+                    $amount = ApiUtils::getFloatParam('Amount', $request);
+                    $info = sprintf("提现退回资金%01.2f元", $amount);
+                    //更新用户的money
+                    $objMM = new MemberMoney();
+                    $objMM->setUserWithdrawRollMoneyInfo($withdrawUid, $amount, $info);
+                    $transaction->commit();
+                }catch(ApiBaseException $e){
+                    $transaction->rollBack();
+                    throw new ApiBaseException($e->getCode(), $e->getMessage());
+                }
+                //站内信通知
+                MessageConfig::Notice(9, '', $withdrawUid, ['withdraw_money' => $amount]);
+                $paramJsonStr = json_encode($request);
+                $ntyData = [
+                    'data_md5' => md5($paramJsonStr),
+                    'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                    'data' => $paramJsonStr,
+                    'type' => '提现退回' . $str,
+                ];
+                Notify::add($ntyData);
+            }else{
+                //返回的Code提示错误 但是我们也应该认为成功了
+                $paramJsonStr = json_encode($request);
+                $ntyData = [
+                    'data_md5' => md5($paramJsonStr),
+                    'notify_url' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+                    'data' => $paramJsonStr,
+                    'type' => '提现ERR' . $resultCode,
+                ];
+                Notify::add($ntyData);
+            }
+            echo $str;
         }catch(\Exception $e){
-            $log = sprintf('tag : withdraw_callback_notify | verify : %s | result : %s | post : %s', var_export($verify, true), $str, json_encode($_POST));
+            $log = sprintf('tag : withdraw_callback_notify | verify : %s | result : %s | post : %s', $e->getCode(), $e->getMessage(), json_encode($request));
             \Yii::$app->logging->debug($log);
             echo "ERROR";
         }

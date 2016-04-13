@@ -186,17 +186,18 @@ class MemberMoney extends RedisActiveRecord
      * @param $info
      *
      */
-    public function setUserWithdrawMoneyInfo($uid, $realMoney,$info='用户提现'){
+    public function setUserWithdrawMoneyInfo($uid, $loanNo, $realMoney, $info='用户提现'){
         if(empty($uid) || empty($realMoney)){
-            return false;
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '用户id或提现金额不能为空');
         }
         $MM = self::getUserPlatformMoney($uid);
+        $mmoneyId = $MM?$MM['id']:0;
         if(empty($MM) || !is_array($MM)){
             $mmoneyId = $this->add(['uid'=>$uid,'platform'=>0]);
             $MM = self::getUserPlatformMoney($uid);
         }
         $tableEnd = intval($uid%10);
-        $Moneylog = new MemberMoneylog(['tableName' => 'member_moneylog_'.$tableEnd]);
+        $Moneylog = new MemberMoneylog(['tableName' => 'lzh_member_moneylog_'.$tableEnd]);
         $money = [
             'total_money'    => $MM['total_money']-$realMoney,
             'withdraw_money' => $MM['withdraw_money']+$realMoney,
@@ -217,6 +218,7 @@ class MemberMoney extends RedisActiveRecord
             'back_money'    => $MM['back_money'],
             'collect_money' => $MM['collect_money'],
             'freeze_money'  => $MM['freeze_money'],
+            'request_no' => $loanNo,
 
             'info' => $info,
             'add_time' => time(),
@@ -224,30 +226,35 @@ class MemberMoney extends RedisActiveRecord
             'target_uid' => 0,
             'target_uname' => '在线提现',
         ];
-        MemberMoney::updateAll($money, ['id' => $mmoneyId]);
-        $Moneylog->add($moneylog);
+        if(!MemberMoney::updateAll($money, ['id' => $mmoneyId])){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现用户资金账户更新失败');
+        }
+        if(!$Moneylog->add($moneylog)){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现资金日志添加失败');
+        }
         return true;
     }
 
 
-    /**
+    /*
      * @param $uid
      * @param $type
      * @param $realMoney
      * @param $info
-     *
+     * @param $loanNo
      */
-    public function setUserWithdrawRollMoneyInfo($uid, $realMoney,$info='用户提现退回'){
+    public function setUserWithdrawRollMoneyInfo($uid, $loanNo, $realMoney, $info='用户提现退回'){
         if(empty($uid) || empty($realMoney)){
-            return false;
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '用户id或提现金额不能为空');
         }
         $MM = self::getUserPlatformMoney($uid);
+        $mmoneyId = $MM?$MM['id']:0;
         if(empty($MM) || !is_array($MM)){
             $mmoneyId = $this->add(['uid'=>$uid,'platform'=>0]);
             $MM = self::getUserPlatformMoney($uid);
         }
         $tableEnd = intval($uid%10);
-        $Moneylog = new MemberMoneylog(['tableName' => 'member_moneylog_'.$tableEnd]);
+        $Moneylog = new MemberMoneylog(['tableName' => 'lzh_member_moneylog_'.$tableEnd]);
         $money = [
             'total_money'    => $MM['total_money']+$realMoney,
             'withdraw_money' => $MM['withdraw_money']-$realMoney,
@@ -268,6 +275,7 @@ class MemberMoney extends RedisActiveRecord
             'back_money'    => $MM['back_money'],
             'collect_money' => $MM['collect_money'],
             'freeze_money'  => $MM['freeze_money'],
+            'request_no' => $loanNo,
 
             'info' => $info,
             'add_time' => time(),
@@ -275,8 +283,12 @@ class MemberMoney extends RedisActiveRecord
             'target_uid' => 0,
             'target_uname' => '在线提现退回',
         ];
-        MemberMoney::updateAll($money, ['id' => $mmoneyId]);
-        $Moneylog->add($moneylog);
+        if(!MemberMoney::updateAll($money, ['id' => $mmoneyId])){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现退回用户资金账户更新失败');
+        }
+        if(!$Moneylog->add($moneylog)){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '提现退回资金日志添加失败');
+        }
         return true;
     }
     /*
