@@ -178,10 +178,10 @@ class MessageConfig
                 $objSubInMsg = new InnerMsg(['tableName' => $innerMsgTabName]);
                 return $objSubInMsg->add($contents);//分表
             case 4 :   //充值成功添加站内信
-                if(isset($data['fee'])){
+                if(!isset($data['fee'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_RECHARGE_TRADE_NO_EMPTY);
                 }
-                if(isset($data['real_money'])){
+                if(!isset($data['real_money'])){
                     throw new ApiBaseException(ApiErrorDescs::ERR_NOTICE_RECHARGE_MONEY_EMPTY);
                 }
                 $notice = self::_getNoticeByKey('recharge');
@@ -192,7 +192,7 @@ class MessageConfig
                     $msg = str_replace(['#MONEY#', '#FEE#', '#RECHARGE#'], [$data['real_money'], $data['fee'], $recharge], $notice['msg'][1]);
                 }
                 $contents = [
-                    'title' => str_replace(['#RECHARGE#'], [$data['recharge_money']], $notice['title']),
+                    'title' => $notice['title'],
                     'msg' => $msg,
                     'uid' => $userId
                 ];

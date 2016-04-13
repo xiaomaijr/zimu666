@@ -50,7 +50,7 @@ class ApiErrorDescs
     const ERR_NOTICE_INVEST_ID_EMPTY = 1004;//通知内容标ID不能为空
     const ERR_NOTICE_INVEST_MONEY_EMPTY = 1005;//通知投标金额不能为空
     const ERR_NOTICE_RECHARGE_MONEY_EMPTY = 1006;//通知充值金额不能为空
-    const ERR_NOTICE_RECHARGE_TRADE_NO_EMPTY = 1007;//通知充值流水号不能为空
+    const ERR_NOTICE_RECHARGE_TRADE_NO_EMPTY = 1007;//通知充值手续费不能为空
     const ERR_NOTICE_WITHDRAW_MONEY_EMPTY = 1008;//通知提现金额不能为空
 
     //2000-3000投资错误信息
@@ -127,7 +127,7 @@ class ApiErrorDescs
         self::ERR_NOTICE_INVEST_ID_EMPTY => '通知内容标ID不能为空',
         self::ERR_NOTICE_INVEST_MONEY_EMPTY => '通知投标金额不能为空',
         self::ERR_NOTICE_RECHARGE_MONEY_EMPTY => '通知充值金额不能为空',
-        self::ERR_NOTICE_RECHARGE_TRADE_NO_EMPTY => '通知充值流水号不能为空',
+        self::ERR_NOTICE_RECHARGE_TRADE_NO_EMPTY => '通知充值手续费不能为空',
         self::ERR_NOTICE_WITHDRAW_MONEY_EMPTY => '通知提现金额不能为空',
 
         //2000-3000借款错误信息

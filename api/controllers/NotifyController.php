@@ -123,34 +123,40 @@ class NotifyController extends Controller
      * 充值回调地址
      */
     public function actionCharge(){
-        try{
-            $request = ApiUtils::filter($_REQUEST);
-            $resultCode = ApiUtils::getIntParam('ResultCode', $request);
-            $loan = new Escrow();
-            $verify = $loan->chargeVerify($request);
 
-            $orderNo = ApiUtils::getStrParam('OrderNo', $request);
-            $id = intval(substr($orderNo,12));
-            if($id<0){
-                echo 'ERROR';
-                return;
-            }
-            $pLine = MemberPayonline::findOne(['id' => $id]);
-            $userType = 0;
-            if($verify && $resultCode == 88 && $pLine){
-                if($pLine['status'] == 0){
-                    $fee = ApiUtils::getFloatParam('Fee', $request);
-                    $amount = ApiUtils::getFloatParam('Amount', $request);
+        $request = ApiUtils::filter($_REQUEST);
+        $resultCode = ApiUtils::getIntParam('ResultCode', $request);
+        $loan = new Escrow();
+        $verify = $loan->chargeVerify($request);
+
+        $orderNo = ApiUtils::getStrParam('OrderNo', $request);
+        $id = intval(substr($orderNo,19));
+        if($id<0){
+            echo 'ERROR';
+            return;
+        }
+        $pLine = MemberPayonline::findOne(['id' => $id]);
+        $userType = 0;
+        if($verify && $resultCode == 88 && $pLine){
+            if($pLine['status'] == 0){
+                $fee = ApiUtils::getFloatParam('Fee', $request);
+                $amount = ApiUtils::getFloatParam('Amount', $request);
+                $loanNo = ApiUtils::getStrParam('LoanNo', $request);
+                $transaction = \Yii::$app->getDb()->beginTransaction();
+                try{
                     $realMoney = $amount - $fee;
                     $objMM = new MemberMoney();
-                    $objMM->setUserChargeMoneyInfo($pLine['uid'], $realMoney,'用户在线充值',$userType,$fee);
+                    $objMM->setUserChargeMoneyInfo($pLine['uid'], $realMoney, $loanNo, '用户在线充值', $userType, $fee);
 
                     $save = [
                         'status' => '1',
-                        'loan_no' => ApiUtils::getStrParam('LoanNo', $request),
+                        'loan_no' => $loanNo,
                     ];
-                    MemberPayonline::updateAll($save, ['id' => $id]);
+                    if(MemberPayonline::updateAll($save, ['id' => $id]) === false){
+                        throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '充值记录更新失败');
+                    }
                     MessageConfig::Notice(4, '',$pLine['uid'], ['real_money' => $realMoney, 'fee' => $fee]);
+                    $transaction->commit();
                     $paramJsonStr = json_encode($request);
                     $notifyData = [
                         'data_md5' => md5($paramJsonStr),
@@ -159,18 +165,19 @@ class NotifyController extends Controller
                         'type' => '充值SUCCESS',
                     ];
                     Notify::add($notifyData);
+                }catch(ApiBaseException $e){
+                    $transaction->rollBack();
+                    $log = sprintf('tag : charge_callback_notify | verify : %s | result : %s | post : %s', $e->getCode(), $e->getMessage(), json_encode($request));
+                    \Yii::$app->logging->debug($log);
+                    echo 'ERROR';
+                    exit;
                 }
-            }else{
-                MemberPayonline::updateAll(['status' => 2], ['id' => $id]);
             }
-            echo 'SUCCESS';
-            return ;
-
-        }catch(\Exception $e){
-            $log = sprintf('tag : charge_callback_notify | verify : %s | result : %s | post : %s', var_export($verify, true), $str, json_encode($_POST));
-            \Yii::$app->logging->debug($log);
-            exit;
+        }else{
+            MemberPayonline::updateAll(['status' => 2], ['id' => $id]);
         }
+        echo 'SUCCESS';
+        return ;
     }
     /*
      * 提现回调

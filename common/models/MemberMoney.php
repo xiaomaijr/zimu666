@@ -285,17 +285,18 @@ class MemberMoney extends RedisActiveRecord
      * @param $realMoney
      * @param $info
      */
-    public function setUserChargeMoneyInfo($uid, $realMoney,$info='用户充值',$userType=0,$fee=0){
+    public function setUserChargeMoneyInfo($uid, $realMoney,$loanNo, $info='用户充值', $userType=0, $fee=0){
         if(empty($uid) || empty($realMoney)){
-            return false;
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '用户id或充值金额不能为空');
         }
         $MM = self::getUserPlatformMoney($uid);
+        $mmoneyId = $MM?$MM['id']:0;
         if(empty($MM) || !is_array($MM)){
             $mmoneyId = $this->add(['uid'=>$uid,'platform'=>0]);
             $MM = self::getUserPlatformMoney($uid);
         }
         $tableEnd = intval($uid%10);
-        $Moneylog = new MemberMoneylog(['tableName' => 'member_moneylog_'.$tableEnd]);
+        $Moneylog = new MemberMoneylog(['tableName' => 'lzh_member_moneylog_'.$tableEnd]);
         $money = [
             'total_money'    => $MM['total_money']+$realMoney,
             'charge_money' => $MM['charge_money']+$realMoney,
@@ -323,6 +324,7 @@ class MemberMoney extends RedisActiveRecord
             'back_money'    => $MM['back_money'],
             'collect_money' => $MM['collect_money'],
             'freeze_money'  => $MM['freeze_money'],
+            'request_no' => $loanNo,
 
             'info' => $info,
             'add_time' => time(),
@@ -331,8 +333,12 @@ class MemberMoney extends RedisActiveRecord
             'target_uname' => '在线充值',
         );
 
-        MemberMoney::updateAll($money, ['id' => $mmoneyId]);
-        $Moneylog->add($moneylog);
+        if(!MemberMoney::updateAll($money, ['id' => $mmoneyId])){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '充值用户资金账户更新失败');
+        }
+        if(!$Moneylog->add($moneylog)){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '充值资金日志添加失败');
+        }
         return true;
     }
 }
