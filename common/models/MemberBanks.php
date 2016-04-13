@@ -178,6 +178,7 @@ class MemberBanks extends RedisActiveRecord
             'status' => ApiUtils::getIntParam('status', $arr),
             'bank_province' => ApiUtils::getIntParam('bank_province', $arr),
             'bank_city' => ApiUtils::getIntParam('bank_city', $arr),
+            'bank_code' => ApiUtils::getIntParam('bank_name', $arr),
         ];
     }
 

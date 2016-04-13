@@ -14,6 +14,7 @@ use common\models\ApiConfig;
 use common\models\ApiErrorDescs;
 use common\models\ApiUtils;
 use common\models\Area;
+use common\models\Cityinfo;
 use common\models\TimeUtils;
 
 class CommonController extends ApiBaseController
@@ -50,7 +51,7 @@ class CommonController extends ApiBaseController
             $timer = new TimeUtils();
 
             $timer->start('get_area');
-            $areas = Area::getAreaByReid($reid);
+            $areas = Cityinfo::getCityByPid($reid);
             $timer->stop('get_area');
             $result = [
                 'code' => ApiErrorDescs::SUCCESS,

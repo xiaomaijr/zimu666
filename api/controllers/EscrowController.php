@@ -208,7 +208,7 @@ class EscrowController extends UserBaseController
                 throw new ApiBaseException(ApiErrorDescs::ERR_REGISTER_MESSAGE_CODE_ERROR);
             }
             $timer->stop('check_message_code');
-            //检查用户是否被加入黑名单
+//            检查用户是否被加入黑名单
             $timer->start('withdraw_limit');
             $memberInfo = Members::get($userId);
             if(!$memberInfo['is_withdraw']){
@@ -323,7 +323,7 @@ class EscrowController extends UserBaseController
         $submitdata['FeeQuota']              = $withDrawFee;
         $submitdata['CardNo']                = $bank['bank_num'];
         $submitdata['CardType']              = 0;//(0.借记卡 1.信用卡)
-        $submitdata['BankCode']              = $bank['bank_name'];//银行代码
+        $submitdata['BankCode']              = $bank['bank_code'];//银行代码
         $submitdata['BranchBankName']        = '';
         $submitdata['Province']              = $bank['bank_province'];
         $submitdata['City']                  = $bank['bank_city'];

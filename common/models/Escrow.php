@@ -279,7 +279,7 @@ class Escrow extends Component
         ];
         $str = '';
         foreach($dataStr as $v){
-            $str .= isset($arr[$v])?"$arr[$v]":'""';
+            $str .= isset($arr[$v])?"$arr[$v]":"";
         }
         if($this->antistate == 1) {
             $str = strtoupper(md5($str));
