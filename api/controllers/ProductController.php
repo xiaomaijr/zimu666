@@ -32,8 +32,9 @@ class ProductController extends ApiBaseController
             //获取产品列表
             $timer->start('product_list');
             $config = $this->_getConfByType($type);
-            $objPro = new Product($config);
-            $productList = $objPro->getList($request, $ids);
+//            $objPro = new Product($config);
+            $objPro = Product::factory($config);
+            $productList = $objPro->getList($request, ['borrow_status'  =>  2]);
             $timer->stop('product_list');
             //获取用户已投资产品
 //            if(!empty($request['user_id'])){
@@ -70,24 +71,54 @@ class ProductController extends ApiBaseController
 
     private function _getConfByType($type){
         $config = [
-            'type' => $type,
+//            'type' => $type,
         ];
         switch ($type){
             case 1 :
                 $typeConfig = [
-                    'listModelName' => 'common\models\BorrowInfo',
-                    'userModelName' => 'common\models\BorrowInvest',
-                    'listParams' => 'id, borrow_name, borrow_interest_rate, borrow_duration, borrow_money, borrow_min, repayment_type, has_borrow',
-                    'userParams' => 'borrow_id',
-                    'listCondition' => ['borrow_status'  =>  2],
-                    'userCondition' => ['investor_uid' => '', 'borrow_id' => ''],
-                    'listIndex' => 'id',
-                    'userIndex' => 'borrow_id',
+                    'class' =>  'common\models\BorrowInfo'
                 ];
+
+//                $typeConfig = [
+//                    'listModelName' => 'common\models\BorrowInfo',
+//                    'userModelName' => 'common\models\BorrowInvest',
+//                    'listParams' => 'id, borrow_name, borrow_interest_rate, borrow_duration, borrow_money, borrow_min, repayment_type, has_borrow',
+//                    'userParams' => 'borrow_id',
+//                    'listCondition' => ['borrow_status'  =>  2],
+//                    'userCondition' => ['investor_uid' => '', 'borrow_id' => ''],
+//                    'listIndex' => 'id',
+//                    'userIndex' => 'borrow_id',
+//                ];
                 break;
+            case 3 :
+                $typeConfig = [
+                    'class' => '\Fund',
+                ];
             default :
                 break;
         }
         return $config = array_merge($config, $typeConfig);
+    }
+
+    public function actionFundDetail(){
+        try{
+            $request = $_REQUEST;
+            $id = ApiUtils::getIntParam('id', $request);
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => \Fund::getDetail($id),
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
     }
 }

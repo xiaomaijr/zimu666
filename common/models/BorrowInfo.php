@@ -200,6 +200,7 @@ class BorrowInfo extends RedisActiveRecord
             $list = self::gets($ids);
         }else{
             $list = self::getDataByConditions($condition, 'id desc', $pageSize, $curPage, $params);
+            if(empty($list)) return $list;
             $ids = ApiUtils::getCols($list, 'id');
             $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
         }
@@ -242,8 +243,11 @@ class BorrowInfo extends RedisActiveRecord
      * 更新has_borrow并验证其是否小于borrow_money
      */
     public static function updateHasBorrow($id ,$money){
-        $sql = "update " . self::$tableName . " set has_borrow = has_borrow + " . $money . " where id = " . $id . " and has_borrow + " . $money . " < borrow_money";
-        $db = self::getDb();
-        return $db->createCommand($sql)->execute();
+        $ret = self::updateAllCounters(['has_borrow' => $money], ['id' => $id]);
+        if($ret){
+            $cache = self::getCache();
+            $cache->hDel(self::$tableName, 'id:' . $id);
+        }
+        return $ret;
     }
 }

@@ -20,6 +20,10 @@ class Product extends Component
     const PRODUCT_TYPE_BAOLIDAI = 4;//保理
     const REDIS_KEY_PRODUCT_LIST = 'product_list';
 
+    public static function factory($configs){
+        return \Yii::createObject($configs);
+    }
+
     /*
      * 获取产品列表
      */

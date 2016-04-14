@@ -147,7 +147,7 @@ class BorrowController extends ApiBaseController
             $money = ApiUtils::getFloatParam('money', $request);
             $timer = new TimeUtils();
             $timer->start('check_access_token');
-//            $this->checkAccessToken($request['access_token'], $uid);
+            $this->checkAccessToken($request['access_token'], $uid);
             $timer->stop('check_access_token');
             //投标过程
             $timer->start('invest');
