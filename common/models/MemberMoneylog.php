@@ -208,22 +208,34 @@ class MemberMoneylog extends RedisActiveRecord
     public function getFlowByUid($uid, $type = 0, $page = 1, $pageSize = 100){
         $data = [];
         if(empty($uid)) return $data;
+        $userFlow = $this->_getUserFlow($uid);
+        $lasterTime = strtotime('-1 month');
+        foreach($userFlow as $flow){
+            if($type > 0 && $flow['add_time'] > $lasterTime){
+                $data[] = self::toApiArr($flow);
+            }else{
+                $data[] = self::toApiArr($flow);
+            }
+        }
+        return $data;
+    }
+    /*
+     * 获取用户原始所有流水记录
+     */
+    private function _getUserFlow($uid){
         $field = 'uid:' . $uid;
         $cache = self::getCache();
         if(!$cache->hExists(self::$tableName, $field)){
-            $condition = empty($type)?['uid' => $uid]:['uid' => $uid, 'add_time > ' . strtotime('+1 month') ];
-            $userMsgs = self::getDataByConditions($condition, 'id desc', $pageSize, $page);
-            if(empty($userMsgs)) return $data;
-            $ids = ApiUtils::getCols($userMsgs, 'id');
+            $condition = ['uid' => $uid];
+            $userFlow = self::getDataByConditions($condition, 'id desc', 0, 0);
+            if(empty($userFlow)) return $userFlow;
+            $ids = ApiUtils::getCols($userFlow, 'id');
             $cache->hSet(self::$tableName, $field, $ids);
         }else{
             $ids = $cache->hGet(self::$tableName, $field);
-            $userMsgs = self::gets($ids);
+            $userFlow = self::gets($ids);
         }
-        foreach($userMsgs as $msg){
-            $data[] = self::toApiArr($msg);
-        }
-        return $data;
+        return $userFlow;
     }
     //api过滤参数
     public static function toApiArr($arr){

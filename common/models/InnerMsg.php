@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\redis\Cache;
 
 /**
  * This is the model class for table "lzh_inner_msg".
@@ -99,16 +100,16 @@ class InnerMsg extends RedisActiveRecord
     public function getMsgByUid($uid, $page = 1, $pageSize = 100){
         $data = [];
         if(empty($uid)) return $data;
-        $field = 'uid:' . $uid;
-        $cache = self::getCache();
-        if(!$cache->hExists(self::$tableName, $field)){
-            $userMsgs = self::getDataByConditions(['uid' => $uid], 'id desc', $pageSize, $page);
-            if(empty($userMsgs)) return $data;
-            $ids = ApiUtils::getCols($userMsgs, 'id');
-            $cache->hSet(self::$tableName, $field, $ids);
-        }else{
-            $ids = $cache->hGet(self::$tableName, $field);
+        $cacheKey = CacheKey::getCacheKey($page, CacheKey::CACHE_KEY_INNER_MSG_LIST);
+        $cache = new Cache();
+        if($cache->exists($cacheKey['key_name'])){
+            $ids = $cache->get($cacheKey['key_name']);
             $userMsgs = self::gets($ids);
+        }else{
+            $userMsgs = self::getDataByConditions(['uid' => $uid], 'id desc', $pageSize, $page);
+            if(empty($list)) return $userMsgs;
+            $ids = ApiUtils::getCols($userMsgs, 'id');
+            $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
         }
         foreach($userMsgs as $msg){
             $data[] = self::toApiArr($msg);

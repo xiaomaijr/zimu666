@@ -37,9 +37,9 @@ class UserController extends UserBaseController
             $timer = new TimeUtils();
             $timer->start('get_msg_list');
             //暂时没用到分表
-//            $tableName = 'lzh_inner_msg_' . $userId%5;
-//            $objMsg = new InnerMsg(['tableName' => $tableName]);
-            $objMsg = new InnerMsg();
+            $tableName = 'lzh_inner_msg_' . intval($userId%5);
+            $objMsg = new InnerMsg(['tableName' => $tableName]);
+//            $objMsg = new InnerMsg();
             $list = $objMsg->getMsgByUid($userId, $page, $pageSize);
             $timer->stop('get_msg_list');
 
