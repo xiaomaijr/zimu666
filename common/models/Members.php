@@ -134,7 +134,7 @@ class Members extends RedisActiveRecord
     public function register($params){
         $this->_checkPhoneRegistered($params['user_name']);
         $this->user_phone = $params['user_name'];
-        $this->user_pass = md5('a2m' . $params['passwd'] . '1df');;
+        $this->user_pass = md5('a2m' . $params['passwd'] . '1df');
         $this->reg_time = time();
         $this->reg_ip = ApiUtils::getStrParam('REMOTE_ADDR', $_SERVER);
         $this->last_log_ip = ApiUtils::getStrParam('REMOTE_ADDR', $_SERVER);
@@ -203,6 +203,17 @@ class Members extends RedisActiveRecord
             throw new ApiBaseException(ApiErrorDescs::ERR_USER_NAME_NOT_REGISTER);
         }elseif(!in_array($key, array_merge(MessageConfig::$checkNotExistMsgKeys, MessageConfig::$checkExistMsgKeys))){
             throw new ApiBaseException(ApiErrorDescs::ERR_ILL_REQUEST_MESSAGE);
+        }
+    }
+
+    public static function modifyUserPass($userId, $oldPwd, $newPwd){
+        $userInfo = self::findOne($userId);
+        if($userInfo['user_pass'] != md5('a2m' . $oldPwd . '1df')){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '原始密码输入有误');
+        }
+        $userInfo['user_pass'] = md5('a2m' . $newPwd . '1df');
+        if(!$userInfo->update()){
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '密码修改成功');
         }
     }
 

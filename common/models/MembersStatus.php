@@ -150,4 +150,18 @@ class MembersStatus extends RedisActiveRecord
         }
         return $info;
     }
+
+    public static function getAuthStauts($uid, $list = []){
+        $data = [];
+        $record = self::get($uid);
+        if(empty($record) || empty($list)) return $record;
+        foreach($record as $key=>$row){
+            foreach($list as $pre){
+                if(strpos($key, $pre . '_') !== false){
+                    $data[$key] = $row;
+                }
+            }
+        }
+        return $data;
+    }
 }

@@ -21,6 +21,8 @@ use common\models\MemberBanks;
 use common\models\MemberInfo;
 use common\models\MemberMoney;
 use common\models\MemberMoneylog;
+use common\models\Members;
+use common\models\MembersStatus;
 use common\models\TimeUtils;
 
 class UserController extends UserBaseController
@@ -320,18 +322,57 @@ class UserController extends UserBaseController
         \Yii::$app->end();
     }
     /*
-     * 修改用户名
+     * 修改密码
      */
-    public function actionModifyUserName(){
+    public function actionModifyUserPwd(){
         try{
-            $request = $_REQUEST;
-            $userName = ApiUtils::getStrParam('user_name', $request);
+            $request = array_merge($_GET, $_POST);
+            $oldPwd = ApiUtils::getStrParam('oldPwd', $request);
+            $newPwd = ApiUtils::getStrParam('new_pwd', $request);
+            $repeatNewPwd = ApiUtils::getStrParam('repeat_new_pwd', $request);
             $userId = ApiUtils::getIntParam('user_id', $request);
+            if($newPwd != $repeatNewPwd){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '新密码两次输入不一致');
+            }
 
             $timer = new TimeUtils();
             $timer->start('modify_user_name');
-
+            Members::modifyUserPass($userId, $oldPwd, $newPwd);
             $timer->stop('modify_user_name');
+
+            $result = [
+                'code' => ApiErrorDescs::ERR_UNKNOW_ERROR,
+                'message' => 'success',
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+     * 个人认证情况
+     */
+    public function actionAuth(){
+        try{
+            $request = array_merge($_GET, $_POST);
+            $userId = ApiUtils::getIntParam('user_id', $request);
+            $timer = new TimeUtils();
+            $timer->start('auth');
+            $mberStatus = MembersStatus::getAuthStauts($userId, ['phone', 'id', 'email']);
+            $timer->stop('auth');
+
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => $mberStatus
+            ];
         }catch(ApiBaseException $e){
             $result = [
                 'code' => $e->getCode(),

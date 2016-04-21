@@ -4,10 +4,11 @@ define('XIAOMAI_API_SIGN_SECRET', 'XIAOMAI_API_SIGN_SECRET');
 class Fund{
     private static $list = [
         1 => [
+            'id' => 1,
             'name' => '永德信多策略精选1号投资基金',
             'year_rate' => '15%-25%',
             'inverst_life' => '12',
-            'inverst_limit' => '1,000,000',
+            'inverst_limit' => '100万元',
             'custodian' => '平安银行',
             'type' => '多策略混合型',
             'risk_level' => '低风险',
@@ -19,10 +20,11 @@ class Fund{
             'fund_manager' => '何峰，男，北京大学经济学博士，20年金融证券投资经历，曾为中信证券、银河证券、国信证券等金融机构投资总监，某公募基金基金经理，期间管理业绩行业排名第2，遥遥领先同期产品。',
         ],
         2 => [
+            'id' => 2,
             'name' => '永德信债券1号私募投资基金',
             'year_rate' => '10%-15%',
             'inverst_life' => '12',
-            'inverst_limit' => '1,000,000',
+            'inverst_limit' => '100万元',
             'custodian' => '平安银行',
             'type' => '债券型基金+保本浮动性',
             'risk_level' => '低风险',
@@ -34,10 +36,11 @@ class Fund{
             'fund_manager' => '何峰，男，北京大学经济学博士，20年金融证券投资经历，曾为中信证券、银河证券、国信证券等金融机构投资总监，某公募基金基金经理，期间管理业绩行业排名第2，遥遥领先同期产品。',
         ],
         3 => [
+            'id' => 3,
             'name' => '永德信量化对冲1号私募投资基金',
             'year_rate' => '15%-25%',
             'inverst_life' => '12',
-            'inverst_limit' => '1,000,000',
+            'inverst_limit' => '100万元',
             'custodian' => '工商银行',
             'type' => '量化对冲+保本浮动性',
             'risk_level' => '低风险',
@@ -49,10 +52,11 @@ class Fund{
             'fund_manager' => '何峰，男，北京大学经济学博士，20年金融证券投资经历，曾为中信证券、银河证券、国信证券等金融机构投资总监，某公募基金基金经理，期间管理业绩行业排名第2，遥遥领先同期产品。',
         ],
         4 => [
+            'id' => 4,
             'name' => '永德信掘金1号私募投资基金',
             'year_rate' => '50%-150%',
             'inverst_life' => '12',
-            'inverst_limit' => '1,000,000',
+            'inverst_limit' => '100万元',
             'custodian' => '工商银行',
             'type' => '新三板+浮动性',
             'risk_level' => '较高风险',
@@ -66,7 +70,7 @@ class Fund{
     ];
 
     public function getList($request, $condition, $params = ''){
-        return self::$list;
+        return array_values(self::$list);
     }
 
     public static function getDetail($id){

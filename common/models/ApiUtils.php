@@ -91,11 +91,14 @@ class ApiUtils
      * @param $default 0.0
      * return float
      */
-    public static function getFloatParam($param, $arr, $decimal = 2){
+    public static function getFloatParam($param, $arr, $decimal = 2, $dec_point = '.', $thousands_sep = ','){
         if(!is_array($arr)){
             $arr = (array)$arr;
         }
-        return sprintf("%.0" . $decimal  . "f", self::getIntParam($param, $arr));
+        if(isset($arr[$param])){
+            return number_format($arr[$param], $decimal, $dec_point, $thousands_sep);
+        }
+        return number_format(0, $decimal);
     }
     /*
      * 从数组中获取指定key对应的value，value为string
@@ -109,7 +112,7 @@ class ApiUtils
             $arr = (array)$arr;
         }
         if(isset($arr[$param])){
-            return trim($arr[$param]);
+            return addslashes(htmlspecialchars(trim($arr[$param])));
         }
         return $default;
     }

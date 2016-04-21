@@ -166,23 +166,25 @@ class BorrowInfo extends RedisActiveRecord
      * 过滤列表api需要字段
      */
     public static function toApiArr($arr){
+        $borrowMoney = ApiUtils::getFloatParam('borrow_money', $arr);
+        $hasMoney = ApiUtils::getFloatParam('has_borrow', $arr);
         return [
             'id' => ApiUtils::getIntParam('id', $arr),
             'borrow_name' => ApiUtils::getStrParam('borrow_name', $arr),
             'borrow_duration' => ApiUtils::getIntParam('borrow_duration', $arr),
 //            'borrow_type' => self::$borrowTypeMap[ApiUtils::getIntParam('borrow_type', $arr)],
-            'borrow_money' => ApiUtils::getFloatParam('borrow_money', $arr),
+            'borrow_money' => $borrowMoney,
             'borrow_interest' => ApiUtils::getFloatParam('borrow_interest', $arr),
             'borrow_interest_rate' => ApiUtils::getFloatParam('borrow_interest_rate', $arr),
-            'has_borrow' => ApiUtils::getFloatParam('has_borrow', $arr),
+            'has_borrow' => $hasMoney,
             'borrow_min' => ApiUtils::getIntParam('borrow_min', $arr),
             'borrow_max' => ApiUtils::getIntParam('borrow_max', $arr),
             'repayment_type' => self::$repayMap[ApiUtils::getIntParam('repayment_type', $arr)],
             'is_tuijian' => ApiUtils::getIntParam('is_tuijian', $arr),
             'use_hongbao' => ApiUtils::getIntParam('use_hongbao', $arr),
             'borrow_status' => self::$borrowStatusMap[ApiUtils::getIntParam('borrow_status', $arr)],
-            'remain' => ApiUtils::getFloatParam('borrow_money', $arr) - ApiUtils::getFloatParam('has_borrow', $arr),
-            'process' => ApiUtils::getFloatParam('borrow_money', $arr)?ApiUtils::getFloatParam('has_borrow', $arr)/ApiUtils::getFloatParam('borrow_money', $arr):0,
+            'remain' => $borrowMoney > $hasMoney ? $borrowMoney - $hasMoney : 0,
+            'process' => $borrowMoney ? ($borrowMoney > $hasMoney ? $hasMoney/$borrowMoney : 1): 0,
         ];
     }
     /*
