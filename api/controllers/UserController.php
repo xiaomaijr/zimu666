@@ -327,7 +327,7 @@ class UserController extends UserBaseController
     public function actionModifyUserPwd(){
         try{
             $request = array_merge($_GET, $_POST);
-            $oldPwd = ApiUtils::getStrParam('oldPwd', $request);
+            $oldPwd = ApiUtils::getStrParam('old_pwd', $request);
             $newPwd = ApiUtils::getStrParam('new_pwd', $request);
             $repeatNewPwd = ApiUtils::getStrParam('repeat_new_pwd', $request);
             $userId = ApiUtils::getIntParam('user_id', $request);
@@ -372,6 +372,35 @@ class UserController extends UserBaseController
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
                 'result' => $mberStatus
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
+    /*
+     * 用户投资记录
+     */
+    public function actionInvestList(){
+        try{
+            $request = array_merge($_GET, $_POST);
+            $userId = ApiUtils::getIntParam('user_id', $request);
+            $timer = new TimeUtils();
+            $timer->start('invest_list');
+            $investList = BorrowInvest::getUserInvestList($userId);
+            $timer->stop('invest_list');
+
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => $investList
             ];
         }catch(ApiBaseException $e){
             $result = [

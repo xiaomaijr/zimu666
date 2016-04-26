@@ -150,14 +150,25 @@ class BorrowInvest extends RedisActiveRecord
     public static function getTotalIncomeByInvestId($investUid){
         $income = 0;
         $incomeInfos = self::_getUserInvestInfo($investUid);
+        if(empty($incomeInfos)) return $income;
+        $bids = ApiUtils::getCols($incomeInfos, 'borrow_id');
+        $borrowInfos = ApiUtils::getMap(BorrowInfo::gets($bids));
         $tmp = [];
         foreach($incomeInfos as $info){
-            $diffDay = ApiUtils::getDiffDay($info['add_time'], time());
-            if($diffDay > $info['integral_days']){
+
+            $borrowDeadline = $borrowInfos[$info['borrow_id']]['deadline'];
+            if(time() >= $borrowDeadline || $info['status'] > 4){
                 $tmp[] = $info['investor_interest'];
                 continue;
             }
-            $tmp[] = $info['integral_days']?$info['investor_interest']/$info['integral_days'] * $diffDay:1000;
+            $investDiffDay = ApiUtils::getDiffDay($info['add_time'], time());
+            $investDuration = ApiUtils::getDiffDay($info['add_time'], $borrowDeadline);
+//            if($diffDay > $info['integral_days']){
+//                $tmp[] = $info['investor_interest'];
+//                continue;
+//            }
+//            $tmp[] = $info['integral_days']?$info['investor_interest']/$info['integral_days'] * $diffDay:1000;
+            $tmp[] = $investDiffDay/$investDuration * $info['investor_interest'];
         }
         $income = sprintf("%.02f", array_sum($tmp));
         return $income;
@@ -204,5 +215,31 @@ class BorrowInvest extends RedisActiveRecord
             $total += $info['investor_capital'];
         }
         return $total;
+    }
+    /*
+     * 获取用户投资列表
+     */
+    public static function getUserInvestList($investUid){
+        $data =  [];
+        $list = self::_getUserInvestInfo($investUid);
+        if(empty($list)) return $list;
+        $borrowIds = ApiUtils::getCols($list, 'borrow_id');
+        $borrowInfos = ApiUtils::getMap(BorrowInfo::gets($borrowIds));
+        foreach($list as $row){
+            $tmp = self::_toApiArr($row);
+            $tmp['borrow_name'] = $borrowInfos[$row['borrow_id']]['borrow_name'];
+            $data[] = $tmp;
+        }
+        return $data;
+    }
+    /*
+     * 过滤api结构字段
+     */
+    private static function _toApiArr($arr){
+        return [
+            'add_time' => ApiUtils::getStrTimeByUnix($arr['add_time']),
+            'invest_captail' => ApiUtils::getFloatParam('investor_capital', $arr),
+            'investor_interest' => ApiUtils::getFloatParam('investor_interest', $arr),
+        ];
     }
 }
