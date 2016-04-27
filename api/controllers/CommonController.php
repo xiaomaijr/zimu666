@@ -92,4 +92,26 @@ class CommonController extends ApiBaseController
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
     }
+    /*
+     * 帮助中心
+     */
+    public function actionHelpCentor(){
+        try{
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => ApiConfig::$helperCentor,
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
 }

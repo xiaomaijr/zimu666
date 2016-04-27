@@ -155,7 +155,7 @@ class BorrowInvest extends RedisActiveRecord
         $borrowInfos = ApiUtils::getMap(BorrowInfo::gets($bids));
         $tmp = [];
         foreach($incomeInfos as $info){
-
+            if(!$info['loanno']) continue;
             $borrowDeadline = $borrowInfos[$info['borrow_id']]['deadline'];
             if(time() >= $borrowDeadline || $info['status'] > 4){
                 $tmp[] = $info['investor_interest'];
@@ -197,7 +197,7 @@ class BorrowInvest extends RedisActiveRecord
             $ids = $cache->hget(self::$tableName, 'investor_uid:' . $investUid);
             $incomeInfos = self::gets($ids);
         }else{
-            $incomeInfos = self::getDataByConditions(['investor_uid' => intval($investUid), "loanno != ''"], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);
+            $incomeInfos = self::getDataByConditions(['investor_uid' => intval($investUid)], null, 0, 0, ['id', 'borrow_id', 'investor_interest', 'add_time', 'integral_days']);
             if(empty($incomeInfos)) return $incomeInfos;
             $ids = ApiUtils::getCols($incomeInfos, 'id');
             $cache->hset(self::$tableName, 'investor_uid:' . $investUid, $ids);
@@ -212,6 +212,7 @@ class BorrowInvest extends RedisActiveRecord
         $total = 0;
         if(!$investInfos) return $total;
         foreach($investInfos as $info){
+            if(!$info['loanno']) continue;
             $total += $info['investor_capital'];
         }
         return $total;
@@ -226,6 +227,7 @@ class BorrowInvest extends RedisActiveRecord
         $borrowIds = ApiUtils::getCols($list, 'borrow_id');
         $borrowInfos = ApiUtils::getMap(BorrowInfo::gets($borrowIds));
         foreach($list as $row){
+            if(!$row['loanno']) continue;
             $tmp = self::_toApiArr($row);
             $tmp['borrow_name'] = $borrowInfos[$row['borrow_id']]['borrow_name'];
             $data[] = $tmp;

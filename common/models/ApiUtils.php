@@ -518,14 +518,14 @@ class ApiUtils
      */
     public static function getStrTimeByUnix($unixTime = 0){
         $unixTime = $unixTime?$unixTime:time();
-        return date("Y-m-d H:i:s");
+        return date("Y-m-d H:i:s", $unixTime);
     }
     /*
      * 获取年月日
      */
     public static function getDateByUnix($unixTime = 0){
         $unixTime = $unixTime?$unixTime:time();
-        return date("Y-m-d");
+        return date("Y-m-d", $unixTime);
     }
     /*
      * replace by ****

@@ -17,6 +17,7 @@ use common\models\BorrowInvest;
 use common\models\EscrowAccount;
 use common\models\Feedback;
 use common\models\InnerMsg;
+use common\models\MemberAccessToken;
 use common\models\MemberBanks;
 use common\models\MemberInfo;
 use common\models\MemberMoney;
@@ -245,23 +246,28 @@ class UserController extends UserBaseController
     public function actionAccount(){
         try{
             $request = $_REQUEST;
+            $userId = ApiUtils::getIntParam('user_id', $request);
             $timer = new TimeUtils();
             //获取用户资金
             $timer->start('get_mm_money');
-            $data = MemberMoney::getUserMoney($request['user_id']);
+            $data = MemberMoney::getUserMoney($userId);
             $timer->stop('get_mm_money');
+            //获取用户累计投资额
+            $timer->start('user_invest_total');
+            $data['invest_money'] = BorrowInvest::getInvestTotal($userId);
+            $timer->stop('user_invest_total');
             //用户累计收益
             $timer->start('accumulated_income');
-            $data['income'] = BorrowInvest::getTotalIncomeByInvestId($request['user_id']);
+            $data['income'] = BorrowInvest::getTotalIncomeByInvestId($userId);
             $timer->stop('accumulated income');
             //检查用户是否在钱多多绑定账户
             $timer->start('escrow_account');
-            $escrow = EscrowAccount::getUserBindInfo($request['user_id']);
+            $escrow = EscrowAccount::getUserBindInfo($userId);
             $data['escrow'] = $escrow['yeeBind'] | $escrow['qddBind'];
             $timer->stop('escrow_account');
             //是否绑定银行卡
             $timer->start('bind_bank');
-            $data['bank'] = MemberBanks::getListByUid($request['user_id'])?1:0;
+            $data['bank'] = MemberBanks::getListByUid($userId)?1:0;
             $timer->stop('bind_bank');
             $result = [
                 'code' => ApiErrorDescs::SUCCESS,
@@ -338,6 +344,7 @@ class UserController extends UserBaseController
             $timer = new TimeUtils();
             $timer->start('modify_user_name');
             Members::modifyUserPass($userId, $oldPwd, $newPwd);
+            MemberAccessToken::logOut($userId);
             $timer->stop('modify_user_name');
 
             $result = [
