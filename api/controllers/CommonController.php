@@ -121,9 +121,9 @@ class CommonController extends ApiBaseController
     public function actionVersionUpdate(){
         try{
             $request = array_merge($_GET, $_POST);
-            $latest = $version = ApiUtils::getStrParam('version', $request);
+            $latest = $version = ApiUtils::getIntParam('version', $request);
             $laber = 0;
-            $description = '';
+            $downLoadUrl = $description = '';
             $versionXml = __DIR__ . "/../config/version.xml";
             $versionStr = file_get_contents($versionXml);
             $xml = new \SimpleXMLElement($versionStr);
@@ -132,10 +132,12 @@ class CommonController extends ApiBaseController
                 list(, $versionNo) = each($xmlObj->versionNo);
                 list(, $newLaber) = each($xmlObj->laber);
                 list(, $desc) = each($xmlObj->description);
+                list(, $downUrl) = each($xmlObj->downloadUrl);
                 if($versionNo > $version){
                     if($versionNo > $latest){
                         $latest = $versionNo;
                         $description = $desc;
+                        $downLoadUrl = $downUrl;
                     }
                     $laber = $laber | $newLaber;
                 }
@@ -147,6 +149,7 @@ class CommonController extends ApiBaseController
                     'latest_version' => $latest,
                     'laber' => $laber,
                     'description' => $description,
+                    'download_url' => $downLoadUrl,
                 ],
             ];
         }catch(ApiBaseException $e){

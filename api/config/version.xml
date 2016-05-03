@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
     <version>
-        <versionNo>1.0</versionNo>
+        <versionNo>1</versionNo>
         <laber>0</laber>
         <description>第一版</description>
+        <downloadUrl>http://101.201.208.181:8088/static/app-1.apk</downloadUrl>
     </version>
     <version>
-        <versionNo>2.0</versionNo>
+        <versionNo>2</versionNo>
         <laber>0</laber>
         <description>第二版</description>
+        <downloadUrl>http://101.201.208.181:8088/static/app-2.apk</downloadUrl>
     </version>
 </root>
