@@ -327,4 +327,28 @@ class Escrow extends Component
         $SignInfo =  $data['SignInfo'];
         return  $this->rsa->verify($dataStr,$SignInfo);
     }
+
+    /*
+     * 查询账户余额
+     */
+    public function searchAccount($data){
+        $data['PlatformMoneymoremore'] = $this->platFormMoneyMoremore;  // 平台乾多多标识
+        $data['PlatformType'] = '';
+        $data['QueryType'] = 2;
+
+        $dataStr = $data['PlatformId'] . $data['PlatformType'] . $data['QueryType'] . $data['PlatformMoneymoremore'];
+        if($this->antistate == 1) {
+            $dataStr = strtoupper(md5($dataStr));
+        }
+        $data['SignInfo'] =  $this->rsa->sign($dataStr);
+        $request = $this->urlArr['balance'] . '?' . http_build_query($data);
+        return file_get_contents($request);
+    }
+
+    /*
+     * 解密快捷支付银行卡
+     */
+    public function decodeBankNo($bankNo){
+        return $this->rsa->decrypt($bankNo);
+    }
 }

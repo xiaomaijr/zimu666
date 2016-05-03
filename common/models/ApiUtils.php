@@ -91,7 +91,7 @@ class ApiUtils
      * @param $default 0.0
      * return float
      */
-    public static function getFloatParam($param, $arr, $decimal = 2, $dec_point = '.', $thousands_sep = ','){
+    public static function getFloatParam($param, $arr, $decimal = 2, $dec_point = '.', $thousands_sep = ''){
         if(!is_array($arr)){
             $arr = (array)$arr;
         }

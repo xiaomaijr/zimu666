@@ -114,4 +114,47 @@ class CommonController extends ApiBaseController
         $this->logApi(__CLASS__, __FUNCTION__, $result);
         \Yii::$app->end();
     }
+
+    /*
+     * 版本更新
+     */
+    public function actionVersionUpdate(){
+        try{
+            $request = array_merge($_GET, $_POST);
+            $latest = $version = ApiUtils::getStrParam('version', $request);
+            $laber = 0;
+            $versionXml = __DIR__ . "/../config/version.xml";
+            $versionStr = file_get_contents($versionXml);
+            $xml = new \SimpleXMLElement($versionStr);
+            $versions = $xml->xpath('/root/version');
+            foreach($versions as $xmlObj){
+                list(, $versionNo) = each($xmlObj->versionNo);
+                list(, $newLaber) = each($xmlObj->laber);
+                if($versionNo > $version){
+                    if($versionNo > $latest){
+                        $latest = $versionNo;
+                    }
+                    $laber = $laber | $newLaber;
+                }
+            }
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'result' => [
+                    'latest_version' => $latest,
+                    'laber' => $laber
+                ],
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ];
+        }
+        header('Content-type: application/json');
+        echo json_encode($result);
+
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
+    }
 }

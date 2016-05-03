@@ -138,6 +138,35 @@ class EscrowController extends UserBaseController
                 throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
             }
             $timer->stop('check_third_bind');
+            //获取用户快捷支付账户信息
+            $timer->start('fast_pay');
+            $userEscInfo = EscrowAccount::getUserThirdAccout($userId);
+            $data['PlatformId'] = $userEscInfo['qdd_marked'];
+            $objEsc = new Escrow();
+            $fastPayData = $objEsc->searchAccount($data);
+            if($fastPayData){
+//                $fastPayData = strstr($fastPayData, ',', true);
+                $tmp = explode('|', $fastPayData);
+                $bank = $objEsc->decodeBankNo($tmp[0]);
+                $tmp[0] = ApiUtils::replaceByLength($bank, 8, 4, -4);
+                if(!empty($tmp[1])){
+                    $result = [
+                        'code' => ApiErrorDescs::SUCCESS,
+                        'message' => 'success',
+                        'result' => [
+                            'type' => 1,
+                            'user_bank' => ['bank_num' => $tmp[0]],
+                            'user_money' => $tmp[1],
+                            'max_money' => $tmp[2],
+                            'bank_no' => $bank,
+                        ],
+                    ];
+                    echo json_encode($result);
+                    $this->logApi(__CLASS__, __FUNCTION__, $result);
+                    \Yii::$app->end();
+                }
+            }
+            $timer->stop('fast_pay');
             //验证是否绑定提现银行卡
             $timer->start('bind_bank');
             $userBank = MemberBanks::getListByUid($userId);
@@ -160,6 +189,7 @@ class EscrowController extends UserBaseController
                 'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
                 'result' => [
+                    'type' => 0,
                     'user_bank' => $userBank[0],
                     'user_money' => $userMoney['total_money'],
                     'user_name' => $userInfo['user_name'],
@@ -335,5 +365,70 @@ class EscrowController extends UserBaseController
         $data['params'] = http_build_query($params);
         $data['url'] = $objEsc->urlArr['withdraw'];
         return $data;
+    }
+    /*
+     * 快捷提现
+     */
+    public function actionWithdrawFast(){
+        try{
+            $request = array_merge($_GET, $_POST);
+            $userId = ApiUtils::getIntParam('user_id', $request);
+            $money = ApiUtils::getFloatParam('moeny', $request);
+            $bank['bank_city'] = ApiUtils::getIntParam('bank_city', $request);
+            $bank['bank_province'] = ApiUtils::getIntParam('bank_province', $request);
+            $bank['bank_code'] = ApiUtils::getIntParam('bank_code', $request);
+            $bank['bank_num'] = ApiUtils::getStrParam('bank_num', $request);
+            $timer = new TimeUtils();
+            $timer->start('withdraw_limit');
+            $memberInfo = Members::get($userId);
+            if(!$memberInfo['is_withdraw']){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '您与平台之间已有约定，暂时不能直接提现！');
+            }
+            if($memberInfo['withdraw_limit'] > 0 && $money > $memberInfo['withdraw_limit']){
+                throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '您的提现金额超过您与平台约定的限额，请修改！');
+            }
+            $timer->stop('withdraw_limit');
+            //获取用户资金账户信息
+            $timer->start('user_money');
+            $userMoney = MemberMoney::getUserPlatformMoney($userId);
+            if(empty($userMoney) || $userMoney['total_money'] < $money){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_MONEY_NOT_ENOUGH);
+            }
+            $timer->stop('user_money');
+            //计算手续费
+            $timer->start('withdraw_fee');
+            $withdrawFee = $this->statWithdrawFee($money, $memberInfo);
+            $timer->stop('withdraw_fee');
+            //添加提现记录
+            $timer->start('add_withdraw');
+            $objWithDraw = new MemberWithdraw();
+            $orderId = $objWithDraw->add(['uid' => $userId, 'withdraw_money' => $money, 'withdraw_fee' => $withdrawFee]);
+            $timer->stop('add_withdraw');
+            //获取用户第三方账户
+            $timer->start('user_third');
+            $userEsc = EscrowAccount::getUserThirdAccout($userId);
+            if(!$userEsc){
+                throw new ApiBaseException(ApiErrorDescs::ERR_USER_UNBIND_THIRD_PAY);
+            }
+            $timer->stop('user_third');
+            //获取第三方提现接口及参数
+            $timer->start('third_withdraw');
+            $data = self::_getThirdWithdrawApi($orderId, $bank, $userEsc, $money, $withdrawFee);
+            $timer->stop('third_withdraw');
+            $result = [
+                'code' => ApiErrorDescs::SUCCESS,
+                'message' => 'success',
+                'params' => $data['params'],
+                'url' => $data['url'],
+            ];
+        }catch(ApiBaseException $e){
+            $result = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ];
+        }
+        echo json_encode($result);
+        $this->logApi(__CLASS__, __FUNCTION__, $result);
+        \Yii::$app->end();
     }
 }
