@@ -424,6 +424,7 @@ class NotifyController extends Controller
                             'back_money'    => $investUserMoney['back_money'],
                             'collect_money' => $investUserMoney['collect_money'],
                             'freeze_money'  => $memberMoneyRecord['freeze_money'],
+                            'request_no' => $investInfo['LoanNo'],
 
                             'info' => '用户投资'.$borrowId.'号标'.$money,
                             'add_time' => time(),

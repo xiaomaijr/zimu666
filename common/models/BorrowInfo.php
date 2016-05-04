@@ -239,6 +239,7 @@ class BorrowInfo extends RedisActiveRecord
         $data = self::toApiArr($info);
         $data['person_count'] = ApiUtils::getIntParam('c', $investInfo);
         $data['money_total'] = ApiUtils::getFloatParam('s', $investInfo);
+        $data['extremely_earnings'] = round($info['borrow_interest']*10000/$info['borrow_money'], 2);
         return $data;
     }
     /*

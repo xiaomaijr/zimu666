@@ -111,8 +111,8 @@ class BorrowInvestor extends BorrowInvest
     public function updateEvent(){
         $cache = self::getCache();
         $cache->hDel(self::$tableName, 'id:' . $this->id);
-        $cache->hDel(self::$tableName, 'investor_uid:' . $this->investor_uid);
-        $cache->hDel(self::$tableName, 'borrow_id:' . $this->borrow_id);
+//        $cache->hDel(self::$tableName, 'investor_uid:' . $this->investor_uid);
+//        $cache->hDel(self::$tableName, 'borrow_id:' . $this->borrow_id);
     }
 
     public function deleteEvent(){
@@ -141,12 +141,13 @@ class BorrowInvestor extends BorrowInvest
     /*
      * 获取投标记录
      */
-    public function getInvestRecordByBid($borrowId, $page = 1, $pageSize = 100){
+    public function getInvestRecordByBid($borrowId){
         $data = [];
         $infos = $this->_getBorrowInvestRecord($borrowId);
         $investorUids = array_unique(ApiUtils::getCols($infos, 'investor_uid'));
         $userInfos = ApiUtils::getMap(Members::gets($investorUids), 'id');
         foreach($infos as $info){
+            if(empty($info['loanno'])) continue;
             $tmp = self::toApiArr($info);
             $tmp['user_name'] = ApiUtils::replaceByLength($userInfos[$info['investor_uid']]['user_name'],4, 4, -4);
             $data[] = $tmp;
