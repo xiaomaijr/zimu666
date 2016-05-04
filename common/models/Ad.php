@@ -74,9 +74,12 @@ class Ad extends RedisActiveRecord
         $cache->hDel(self::$tableName, 'id:' . $this->id);
     }
 
-    public static function getAppBanners(){
-        $info = self::get(3);
+    public static function getAppBanners($id){
+        $info = self::get($id);
         $banners = json_decode($info['content'],true);
+        foreach($banners as &$banner){
+            $banner['img'] = \Yii::$app->request->getHostInfo() . $banner['url'];
+        }
         return $banners;
     }
 }

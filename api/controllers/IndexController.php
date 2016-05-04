@@ -16,6 +16,7 @@ use api\models\RequestFilter;
 use api\models\Xiaohei;
 use api\models\XiaoHong;
 use common\models\Ad;
+use common\models\ApiConfig;
 use common\models\BorrowInfo;
 use common\models\BorrowInvest;
 use common\models\ApiBaseException;
@@ -53,7 +54,7 @@ class IndexController extends ApiBaseController
             $objTimer->stop('borrowAndInvestTotal');
             //banner信息
             $objTimer->start('ad_banner');
-            $banners = Ad::getAppBanners();
+            $banners = Ad::getAppBanners(ApiConfig::INDEX_CAROUSEL_IMG_ID);
             $objTimer->stop('ad_banner');
 
             $ret = [

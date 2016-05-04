@@ -184,7 +184,7 @@ class BorrowInfo extends RedisActiveRecord
             'use_hongbao' => ApiUtils::getIntParam('use_hongbao', $arr),
             'borrow_status' => self::$borrowStatusMap[ApiUtils::getIntParam('borrow_status', $arr)],
             'remain' => $borrowMoney > $hasMoney ? $borrowMoney - $hasMoney : 0,
-            'process' => $borrowMoney ? ($borrowMoney > $hasMoney ? $hasMoney/$borrowMoney : 1): 0,
+            'process' => $borrowMoney ? ($borrowMoney > $hasMoney ? round($hasMoney/$borrowMoney, 4) : 1): 0,
         ];
     }
     /*

@@ -11,6 +11,11 @@ namespace common\models;
 
 class ApiConfig
 {
+    /*
+    * 首页轮播图id
+    */
+    const INDEX_CAROUSEL_IMG_ID = 4;
+
     public static $arrApiCheckParams = [
         'member' => [
             'get-verify-code' => ['key'],
@@ -160,4 +165,5 @@ class ApiConfig
             'answer' => '请先检查您的手机中是否设置了屏蔽功能，如果确认没有被屏蔽的话，您可以致电小麦金融客服热线400-067-7895，由我们的客服专员帮您查询原因。',
         ],
     ];
+
 }
