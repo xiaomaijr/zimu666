@@ -39,7 +39,6 @@ class UserController extends UserBaseController
             $pageSize = ApiUtils::getIntParam('page_size', $request, 100);
             $timer = new TimeUtils();
             $timer->start('get_msg_list');
-            //暂时没用到分表
             $tableName = 'lzh_inner_msg_' . intval($userId%5);
             $objMsg = new InnerMsg(['tableName' => $tableName]);
 //            $objMsg = new InnerMsg();
@@ -293,7 +292,7 @@ class UserController extends UserBaseController
     public function actionFeedback(){
         try{
             $request = $_REQUEST;
-            $mobile = ApiUtils::getStrParam('mobile', $request);
+            $mobile = ApiUtils::getStrParam('phone', $request);
             ApiUtils::checkPhoneFormat($mobile);
             $msg = ApiUtils::getStrParam('msg', $request);
             if(ApiUtils::getStrLen($msg) > 100){
@@ -348,7 +347,7 @@ class UserController extends UserBaseController
             $timer->stop('modify_user_name');
 
             $result = [
-                'code' => ApiErrorDescs::ERR_UNKNOW_ERROR,
+                'code' => ApiErrorDescs::SUCCESS,
                 'message' => 'success',
             ];
         }catch(ApiBaseException $e){

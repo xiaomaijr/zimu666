@@ -138,7 +138,9 @@ class MembersStatus extends RedisActiveRecord
         }
         return $ret;
     }
-
+    /*
+     * 获取用户认证原始数据
+     */
     public static function get($uid, $tableName = ''){
         $cache = self::getCache();
         if($cache->hExists(self::$tableName, 'uid:' . $uid)){
@@ -150,11 +152,15 @@ class MembersStatus extends RedisActiveRecord
         }
         return $info;
     }
-
+    /*
+     * 个人认证
+     */
     public static function getAuthStauts($uid, $list = []){
         $data = [];
-        $record = self::get($uid);
-        if(empty($record) || empty($list)) return $record;
+        $columns = array_keys(static::getTableSchema()->columns);
+        array_shift($columns);
+        $record = array_merge(array_fill_keys($columns, 0), self::get($uid));
+        if(empty($list)) return $record;
         foreach($record as $key=>$row){
             foreach($list as $pre){
                 if(strpos($key, $pre . '_') !== false){

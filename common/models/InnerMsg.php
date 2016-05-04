@@ -107,7 +107,7 @@ class InnerMsg extends RedisActiveRecord
             $userMsgs = self::gets($ids);
         }else{
             $userMsgs = self::getDataByConditions(['uid' => $uid], 'id desc', $pageSize, $page);
-            if(empty($list)) return $userMsgs;
+            if(empty($userMsgs)) return $userMsgs;
             $ids = ApiUtils::getCols($userMsgs, 'id');
             $cache->set($cacheKey['key_name'], $ids, $cacheKey['expire']);
         }
@@ -121,7 +121,7 @@ class InnerMsg extends RedisActiveRecord
         return [
             'title' => ApiUtils::getStrParam('title', $arr),
             'msg' => ApiUtils::getStrParam('msg', $arr),
-            'send_time' => date('Ymd H:i:s', $arr['send_time']),
+            'send_time' => ApiUtils::getStrTimeByUnix($arr['send_time']),
             'status' => ApiUtils::getIntParam('status', $arr),
         ];
     }

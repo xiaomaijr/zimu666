@@ -213,7 +213,7 @@ class Members extends RedisActiveRecord
         }
         $userInfo['user_pass'] = md5('a2m' . $newPwd . '1df');
         if(!$userInfo->update()){
-            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '密码修改成功');
+            throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '密码修改失败');
         }
     }
 
