@@ -1,0 +1,317 @@
+ERROR 2016-05-03 04:36:17# api\controllers\ApiBaseController_beforeAction{"version":"1.0"}
+2016-05-03 04:36:17 [192.168.101.40][-][-][error][application] [seller][api\controllers\ApiBaseController][beforeAction][][1][参数错误] time_used[41]
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:89
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:61
+2016-05-03 04:36:16 [192.168.101.40][-][-][info][application] $_GET = [
+    'version' => '1.0'
+]
+
+$_SERVER = [
+    'REDIRECT_MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'REDIRECT_MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'REDIRECT_OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'REDIRECT_PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'REDIRECT_PHPRC' => '\\xampp\\php'
+    'REDIRECT_TMP' => '\\xampp\\tmp'
+    'REDIRECT_STATUS' => '200'
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => '192.168.101.40'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8'
+    'PATH' => 'E:\\jre7\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;D:\\TortoSvn\\bin;D:\\xampp\\php'
+    'SystemRoot' => 'C:\\WINDOWS'
+    'COMSPEC' => 'C:\\WINDOWS\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\WINDOWS'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14 Server at 192.168.101.40 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14'
+    'SERVER_NAME' => '192.168.101.40'
+    'SERVER_ADDR' => '192.168.101.40'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.101.40'
+    'DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'SERVER_ADMIN' => 'alpha@mail.zhima.com'
+    'SCRIPT_FILENAME' => 'E:/app.xiaomaijr.com/api/web/index.php'
+    'REMOTE_PORT' => '50565'
+    'REDIRECT_QUERY_STRING' => 'version=1.0'
+    'REDIRECT_URL' => 'http://192.168.101.40/common/version-update?version=1.0'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'version=1.0'
+    'REQUEST_URI' => '/common/version-update?version=1.0'
+    'SCRIPT_NAME' => '/web/index.php'
+    'PATH_INFO' => '/common/version-update'
+    'PATH_TRANSLATED' => 'redirect:\\web\\index.php\\common\\version-update\\version-update'
+    'PHP_SELF' => '/web/index.php/common/version-update'
+    'REQUEST_TIME_FLOAT' => 1462242976.349
+    'REQUEST_TIME' => 1462242976
+]
+ERROR 2016-05-03 11:44:06# api\controllers\ApiBaseController_beforeAction{"access_token":"I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=\u5c0f\u9ea6\u91d1\u878dapp_ver=1channel=\u8c4c\u8c46\u835amobile_type=androidmobile=18511303640msg=\u54c8\u54c8 user_id=236764XIAOMAI_API_SIGN_SECRET"}
+2016-05-03 11:44:06 [192.168.101.40][-][-][error][application] [seller][api\controllers\ApiBaseController][beforeAction][][1][参数错误] time_used[12]
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:89
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:61
+    in E:\app.xiaomaijr.com\api\controllers\UserBaseController.php:16
+2016-05-03 11:44:05 [192.168.101.40][-][-][info][application] $_GET = [
+    'access_token' => 'I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=小麦金融app_ver=1channel=豌豆荚mobile_type=androidmobile=18511303640msg=哈哈 user_id=236764XIAOMAI_API_SIGN_SECRET'
+]
+
+$_SERVER = [
+    'REDIRECT_MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'REDIRECT_MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'REDIRECT_OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'REDIRECT_PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'REDIRECT_PHPRC' => '\\xampp\\php'
+    'REDIRECT_TMP' => '\\xampp\\tmp'
+    'REDIRECT_STATUS' => '200'
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => '192.168.101.40'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8'
+    'PATH' => 'E:\\jre7\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;D:\\TortoSvn\\bin;D:\\xampp\\php'
+    'SystemRoot' => 'C:\\WINDOWS'
+    'COMSPEC' => 'C:\\WINDOWS\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\WINDOWS'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14 Server at 192.168.101.40 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14'
+    'SERVER_NAME' => '192.168.101.40'
+    'SERVER_ADDR' => '192.168.101.40'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.101.40'
+    'DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'SERVER_ADMIN' => 'alpha@mail.zhima.com'
+    'SCRIPT_FILENAME' => 'E:/app.xiaomaijr.com/api/web/index.php'
+    'REMOTE_PORT' => '65213'
+    'REDIRECT_QUERY_STRING' => 'access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'REDIRECT_URL' => 'http://192.168.101.40/user/feedback?access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'REQUEST_URI' => '/user/feedback?access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'SCRIPT_NAME' => '/web/index.php'
+    'PATH_INFO' => '/user/feedback'
+    'PATH_TRANSLATED' => 'redirect:\\web\\index.php\\user\\feedback\\feedback'
+    'PHP_SELF' => '/web/index.php/user/feedback'
+    'REQUEST_TIME_FLOAT' => 1462268645.122
+    'REQUEST_TIME' => 1462268645
+]
+ERROR 2016-05-03 11:45:17# api\controllers\ApiBaseController_beforeAction{"access_token":"I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=\u5c0f\u9ea6\u91d1\u878dapp_ver=1channel=\u8c4c\u8c46\u835amobile_type=androidmobile=18511303640msg=\u54c8\u54c8 user_id=236764XIAOMAI_API_SIGN_SECRET"}
+2016-05-03 11:45:17 [192.168.101.40][-][-][error][application] [seller][api\controllers\ApiBaseController][beforeAction][][1][参数错误] time_used[15]
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:89
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:61
+    in E:\app.xiaomaijr.com\api\controllers\UserBaseController.php:16
+2016-05-03 11:45:15 [192.168.101.40][-][-][info][application] $_GET = [
+    'access_token' => 'I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=小麦金融app_ver=1channel=豌豆荚mobile_type=androidmobile=18511303640msg=哈哈 user_id=236764XIAOMAI_API_SIGN_SECRET'
+]
+
+$_SERVER = [
+    'REDIRECT_MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'REDIRECT_MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'REDIRECT_OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'REDIRECT_PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'REDIRECT_PHPRC' => '\\xampp\\php'
+    'REDIRECT_TMP' => '\\xampp\\tmp'
+    'REDIRECT_STATUS' => '200'
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => '192.168.101.40'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8'
+    'PATH' => 'E:\\jre7\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;D:\\TortoSvn\\bin;D:\\xampp\\php'
+    'SystemRoot' => 'C:\\WINDOWS'
+    'COMSPEC' => 'C:\\WINDOWS\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\WINDOWS'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14 Server at 192.168.101.40 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14'
+    'SERVER_NAME' => '192.168.101.40'
+    'SERVER_ADDR' => '192.168.101.40'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.101.40'
+    'DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'SERVER_ADMIN' => 'alpha@mail.zhima.com'
+    'SCRIPT_FILENAME' => 'E:/app.xiaomaijr.com/api/web/index.php'
+    'REMOTE_PORT' => '65226'
+    'REDIRECT_QUERY_STRING' => 'access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'REDIRECT_URL' => 'http://192.168.101.40/user/feedback?access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'REQUEST_URI' => '/user/feedback?access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'SCRIPT_NAME' => '/web/index.php'
+    'PATH_INFO' => '/user/feedback'
+    'PATH_TRANSLATED' => 'redirect:\\web\\index.php\\user\\feedback\\feedback'
+    'PHP_SELF' => '/web/index.php/user/feedback'
+    'REQUEST_TIME_FLOAT' => 1462268715.907
+    'REQUEST_TIME' => 1462268715
+]
+ERROR 2016-05-03 11:45:19# api\controllers\ApiBaseController_beforeAction{"access_token":"I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=\u5c0f\u9ea6\u91d1\u878dapp_ver=1channel=\u8c4c\u8c46\u835amobile_type=androidmobile=18511303640msg=\u54c8\u54c8 user_id=236764XIAOMAI_API_SIGN_SECRET"}
+2016-05-03 11:45:19 [192.168.101.40][-][-][error][application] [seller][api\controllers\ApiBaseController][beforeAction][][1][参数错误] time_used[9]
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:89
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:61
+    in E:\app.xiaomaijr.com\api\controllers\UserBaseController.php:16
+2016-05-03 11:45:18 [192.168.101.40][-][-][info][application] $_GET = [
+    'access_token' => 'I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=小麦金融app_ver=1channel=豌豆荚mobile_type=androidmobile=18511303640msg=哈哈 user_id=236764XIAOMAI_API_SIGN_SECRET'
+]
+
+$_SERVER = [
+    'REDIRECT_MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'REDIRECT_MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'REDIRECT_OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'REDIRECT_PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'REDIRECT_PHPRC' => '\\xampp\\php'
+    'REDIRECT_TMP' => '\\xampp\\tmp'
+    'REDIRECT_STATUS' => '200'
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => '192.168.101.40'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8'
+    'PATH' => 'E:\\jre7\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;D:\\TortoSvn\\bin;D:\\xampp\\php'
+    'SystemRoot' => 'C:\\WINDOWS'
+    'COMSPEC' => 'C:\\WINDOWS\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\WINDOWS'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14 Server at 192.168.101.40 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14'
+    'SERVER_NAME' => '192.168.101.40'
+    'SERVER_ADDR' => '192.168.101.40'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.101.40'
+    'DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'SERVER_ADMIN' => 'alpha@mail.zhima.com'
+    'SCRIPT_FILENAME' => 'E:/app.xiaomaijr.com/api/web/index.php'
+    'REMOTE_PORT' => '65226'
+    'REDIRECT_QUERY_STRING' => 'access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'REDIRECT_URL' => 'http://192.168.101.40/user/feedback?access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'REQUEST_URI' => '/user/feedback?access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'SCRIPT_NAME' => '/web/index.php'
+    'PATH_INFO' => '/user/feedback'
+    'PATH_TRANSLATED' => 'redirect:\\web\\index.php\\user\\feedback\\feedback'
+    'PHP_SELF' => '/web/index.php/user/feedback'
+    'REQUEST_TIME_FLOAT' => 1462268718.834
+    'REQUEST_TIME' => 1462268718
+]
+ERROR 2016-05-03 11:45:46# api\controllers\ApiBaseController_beforeAction{"access_token":"I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=\u5c0f\u9ea6\u91d1\u878dapp_ver=1channel=\u8c4c\u8c46\u835amobile_type=androidmobile=18511303640msg=\u54c8\u54c8 user_id=236764XIAOMAI_API_SIGN_SECRET"}
+2016-05-03 11:45:46 [192.168.101.40][-][-][error][application] [seller][api\controllers\ApiBaseController][beforeAction][][1][参数错误] time_used[8]
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:89
+    in E:\app.xiaomaijr.com\api\controllers\ApiBaseController.php:61
+    in E:\app.xiaomaijr.com\api\controllers\UserBaseController.php:16
+2016-05-03 11:45:45 [192.168.101.40][-][-][info][application] $_GET = [
+    'access_token' => 'I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=小麦金融app_ver=1channel=豌豆荚mobile_type=androidmobile=18511303640msg=哈哈 user_id=236764XIAOMAI_API_SIGN_SECRET'
+]
+
+$_SERVER = [
+    'REDIRECT_MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'REDIRECT_MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'REDIRECT_OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'REDIRECT_PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'REDIRECT_PHPRC' => '\\xampp\\php'
+    'REDIRECT_TMP' => '\\xampp\\tmp'
+    'REDIRECT_STATUS' => '200'
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => '192.168.101.40'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8'
+    'PATH' => 'E:\\jre7\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;D:\\TortoSvn\\bin;D:\\xampp\\php'
+    'SystemRoot' => 'C:\\WINDOWS'
+    'COMSPEC' => 'C:\\WINDOWS\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\WINDOWS'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14 Server at 192.168.101.40 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.6.14'
+    'SERVER_NAME' => '192.168.101.40'
+    'SERVER_ADDR' => '192.168.101.40'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.101.40'
+    'DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/app.xiaomaijr.com/api'
+    'SERVER_ADMIN' => 'alpha@mail.zhima.com'
+    'SCRIPT_FILENAME' => 'E:/app.xiaomaijr.com/api/web/index.php'
+    'REMOTE_PORT' => '65235'
+    'REDIRECT_QUERY_STRING' => 'access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'REDIRECT_URL' => 'http://192.168.101.40/user/feedback?access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'REQUEST_URI' => '/user/feedback?access_token=I_saAiZFtReipRB9qWZpkf6BG10KlUbM0lHOPOY5rx98URszeiqFcU9jsw0QFZINapi_ver=1app_name=%E5%B0%8F%E9%BA%A6%E9%87%91%E8%9E%8Dapp_ver=1channel=%E8%B1%8C%E8%B1%86%E8%8D%9Amobile_type=androidmobile=18511303640msg=%E5%93%88%E5%93%88%20user_id=236764XIAOMAI_API_SIGN_SECRET'
+    'SCRIPT_NAME' => '/web/index.php'
+    'PATH_INFO' => '/user/feedback'
+    'PATH_TRANSLATED' => 'redirect:\\web\\index.php\\user\\feedback\\feedback'
+    'PHP_SELF' => '/web/index.php/user/feedback'
+    'REQUEST_TIME_FLOAT' => 1462268745.415
+    'REQUEST_TIME' => 1462268745
+]
