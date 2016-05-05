@@ -115,13 +115,14 @@ class InvestDeta extends RedisActiveRecord
         if(empty($attrs)){
             throw new ApiBaseException(ApiErrorDescs::ERR_UNKNOW_ERROR, '投资还款信息不能为空');
         }
-        $this->attributes = $attrs;
-        $this->add_time = time();
-        $ret = $this->save();
+        $obj = clone $this;
+        $obj->attributes = $attrs;
+        $obj->add_time = time();
+        $ret = $obj->save();
         if(!$ret){
             throw new ApiBaseException(ApiErrorDescs::ERR_INVEST_DETAIL_ADD_FAIL);
         }
-        return $this->id;
+        return $obj->id;
     }
     /*
      * 获取用户待收本金
