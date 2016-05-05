@@ -373,7 +373,7 @@ class EscrowController extends UserBaseController
         try{
             $request = array_merge($_GET, $_POST);
             $userId = ApiUtils::getIntParam('user_id', $request);
-            $money = ApiUtils::getFloatParam('moeny', $request);
+            $money = ApiUtils::getFloatParam('money', $request);
             $bank['bank_city'] = ApiUtils::getIntParam('bank_city', $request);
             $bank['bank_province'] = ApiUtils::getIntParam('bank_province', $request);
             $bank['bank_code'] = ApiUtils::getIntParam('bank_code', $request);
