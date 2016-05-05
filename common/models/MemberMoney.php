@@ -112,8 +112,7 @@ class MemberMoney extends RedisActiveRecord
                     'invest_money' => ApiUtils::getFloatParam('invest_money', $info),
                     'back_money' => ApiUtils::getFloatParam('back_money', $info),
                     'available_money' => ApiUtils::getFloatParam('total_money', $info),
-                    'expected_assets' => ApiUtils::getFloatParam('total_money', $info) + ApiUtils::getFloatParam('freeze_money', $info) +
-                        ApiUtils::getFloatParam('collect_money', $info),
+                    'expected_assets' => ApiUtils::getFloatParam('total_money', $info),
                 ];
             }else{
                 $data['yee'] = [];

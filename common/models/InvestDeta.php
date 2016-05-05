@@ -123,4 +123,36 @@ class InvestDeta extends RedisActiveRecord
         }
         return $this->id;
     }
+    /*
+     * 获取用户待收本金
+     */
+    public function getUserCollectMoney($uid){
+        $collectMoney = 0;
+        $uid = intval($uid);
+        $data = $this->_getUserRepayRecords($uid);
+        if(!$data) return $collectMoney;
+        foreach($data as $row){
+            if(($row['status'] == 0 || $row['status'] == 6 || $row['status'] == 7) && $row['pay_status'] == 1)
+            $collectMoney += $row['interest'] + $row['capital'];
+        }
+        return $collectMoney;
+    }
+    /*
+     * 获取用户还款原始记录
+     */
+    private function _getUserRepayRecords($uid){
+        $uid = intval($uid);
+        $cache = self::getCache();
+        $filed = 'investor_uid:' . $uid;
+        if(!$cache->hExists(self::$tableName, $filed)){
+            $records = self::getDataByConditions(['investor_uid' => $uid], 'id desc', 0, 0);
+            if(!$records) return $records;
+            $ids = ApiUtils::getCols($records, 'id');
+            $cache->hSet(self::$tableName, $filed, $ids);
+        }else{
+            $ids = $cache->hGet(self::$tableName, $filed);
+            $records = self::gets($ids);
+        }
+        return $records;
+    }
 }

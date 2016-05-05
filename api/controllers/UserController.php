@@ -17,6 +17,7 @@ use common\models\BorrowInvest;
 use common\models\EscrowAccount;
 use common\models\Feedback;
 use common\models\InnerMsg;
+use common\models\InvestDeta;
 use common\models\MemberAccessToken;
 use common\models\MemberBanks;
 use common\models\MemberInfo;
@@ -255,6 +256,13 @@ class UserController extends UserBaseController
             $timer->start('user_invest_total');
             $data['invest_money'] = BorrowInvest::getInvestTotal($userId);
             $timer->stop('user_invest_total');
+            //获取用户待收金额
+            $timer->start('collect_money');
+            $tableName = 'lzh_investor_detail_'.intval($userId%5);
+            $objInvestDeta = new InvestDeta(['tableName' => $tableName]);
+            $collectMoney = $objInvestDeta->getUserCollectMoney($userId);
+            $data['expected_assets'] += $collectMoney;
+            $timer->stop('collect_money');
             //用户累计收益
             $timer->start('accumulated_income');
             $data['income'] = BorrowInvest::getTotalIncomeByInvestId($userId);
