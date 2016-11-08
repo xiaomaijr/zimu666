@@ -1,0 +1,66 @@
+.mr-50{
+    margin-right:50px ;
+}
+.midbtn{
+    width:100px;
+    margin-left:100px ;
+}
+select{
+    font-family: "微软雅黑","宋体",arial;
+    font-size: 13px;
+    margin: 0;
+    color: #575757
+}
+.alert{
+    width: 600px;
+    height: auto;
+    top:50%;
+    left:50%;
+}
+.fields{
+
+}
+form[data-style="form"] .field{
+    margin: 0 1px;
+    border-bottom: 1px solid #dedede;
+    border-top: 1px solid #f7f7f7;
+    padding: 3px;
+    vertical-align: top;
+}
+form[data-style="form"] label{
+    line-height: 30px;
+}
+form[data-style="form"] input[type="text"] {
+    width: 280px;
+    margin-left: 5px;
+}
+input[type="text"],input[type="number"] {
+    padding: 5px 3px;
+    box-shadow: 0 2px 3px #ccc inset;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+}
+input[type="text"].option_title{
+    width: 350px;
+}
+input[type="number"] {
+    width: 58px;
+}
+span.option_title {
+    display: inline-block;
+    width: 285px !important;
+    padding: 5px 3px
+}
+form[data-style="form"] .field span {
+    display: inline-block;
+    min-width: 105px;
+    text-align: right;
+    padding-right: 5px;
+    line-height: 30px;
+}
+.option-btn {
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    margin-left: 5px;
+}

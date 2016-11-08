@@ -1,0 +1,280 @@
+.content{
+    width: 1190px;
+    margin: 0 auto;
+}
+.mianbaoxie{
+    display: block;
+    overflow: hidden;
+}
+.mianbaoxie span,.mianbaoxie a,.mianbaoxie label{
+    float: left;
+    line-height: 40px;
+    color: #444;
+}
+.mianbaoxie span{
+    margin: 0 10px 0 0;
+}
+.mianbaoxie a:hover{
+    text-decoration: underline;
+    color: #f60;
+}
+.mianbaoxie label{
+    padding: 0 5px;
+}
+.titlebox{
+    display: block;
+    overflow: hidden;
+    border-bottom: 1px solid #ccc;
+}
+.producttitle{
+    display: block;
+    position: relative;
+    overflow: hidden;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+}
+.producttitle label{
+    float: left;
+    width: 70px;
+    line-height: 48px;
+    text-align: center;
+}
+.protitlebox{
+    display: block;
+    overflow: hidden;
+    background: #fff;
+    margin: 0 0 0 70px;
+    overflow: hidden;
+    padding: 10px 0;
+}
+.protitlebox p{
+    float: left;
+    width: 114px;
+    margin: 2px 10px;
+    line-height: 28px;
+    text-align: center;
+}
+.protitlebox a{
+    color: #333;
+}
+.protitlebox a:hover{
+    color: #f60;
+    text-decoration: underline;
+}
+.protitlebox a.on,.protitlebox a.on:hover{
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    background: #ff6600;
+}
+.viewbrand{
+    display: none;
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
+    line-height: 20px;
+    color: #f60;
+    padding: 0 15px 0 0;
+    background: url("/image/public/sq.png") no-repeat right center;
+    cursor: pointer;
+}
+.viewbrand.on{
+    background: url("/image/public/zk.png") no-repeat right center;
+}
+.productselect{
+    display: block;
+    overflow: hidden;
+    margin: 10px 0;
+}
+.productselect a{
+    float: left;
+    margin: 0 10px 0 0;
+    border: 1px solid #ccc;
+    line-height: 30px;
+    text-align: center;
+    width: 120px;
+    color: #333;
+}
+.productselect a:hover{
+    border: 1px solid #f60;
+    color: #f60;
+}
+.productselect a.on,.productselect a.on:hover{
+    background: #f60;
+    color: #fff;
+    border: 1px solid #f60;
+}
+.productselect a i{
+    display: inline-block;
+    margin: 0 0 0 5px;
+    width: 7px;
+    height: 9px;
+    background: url("/image/public/jt.png") no-repeat 0 0;
+}
+.productselect a.on i{
+    background: url("/image/public/jt.png") no-repeat -9px 0;
+}
+.productselect a.on.val i{
+    background: url("/image/public/jt.png") no-repeat -19px 0;
+}
+.product{
+    display: block;
+    margin: 0 1px;
+}
+.productbox{
+    float: left;
+    width: 297px;
+    height: 460px;
+}
+.productbox a{
+    display: block;
+    width: 275px;
+    height: 438px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+.productbox a:hover{
+    border: 1px solid #f60;
+    -webkit-box-shadow:0 0 10px #59504e;
+    -moz-box-shadow:0 0 10px #59504e;
+    box-shadow:0 0 10px #59504e;
+}
+.productbox img{
+    display: block;
+    width: 100%;
+    margin: 0;
+}
+.productbox span{
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 5px 0 0;
+    line-height: 22px;
+    font-size: 14px;
+    height: 22px;
+    color: #333;
+}
+.productbox a:hover span{
+    text-decoration: underline;
+}
+.productbox label{
+    display: block;
+    overflow: hidden;
+    height: 22px;
+    line-height: 22px;
+    color: #999;
+}
+.sprice_user{
+    display: block;
+    overflow: hidden;
+    margin: 10px 0 0;
+}
+.sprice_user b{
+    float: left;
+    line-height: 22px;
+    color: #f60;
+}
+.sprice_user strong{
+    float: right;
+    line-height: 22px;
+    color: #2af;
+}
+.sprice{
+    display: block;
+    overflow: hidden;
+    margin: 5px 0;
+    background: #eee;
+    height: 10px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+}
+.sprice b{
+    float: left;
+    height: 10px;
+    background: #f60;
+    width: 10%;
+}
+.sprice_xx{
+    display: block;
+    overflow: hidden;
+}
+.sprice_xx b{
+    float: left;
+    color: #999;
+    line-height: 22px;
+}
+.sprice_xx strong{
+    float: right;
+    color: #999;
+    line-height: 22px;
+}
+.spricebtn{
+    display: block;
+    overflow: hidden;
+    margin: 10px 0 0;
+}
+.spricebtn i{
+    float: left;
+    width: 110px;
+    margin: 0 7px 0 45px;
+    line-height: 35px;
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+    font-style: normal;
+    background: #db5d48;
+    cursor: pointer;
+}
+.spricebtn em{
+    float: left;
+    width: 60px;
+    height: 35px;
+    background:#f60 url("/image/public/adcar.png") no-repeat center center;
+    cursor: pointer;
+}
+.pagelist{
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    margin: 50px 0 0;
+}
+.pagelist span,.pagelist a,.pagelist b{
+    display: inline-block;
+    margin: 0 4px;
+    color: #999;
+    font-size: 14px;
+}
+.pagelist span{
+    padding: 0 10px;
+    line-height: 30px;
+    border: 1px solid #999;
+    cursor: pointer;
+}
+.pagelist span:hover{
+    color: #f60;
+    border: 1px solid #f60;
+}
+.pagelist span.on,.pagelist span.on:hover{
+    background: #f4f4f4;
+    border: 1px solid #999;
+    color: #999;
+    cursor: default;
+}
+.pagelist a{
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #999;
+}
+.pagelist a:hover{
+    border: 1px solid #f60;
+    color: #f60;
+}
+.pagelist a.on,.pagelist a.on:hover{
+    color: #fff;
+    border: 1px solid #f60;
+    background: #f60;
+}

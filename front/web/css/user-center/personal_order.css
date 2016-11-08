@@ -1,0 +1,1050 @@
+.center{
+    width: 1200px;
+}
+.personal_listbox{
+    display: block;
+    overflow: hidden;
+}
+.personal_left{
+    float: left;
+    width: 225px;
+}
+.personal_left h3{
+    display: block;
+    padding: 35px 0 25px;
+    line-height: 35px;
+    font-size: 18px;
+    color: #717071;
+}
+.personal_left p{
+    display: block;
+    line-height: 62px;
+    padding: 0 0 0 10px;
+}
+.personal_left p a{
+    font-size: 14px;
+    color: #717071;
+}
+.personal_left p a.on{
+    color: #f30;
+    font-weight: bold;
+    font-size: 14px;
+}
+.personal_left p a:hover{
+    text-decoration: underline;
+}
+.personal_left h4{
+    display: block;
+    line-height: 62px;
+}
+.personal_left h4 a{
+    font-size: 18px;
+    font-weight: bold;
+    color: #717071;
+}
+.personal_left h4 a:hover{
+    text-decoration: underline;
+}
+.personal_right{
+    display: block;
+    margin: 0 0 0 225px;
+}
+.personal_banner{
+    display: block;
+    overflow: hidden;
+}
+.personal_banner img{
+    display: block;
+    margin: 0;
+    width: 100%;
+}
+.orderlist_titile{
+    display: block;
+    overflow: hidden;
+    width: 975px;
+    margin: 30px 0 0px;
+    background: #d8d8d8;
+}
+.orderlist_titile span{
+    float: left;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+}
+.orderlist_titile span.wid350,.orderlist_titile span.wid650{
+    text-align: left;
+    text-indent: 78px;
+}
+.wid350{
+    width: 450px;
+}
+.wid650{
+    width: 650px;
+}
+.wid100{
+    width: 100px;
+}
+.wid125{
+    width: 125px;
+    text-align: center;
+}
+.wid100 a{
+    display: block;
+    text-align: center;
+    line-height: 92px;
+    color: #f60;
+    text-decoration: underline;
+}
+.orderlistbox{
+    display: block;
+    overflow: hidden;
+    margin: 0 0 100px;
+}
+.orderlist_titile label{
+    float: left;
+    margin: 0 0 0 42px;
+    line-height: 40px;
+    color: #111d3c;
+}
+.orderlist.on .orderlist_titile{
+    background: #db5d48;
+}
+.orderlist.on .orderlist_titile label{
+    color: #fff;
+}
+.orderlist_titile b{
+    float: right;
+    width: 40px;
+    height: 40px;
+    margin: 0 45px 0 0;
+    background: url("/image/user-center/c.png") no-repeat center center;
+    cursor: pointer;
+}
+.orderlist.on .orderlist_titile b{
+    background: url("/image/user-center/cw.png") no-repeat center center;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.order_list_d{
+    display: block;
+    overflow: hidden;
+    padding: 10px 0;
+}
+.wid350 a.pic{
+    float: left;
+    margin: 15px 10px 15px 0;
+}
+.wid350 a{
+    display: block;
+    overflow: hidden;
+}
+.wid350 a img{
+    float: left;
+    width: 90px;
+    height: 90px;
+    border: 1px solid #d8d8d8;
+}
+.wid350 span a{
+    display: inline;
+    line-height: 25px;
+    color: #f60;
+    text-decoration: underline;
+}
+.wid350 span label{
+    color: #db5d48;
+    font-weight: normal;
+    cursor: default;
+}
+.wid350 span{
+    display: block;
+    line-height: 25px;
+    color: #333;
+}
+.wid350 a label{
+    display: block;
+    margin: 0 0 10px 100px;
+    font-size: 12px;
+}
+.wid100 em{
+    display: block;
+    text-align: center;
+    line-height: 92px;
+}
+.wid125 b{
+    display: block;
+    text-align: center;
+    line-height: 92px;
+    font-weight: normal;
+}
+.wid125 a{
+    display: block;
+    width: 100px;
+    margin: 10px auto;
+    background: #c60000;
+    text-align: center;
+    color: #fff;
+    line-height: 32px;
+}
+.wid125 a.pdeail{
+    color: #f60;
+    text-decoration: underline;
+    margin: 0 auto;
+    width: 60px;
+    background: none;
+    line-height: 92px;
+}
+.wid125 em{
+    line-height: 25px;
+    text-align: center;
+    cursor: pointer;
+}
+.wid125 em:hover{
+    text-decoration: underline;
+}
+.info_box{
+    display: block;
+    overflow: hidden;
+    margin: 25px 0 0;
+    border: 2px solid #ececec;
+}
+.info_box h3{
+    padding: 10px 0 0 25px ;
+    line-height: 60px;
+}
+.info_detailbox{
+    display: block;
+    overflow: hidden;
+    padding: 0 0 28px 25px;
+}
+.info_detailbox label{
+    float: left;
+    text-align: right;
+    width: 110px;
+    line-height: 32px;
+    margin: 0 20px 0 0;
+    color: #111d3c;
+}
+.info_detailbox input{
+    float: left;
+    height: 24px;
+    line-height: 24px;
+    padding: 3px 10px;
+    width: 110px;
+    border: 1px solid #dfdfdf;
+    color: #111d3c;
+}
+.info_detailbox input.username{
+    width: 80px;
+}
+.info_detailbox select{
+    float: left;
+    width: 80px;
+    height: 30px;
+    border: 1px solid #dfdfdf;
+    line-height: 30px;
+}
+.info_detailbox span{
+    float: left;
+    line-height: 32px;
+    color: #111d3c;
+    margin: 0 20px;
+}
+.modefybtn{
+    display: block;
+    overflow: hidden;
+    padding: 0 0 28px 155px;
+}
+.modefybtn a{
+    display: block;
+    width: 82px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #111d3c;
+    color: #fff;
+}
+.info_detailbox em{
+    float: left;
+    line-height: 32px;
+    color: #111d3c;
+}
+.info_box.bot{
+    margin-bottom: 50px;
+}
+.adress_manger{
+    display: block;
+    overflow: hidden;
+    margin: 0 0 20px;
+}
+.adress_manger a{
+    float: right;
+    margin: 0 35px;
+    color: #111d3c;
+}
+.adress_manger a:hover{
+    text-decoration: underline;
+}
+.add_adress_btn{
+    display: block;
+    overflow: hidden;
+    margin: 20px 0 50px;
+}
+.add_adress_btn a{
+    display: block;
+    width: 155px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background: #111d3c;
+    color: #fff;
+}
+.openbox{
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top:0;
+    height: 100%;
+    width: 100%;
+}
+.openboxbg{
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity:0.3;
+}
+.addaddress,.vieworder{
+    display: none;
+    position: absolute;
+    left: 50%;
+    top:50%;
+    width: 640px;
+    height: 326px;
+    margin: -163px 0 0 -320px;
+    background: #fff;
+    z-index: 2;
+}
+.vieworder{
+    width: 500px;
+    margin: -163px 0 0 -250px;
+}
+.paybox{
+    display: none;
+    position: absolute;
+    left: 50%;
+    top:50%;
+    width: 500px;
+    height: 500px;
+    margin: -250px 0 0 -250px;
+    background: #fff;
+    z-index: 2;
+}
+.zfb_open{
+    display: none;
+    position: absolute;
+    left: 50%;
+    top:50%;
+    width: 500px;
+    height: 400px;
+    margin: -200px 0 0 -250px;
+    background: #fff;
+    z-index: 2;
+}
+.opentitle{
+    display: block;
+    height: 30px;
+    overflow: hidden;
+    background: #111d3c;
+}
+.opentitle span{
+    float: left;
+    text-indent: 13px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 30px;
+}
+.opentitle a{
+    float: right;
+    margin: 0 10px 0 0;
+    width: 30px;
+    height: 30px;
+    background: url("../images/close.png") no-repeat center center;
+    background-size: 19px;
+}
+.adresscontent{
+    display: block;
+    overflow: hidden;
+    padding: 0 20px 50px;
+}
+.adresslist{
+    display: block;
+    min-height: 26px;
+    clear: both;
+    margin: 24px 0 0;
+}
+.adresslist.share{
+    overflow: hidden;
+}
+.adresslist label{
+    float: left;
+    width: 95px;
+    line-height: 26px;
+    text-align: right;
+    font-size: 14px;
+    color: #111d3c;
+}
+.adresslist.select{
+    position: relative;
+}
+.adresslist label em{
+    color: #f00;
+}
+.adresslist input{
+    float: left;
+    margin: 0 0 0 5px;
+    width: 138px;
+    height: 24px;
+    padding: 0 10px;
+    line-height: 24px;
+    border: 1px solid #e9e9e9;
+}
+.adresslist textarea{
+    float: left;
+    margin: 0 0 0 5px;
+    width: 238px;
+    height: 24px;
+    padding: 0 10px;
+    line-height: 24px;
+    resize: none;
+    border: 1px solid #e9e9e9;
+}
+.adressbtn{
+    display: block;
+    overflow: hidden;
+}
+.adressbtn a{
+    display: block;
+    width: 130px;
+    height: 24px;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 24px;
+    background: #111d3c;
+    color: #fff;
+    border: 1px solid #e9e9e9;
+}
+.adresslist span{
+    float: left;
+    margin: 0 0 0 5px;
+    height: 24px;
+    padding: 0 35px 0 10px;
+    line-height: 24px;
+    border: 1px solid #e9e9e9;
+    background: url("../images/pay/d2.png") no-repeat right center;
+    cursor: pointer;
+}
+.ad_select{
+    display: none;
+    position: absolute;
+    left: 25px;
+    top:25px;
+    width: 495px;
+    padding: 10px 0;
+    border: 1px solid #dfdfdf;
+    background: #fff;
+}
+.ad_title{
+    display: block;
+    overflow: hidden;
+    margin: 0 10px;
+    background: url("../images/pay/bo.png") repeat-x left bottom;
+}
+.ad_title em{
+    display: none;
+    float: left;
+    font-size: 12px;
+    color: #111d3c;
+    line-height: 20px;
+    padding: 0 15px;
+    margin: 0 7px 0 0;
+    border: 1px solid #dfdfdf;
+    cursor: pointer;
+}
+.ad_title p{
+    float: left;
+    line-height: 20px;
+    font-size: 12px;
+    color: #111d3c;
+    background: #fff;
+    padding: 1px 15px;
+    border: 1px solid #dfdfdf;
+    border-bottom: 0;
+}
+.ad_city,.ad_area,.ad_newadd{
+    display: block;
+    margin: 7px 0;
+    height: 81px;
+    overflow-y: auto;
+}
+.ad_area,.ad_newadd{
+    display: none;
+}
+.ad_city b,.ad_area b,.ad_newadd b{
+    float: left;
+    width: 75px;
+    text-align: center;
+    line-height: 20px;
+    margin: 4px 0;
+    cursor: pointer;
+    font-weight: normal;
+}
+.wxewm{
+    display: block;
+    overflow: hidden;
+    margin: 0 50px;
+}
+.wxewm span{
+    display: block;
+    text-align: center;
+    font-size: 24px;
+    color: #717071;
+    margin: 15px 0 0;
+    line-height: 45px;
+}
+.wxewm img{
+    display: block;
+    margin: 0 auto;
+    width: 260px;
+    height: 260px;
+    border: 1px solid #dfdfdf;
+}
+.wxewm p{
+    display: block;
+    padding: 0 0 45px;
+    text-align: center;
+    line-height: 35px;
+    color: #717071;
+    border-bottom: 1px solid #dfdfdf;
+}
+.wxewm p em{
+    color: #c60000;
+}
+.wxewm a{
+    display: block;
+    width: 170px;
+    text-align: center;
+    margin: 10px auto 0;
+    line-height: 40px;
+    color: #717071;
+    font-size: 18px;
+}
+.wxewm b,.wxewm strong{
+    display: block;
+    width: 200px;
+    height: 60px;
+    margin: 100px auto;
+    padding: 0 0 0 70px;
+    line-height: 60px;
+    font-size: 30px;
+    color: #717071;
+    background: url("../images/pay/r.png") no-repeat left center;
+}
+.wxewm strong{
+    background: url("../images/pay/w.png") no-repeat left center;
+}
+.orderbh{
+    display: block;
+    overflow: hidden;
+    background: #111d3c;
+}
+.orderbh span{
+    float: left;
+    padding: 0 0 0 50px;
+    line-height: 40px;
+    color: #fff;
+}
+.orderbh label{
+    float: right;
+    margin: 0 50px 0 0;
+    line-height: 40px;
+    color: #fff;
+}
+.userdzh{
+    display: block;
+    overflow: hidden;
+    padding: 25px 0;
+}
+.userdzh p{
+    display: block;
+    padding: 8px 0;
+    line-height: 25px;
+    color: #717071;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.zfbcontent{
+    display: block;
+    padding: 60px 38px 0 115px;
+    background: url("../images/pay/gt.png") no-repeat 30px 75px;
+}
+.zfbcontent p{
+    display: block;
+    line-height: 60px;
+    font-size: 22px;
+    color: #111d3c;
+}
+.zfbcontent span{
+    display: block;
+    font-size: 16px;
+    color: #717071;
+}
+.zfbbtn_box{
+    display: block;
+    overflow: hidden;
+    margin: 35px 13px 35px 0;
+}
+.zfbbtn_box a{
+    width: 150px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 18px;
+    background: #111d3c;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    color: #fff;
+}
+.zfbcontent em{
+    display: block;
+    cursor: pointer;
+    color: #717071;
+}
+.zfbcontent em:hover{
+    text-decoration: underline;
+}
+.couponbox{
+    display: block;
+    overflow: hidden;
+    margin: 0 0 200px 20px;
+}
+.couponlist{
+    float: left;
+    width: 448px;
+    border: 2px solid #888e9e;
+    margin: 30px 25px 0 0;
+}
+.couponlist span{
+    float: left;
+    line-height: 128px;
+    margin: 0 0 0 30px;
+    font-size: 82px;
+    color: #111d3c;
+}
+.couponlist em{
+    float: left;
+    font-size: 20px;
+    color: #111d3c;
+    line-height: 30px;
+    padding: 80px 0 0;
+}
+.couponlist label{
+    display: block;
+    margin: 0 20px 20px 250px;
+    text-align: right;
+    line-height: 55px;
+    font-size: 24px;
+    color: #111d3c;
+}
+.couponlist.on label{
+    color: #d8d8d8;
+}
+.couponlist.on{
+    border: 2px solid #d8d8d8;
+}
+.couponlist p{
+    display: block;
+    margin: 0 0 0 250px;
+    line-height: 22px;
+    font-size: 12px;
+    color: #717071;
+}
+.couponlist p b{
+    font-weight: normal;
+    color: #111d3c;
+}
+.delete_adress{
+    float: right;
+    width: 28px;
+    height: 28px;
+    margin: 30px 30px 0 0 ;
+    cursor: pointer;
+    background: url("../images/close.png") no-repeat center center;
+}
+.wid650{
+    position: relative;
+}
+.wid650 img{
+    display: block;
+    margin: 0;
+    width: 100%;
+    height: 92px;
+}
+.wid650 p{
+    position: absolute;
+    width: 650px;
+    height: 92px;
+    left: 0;
+    top:0;
+    color: #fff;
+    line-height: 92px;
+    text-align: center;
+    z-index: 2;
+}
+.deletetipopen,.vieworderopen{
+    display: none;
+    position: fixed;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+.deletetipboxbg{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left: 0;
+    background: #000;
+    opacity:0.5;
+    z-index: 1;
+}
+.deletetipbox{
+    position: absolute;
+    width: 400px;
+    background: #fff;
+    z-index: 2;
+    height: 200px;
+    top:50%;
+    left: 50%;
+    margin: -100px 0 0 -200px;
+    -webkit-border-radius:8px;
+    -moz-border-radius:8px;
+    border-radius:8px;
+}
+.deletetipbox p{
+    display: block;
+    line-height: 119px;
+    text-align: center;
+    font-size: 24px;
+}
+.deleteopenbtn{
+    display: block;
+    overflow: hidden;
+    border-top:1px solid #d8d8d8;
+}
+.deleteopenbtn a{
+    float: left;
+    width: 200px;
+    line-height: 80px;
+    color: #007aff;
+    text-align: center;
+    font-size: 22px;
+}
+.deleteopenbtn a.deleteover{
+    width: 199px;
+    border-left:1px solid #d8d8d8;
+}
+.personal_orderlist{
+    float: left;
+}
+.pd10{
+    padding: 10px 0 0;
+}
+.personcenter{
+    display: block;
+    overflow: hidden;
+    margin: 20px 0;
+    padding: 20px 40px;
+    border: 1px solid #ccc;
+}
+.userhead{
+    float: left;
+    width: 120px;
+    height: 120px;
+    border: 1px solid #ccc;
+    position: relative;
+}
+.userhead img{
+    display: block;
+    width: 120px;
+    height: 120px;
+}
+.userhead input{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top:0;
+    opacity: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+.userinfo{
+    display: block;
+    margin: 0 0 0 135px;
+    overflow: hidden;
+}
+.usernikename{
+    display: block;
+    overflow: hidden;
+}
+.usernikename span,.usernikename input{
+    float: left;
+    width: 260px;
+    color: #333;
+    line-height: 40px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.usernikename input{
+    line-height: 28px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    display: none;
+}
+.usernikename b{
+    float: left;
+    margin: 0 0 0 20px;
+    color: #f60;
+    font-weight: normal;
+    cursor: pointer;
+    line-height: 40px;
+}
+.userphoennum{
+    display: block;
+    line-height: 40px;
+    font-size: 14px;
+}
+.userprice{
+    display: block;
+    line-height: 40px;
+    font-size: 14px;
+    color: #333;
+}
+.userprice em{
+    color: #f60;
+    font-weight: bold;
+}
+.userprice a{
+    display: inline-block;
+    margin: 0 0 0 10px;
+    width: 60px;
+    height: 28px;
+    background: #db5d48;
+    color: #fff;
+    line-height: 28px;
+    text-align: center;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+}
+.wid350.add{
+    width: 750px;
+}
+.wid125 label{
+    display:inline;
+    cursor: pointer;
+    text-decoration: underline;
+    color: #f60;
+}
+.wid125{
+    line-height: 92px;
+}
+.wid650.his{
+    width: 750px;
+}
+.vieworder .adresslist input{
+    width: 238px;
+}
+.vieworder .adresslist textarea{
+    height: 96px;
+}
+.uploadpic{
+    float: left;
+}
+.uploadbtnbor{
+    float: left;
+    width: 42px;
+    height: 42px;
+    background: #666;
+}
+.uploadbtnbor i{
+    display: block;
+    margin: 5px;
+    height: 28px;
+    width: 28px;
+    border: 2px solid #fff;
+    color: #fff;
+    text-align: center;
+    line-height: 28px;
+    font-size: 18px;
+    -webkit-border-radius:50%;
+    -moz-border-radius:50%;
+    border-radius:50%;
+}
+.uploadbtn{
+    position: relative;
+    float: left;
+    width: 42px;
+    height: 42px;
+}
+.vieworder .adresslist .uploadbtn input{
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    left: 0;
+    top:0;
+    z-index: 2;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+}
+.historypic{
+    float: left;
+    height: 42px;
+}
+.picboxlist{
+    float: left;
+    margin: 0 0 0 10px;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    position: relative;
+}
+.picboxlist img{
+    display: block;
+    width: 100%;
+    height: 42px;
+}
+.picboxlist i{
+    display: none;
+    position: absolute;
+    background: #000;
+    left: 0;
+    top:0;
+    width: 42px;
+    height: 42px;
+    opacity: 0.3;
+    z-index: 1;
+}
+.picboxlist strong{
+    display: none;
+    position: absolute;
+    color: #fff;
+    z-index: 2;
+    left: 0;
+    top:0;
+    width: 42px;
+    line-height: 42px;
+    text-align: center;
+    cursor: pointer;
+}
+.picboxlist.on i,.picboxlist.on strong{
+    display: block;
+}
+.viewlist2{
+    float: left;
+    margin: 0 10px 30px;
+    width: 300px;
+    border: 1px solid #ccc;
+}
+.orderview.order{
+    padding: 10px 0;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+.viewlist2 a{
+    display: block;
+    overflow: hidden;
+}
+.viewlist2 a img{
+    display: block;
+    margin: 10px;
+    width: 280px;
+    height: 290px;
+}
+.viewlist2 a span{
+    display: block;
+    color: #333;
+    font-weight: bold;
+    height: 25px;
+    margin: 0 10px;
+    overflow: hidden;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    line-height: 25px;
+}
+.viewlist2 a label{
+    display: block;
+    margin: 0 10px 3px;
+    line-height: 20px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: 20px;
+    color: #333;
+    font-size: 12px;
+}
+.viewlist2 a label em{
+    font-weight: bold;
+    color: #f60;
+}
+.viewlist2 a .showtext span{
+    margin: 0;
+}
+.showtext{
+    display: block;
+    overflow: hidden;
+    padding: 5px 10px 10px;
+    background: #f5f5f5;
+}
+.showtext p{
+    display: block;
+    overflow: hidden;
+}
+.showtext i{
+    float: left;
+    line-height: 22px;
+    color: #329afd;
+    font-style: normal;
+}
+.showtext em{
+    float: right;
+    line-height: 22px;
+    color: #666;
+}
+.showtext b{
+    display: block;
+    font-weight: normal;
+    line-height: 20px;
+    height: 80px;
+    overflow: hidden;
+    color: #333;
+}

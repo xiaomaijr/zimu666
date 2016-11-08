@@ -255,7 +255,7 @@ class ApiUtils
         if(!$time){
             $time = time();
         }
-        return date('YmdHis', $time);
+        return date('Y-m-d H:i:s', $time);
     }
     /*
      * 验证手机号码格式
@@ -289,53 +289,7 @@ class ApiUtils
         $nextTime = strtotime(date('Ymd', $nextTime) . ' 0:0:0');
         return ($nextTime-$preTime)/24/3600;
     }
-    /*
-     *
-     */
-    public static function EqualMonth( $data = array( ) ){
-        if ( isset( $data['money'] ) && 0 < $data['money'] ) {
-            $account = $data['money'];
-        }else {
-            return "";
-        }
-        if ( isset( $data['year_apr'] ) && 0 < $data['year_apr'] ){
-            $year_apr = $data['year_apr'];
-        }else{
-            return "";
-        }
-        if ( isset( $data['duration'] ) && 0 < $data['duration'] ){
-            $duration = $data['duration'];
-        }
-        if ( isset( $data['borrow_time'] ) && 0 < $data['borrow_time'] ){
-            $borrow_time = $data['borrow_time'];
-        }else{
-            $borrow_time = time( );
-        }
-        $month_apr = $year_apr / 1200;
-        $_li = pow( 1 + $month_apr, $duration );
-        $repayment = round( $account * ( $month_apr * $_li ) / ( $_li - 1 ), 4 );
-        $_result = array( );
-        if ( isset( $data['type'] ) && $data['type'] == "all" ){
-            $_result['repayment_money'] = $repayment * $duration;
-            $_result['monthly_repayment'] = $repayment;
-            $_result['month_apr'] = round( $month_apr * 100, 4 );
-        }else{
-            $i = 0;
-            for ( ;	$i < $duration;	++$i){
-                if ( $i == 0 ){
-                    $interest = round( $account * $month_apr, 4 );
-                }else{
-                    $_lu = pow( 1 + $month_apr, $i );
-                    $interest = round( ( $account * $month_apr - $repayment ) * $_lu + $repayment, 4 );
-                }
-                $_result[$i]['repayment_money'] = number_format( $repayment, 4 );
-                $_result[$i]['repayment_time'] = self::get_times( array( "time" => $borrow_time, "num" => $i + 1 ) );
-                $_result[$i]['interest'] = number_format( $interest, 4 );
-                $_result[$i]['capital'] = number_format( $repayment - $interest, 4 );
-            }
-        }
-        return $_result;
-    }
+    
 
     //获得时间天数
     public static function get_times($data=array()){
@@ -380,154 +334,22 @@ class ApiUtils
             return $_result;
         }
     }
-    public static function EqualSeason( $data = array( ) )
-    {
-        if ( isset( $data['month_times'] ) && 0 < $data['month_times'] ){
-            $month_times = $data['month_times'];
-        }
-        if ( $month_times % 3 != 0 ){
-            return false;
-        }
-        if ( isset( $data['account'] ) && 0 < $data['account'] ){
-            $account = $data['account'];
-        }else{
-            return "";
-        }
-        if ( isset( $data['year_apr'] ) && 0 < $data['year_apr'] ){
-            $year_apr = $data['year_apr'];
-        }else{
-            return "";
-        }
-        if ( isset( $data['borrow_time'] ) && 0 < $data['borrow_time'] ){
-            $borrow_time = $data['borrow_time'];
-        }else{
-            $borrow_time = time( );
-        }
-        $month_apr = $year_apr / 1200;
-        $_season = $month_times / 3;
-        $_season_money = round( $account / $_season, 4 );
-        $_yes_account = 0;
-        $repayment_account = 0;
-        $_all_interest = 0;
-        $i = 0;
-        for ( ;	$i < $month_times;	++$i	)
-        {
-            $repay = $account - $_yes_account;
-            $interest = round( $repay * $month_apr, 4 );
-            $repayment_account += $interest;
-            $capital = 0;
-            if ( $i % 3 == 2 ){
-                $capital = $_season_money;
-                $_yes_account += $capital;
-                $repay = $account - $_yes_account;
-                $repayment_account += $capital;
-            }
-            $_result[$i]['repayment_money'] = number_format( $interest + $capital, 4 );
-            $_result[$i]['repayment_time'] = self::get_times( array( "time" => $borrow_time, "num" => $i + 1 ) );
-            $_result[$i]['interest'] = number_format( $interest, 4 );
-            $_result[$i]['capital'] = number_format( $capital, 4 );
-            $_all_interest += $interest;
-        }
-        if ( isset( $data['type'] ) && $data['type'] == "all" ){
-            $_resul['repayment_money'] = $repayment_account;
-            $_resul['monthly_repayment'] = round( $repayment_account / $_season, 4 );
-            $_resul['month_apr'] = round( $month_apr * 100, 4 );
-            $_resul['interest'] = $_all_interest;
-            return $_resul;
-        }else{
-            return $_result;
-        }
-    }
-
-    public static function equalEndMonth($data = []){
-        if (isset( $data['month_times'] ) && 0 < $data['month_times']){
-            $month_times = $data['month_times'];
-        }
-        if (isset( $data['account'] ) && 0 < $data['account']){
-            $account = $data['account'];
-        }else{
-            return "";
-        }
-        if (isset( $data['year_apr'] ) && 0 < $data['year_apr']){
-            $year_apr = $data['year_apr'];
-        }else{
-            return "";
-        }
-        if (isset( $data['borrow_time'] ) && 0 < $data['borrow_time']){
-            $borrow_time = $data['borrow_time'];
-        }else{
-            $borrow_time = time( );
-        }
-        $month_apr = $year_apr / 1200;
-        $_all_interest = 0;
-        $interest = round($account * $month_apr, 4 );
-        for ($i = 0;$i < $month_times;++$i){
-            $capital = 0;
-            if ( $i + 1 == $month_times ){
-                $capital = $account;
-            }
-            $_result[$i]['repayment_account'] = $interest + $capital;
-            $_result[$i]['repayment_time'] = self::get_times(["time" => $borrow_time, "num" => $i + 1]);
-            $_result[$i]['interest'] = $interest;
-            $_result[$i]['capital'] = $capital;
-            $_all_interest += $interest;
-        }
-        if (isset($data['type']) && $data['type'] == "all"){
-            $_resul['repayment_account'] = $account + $interest * $month_times;
-            $_resul['monthly_repayment'] = $interest;
-            $_resul['month_apr'] = round( $month_apr * 100, 4 );
-            $_resul['interest'] = $_all_interest;
-            return $_resul;
-        }else{
-            return $_result;
-        }
-    }
-
-    public static function EqualEndMonthOnly( $data = array( ) ){
-        if ( isset( $data['month_times'] ) && 0 < $data['month_times'] ){
-            $month_times = $data['month_times'];
-        }
-        if ( isset( $data['account'] ) && 0 < $data['account'] ){
-            $account = $data['account'];
-        }else{
-            return "";
-        }
-        if ( isset( $data['year_apr'] ) && 0 < $data['year_apr'] ){
-            $year_apr = $data['year_apr'];
-        }else{
-            return "";
-        }
-        if ( isset( $data['borrow_time'] ) && 0 < $data['borrow_time'] ){
-            $borrow_time = $data['borrow_time'];
-        }else{
-            $borrow_time = time( );
-        }
-        $month_apr = $year_apr / 1200;
-        $interest = number_format( $account * $month_apr * $month_times, 4 );
-        if ( isset( $data['type'] ) && $data['type'] == "all" ){
-            $_resul['repayment_account'] = $account + $interest;
-            $_resul['monthly_repayment'] = $interest;
-            $_resul['month_apr'] = round( $month_apr * 100, 4 );
-            $_resul['interest'] = $interest;
-            $_resul['capital'] = $account;
-            return $_resul;
-        }
-    }
-    /*
+    
+    /**
      * 获取年月日时分秒
      */
     public static function getStrTimeByUnix($unixTime = 0){
         $unixTime = $unixTime?$unixTime:time();
         return date("Y-m-d H:i:s", $unixTime);
     }
-    /*
+    /**
      * 获取年月日
      */
     public static function getDateByUnix($unixTime = 0){
         $unixTime = $unixTime?$unixTime:time();
         return date("Y-m-d", $unixTime);
     }
-    /*
+    /**
      * replace by ****
      */
     public static function replaceByLength($str, $length, $start, $end, $replace = "*"){
@@ -535,7 +357,7 @@ class ApiUtils
     }
 
     // 获取客户端IP地址
-    public static function get_client_ip() {
+    public static function getClientIp() {
         static $ip = NULL;
         if ($ip !== NULL) return $ip;
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -549,8 +371,17 @@ class ApiUtils
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         // IP地址合法验证
-        $ip = (false !== ip2long($ip)) ? $ip : '0.0.0.0';
+        $ip = (false !== ip2long($ip)) ? ip2long($ip) : 0;
         return $ip;
+    }
+    /**
+     * @param $params
+     * @param string $method
+     * @return mixed
+     */
+    public static function formatIp($ip)
+    {
+        return long2ip($ip);
     }
     //参数过滤，防sql、js注入
     public static function filter($params, $method = 'get'){
@@ -635,5 +466,75 @@ class ApiUtils
         }else{
             return strlen($str);
         }
+    }
+
+    public static function email($to, $subject, $body, $flag = 0)
+    {
+        $mail = \Yii::$app->mailer->compose();
+        if (is_string($to) && strpos($to, ';') !== false) {
+            $to = explode(";", $to);
+        }
+        $mail->setTo($to);
+        $mail->setSubject($subject);
+        if (!$flag) {
+            $mail->setTextBody($body);   //发布纯文字文本
+        } else {
+            $mail->setHtmlBody($body);    //发布可以带html标签的文本
+        }
+        return $mail->send() ? true : false;
+    }
+
+    /**
+     * @param $businessType
+     * @param $userAccount
+     */
+    public static function generateOrderNo($businessType, $userAccount)
+    {
+        if (!$businessType || !$userAccount) {
+            return '';
+        }
+        $tradeNo = '';
+        if ($businessType == ApiConfig::BUSINESS_TYPE_RECHARGE) {
+            $tradeNo .= 'R' . date('YmdHis') . $userAccount . $businessType;
+        } elseif ($businessType == ApiConfig::BUSINESS_TYPE_SHOPPING) {
+            $tradeNo .= 'E' . date('YmdHis') . $userAccount . $businessType;
+        }
+        return $tradeNo . rand(100, 99999);
+    }
+
+    /*
+     * url携带参数处理
+     */
+    public static function getMapping($conditions, $param)
+    {
+        $queryStr = '';
+        if (empty($conditions)) {
+            return $queryStr;
+        }
+        foreach ($conditions as $k => $v) {
+            if (empty($k) || empty($v)) {
+                continue;
+            }
+            if (is_string($param) && $k === $param) {
+                continue;
+            }
+            if (is_array($param) && in_array($k, $param)) {
+                continue;
+            }
+            if (is_array($v)) {
+                foreach ($v as $key => $val) {
+                    if (empty($key)) {
+                        continue;
+                    }
+                    if (empty($val)) {
+                        continue;
+                    }
+                    $queryStr .= $k . "[" . $key . "]" . "=" . $val . "&";
+                }
+            } else {
+                $queryStr .= $k . "=" . $v . "&";
+            }
+        }
+        return rtrim($queryStr, '&');
     }
 }

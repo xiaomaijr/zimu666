@@ -76,4 +76,24 @@ class RedisUtil
     public function rPop($key){
         return $this->redis->rPop($key);
     }
+
+    public function exists($key)
+    {
+        return $this->redis->exists($key);
+    }
+
+    public function set($key, $value, $expire = 0)
+    {
+        if (!$expire) return $this->redis->set($key, json_encode($value));
+        return $this->redis->setex($key, $expire, json_encode($value));
+    }
+
+    public function get($key)
+    {
+        $ret = $this->redis->get($key);
+        if ($ret) {
+            return json_decode($ret, true);
+        }
+        return false;
+    }
 }

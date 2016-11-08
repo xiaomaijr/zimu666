@@ -1,0 +1,1070 @@
+.content{
+    width: 1190px;
+    margin: 0 auto;
+}
+.mianbaoxie{
+    display: block;
+    overflow: hidden;
+}
+.mianbaoxie span,.mianbaoxie a,.mianbaoxie label{
+    float: left;
+    line-height: 40px;
+    color: #444;
+}
+.mianbaoxie span{
+    margin: 0 10px 0 0;
+}
+.mianbaoxie a:hover{
+    text-decoration: underline;
+    color: #f60;
+}
+.mianbaoxie label{
+    padding: 0 5px;
+}
+.detailtop{
+    display: block;
+    overflow: hidden;
+}
+.topleft{
+    float: left;
+    width: 422px;
+}
+.bigpic{
+    display: block;
+    overflow: hidden;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+.bigpic img{
+    display: block;
+    margin: 0;
+    width: 400px;
+    height: 400px;
+}
+.smallpic{
+    display: block;
+    overflow: hidden;
+    padding: 20px 0 0;
+}
+.smallpic span{
+    position: relative;
+    float: left;
+    padding: 5px;
+    margin: 0 5px;
+    width: 48px;
+    height: 48px;
+    border: 1px solid #ccc;
+}
+.smallpic span img{
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: 0;
+}
+.smallpic span.on{
+    border: 1px solid #f60;
+}
+.smallpic span.on em{
+    position: absolute;
+    width: 13px;
+    height: 7px;
+    top:-14px;
+    left: 22px;
+    background: url("/image/public/zk.png") no-repeat 0 0;
+}
+.topmid{
+    float: left;
+    width: 450px;
+    margin: 0 0 0 30px;
+}
+.midtext{
+    display: block;
+    color: #333;
+    overflow: hidden;
+    height: 64px;
+    line-height: 32px;
+    font-size: 20px;
+    font-weight: bold;
+    text-overflow: ellipsis;
+}
+.midtext em{
+    font-weight: normal;
+    font-size: 18px;
+}
+.midrenshu{
+    display: block;
+    overflow: hidden;
+    margin: 15px 0 0;
+    padding: 15px 0;
+    border: 1px dashed #ccc;
+    border-right: 0;
+    border-left:0;
+}
+.midrenshu.on{
+    margin: 15px 10px 0;
+}
+.midrenshu.on .shopnum{
+    padding-left: 0;
+}
+.midrenshu label{
+    display: block;
+    color: #666;
+    line-height: 30px;
+    font-size: 12px;
+}
+.midrenshu label em{
+    display: inline-block;
+    margin: 0 10px;
+    font-weight: bold;
+    color: #333;
+    font-size: 18px;
+}
+.sprice{
+    display: block;
+    background: #eee;
+    overflow: hidden;
+    height: 15px;
+    -webkit-border-radius:8px;
+    -moz-border-radius:8px;
+    border-radius:8px;
+    border: 1px solid #ccc;
+}
+.sprice b{
+    float: left;
+    height: 15px;
+    width: 10%;
+    background: #f60;
+}
+.sprice_user{
+    display: block;
+    overflow: hidden;
+    padding: 5px 0 0;
+}
+.sprice_user b,.sprice_user strong{
+    font-weight: normal;
+    color: #333;
+    line-height: 18px;
+}
+.sprice_user b{
+    float: left;
+}
+.sprice_user strong{
+    float: right;
+}
+.sprice_xx{
+    display: block;
+    overflow: hidden;
+    padding: 0 0 5px;
+}
+.sprice_xx b,.sprice_xx strong{
+    font-weight: normal;
+    color: #666;
+    line-height: 18px;
+}
+.sprice_xx b{
+    float: left;
+}
+.sprice_xx strong{
+    float: right;
+}
+.canyutext{
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    color: #333;
+    font-size: 14px;
+    line-height: 25px;
+}
+.canyutext em,.canyutext i{
+    font-weight: bold;
+    font-style: normal;
+}
+.canyutext em{
+    color: #39f;
+}
+.canyutext i{
+    color: #f60;
+}
+.midbtn{
+    display: block;
+    overflow: hidden;
+    margin: 30px 0 4px;
+}
+.shopnum{
+    display: block;
+    overflow: hidden;
+    padding: 20px 0 0 105px;
+}
+.shopnum label{
+    float: left;
+    color: #333;
+    margin: 0 15px;
+}
+.shopnum b{
+    float: left;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ccc;
+    font-size: 20px;
+    font-weight: normal;
+    text-align: center;
+    line-height: 28px;
+    background: #f5f5f5;
+    cursor: pointer;
+}
+.shopnum input{
+    float: left;
+    width: 42px;
+    font-size: 14px;
+    line-height: 28px;
+    border: 1px solid #ccc;
+    text-align: center;
+    border-left: 0;
+    border-right: 0;
+    color: #333;
+}
+.midbtn a{
+    width: 196px;
+    height: 47px;
+    font-size: 18px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    line-height: 47px;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+}
+.ljdb{
+    background: #f60;
+}
+.adsc{
+    background: #3399fe;
+}
+.nologinbox{
+    display: block;
+    overflow: hidden;
+    margin: 20px 0 0;
+    text-align: center;
+    border: 1px solid #ccc;
+    background: #ffffe0;
+    color: #333;
+    text-align: center;
+    line-height: 118px;
+}
+.hasjoin{
+    display: block;
+    overflow-y:auto;
+    height: 108px;
+    padding: 5px 20px;
+    margin: 20px 0 0;
+    background: #ffffe0;
+    color: #333;
+    border: 1px solid #ccc;
+}
+.hasjoin b{
+    display: block;
+    line-height: 27px;
+    font-weight: normal;
+}
+.hasjoin b a{
+    display: inline-block;
+    color: #f60;
+    margin: 0 0 0 5px;
+}
+.hasjoin b a:hover{
+    text-decoration: underline;
+}
+.topright{
+    float: right;
+    border: 1px solid #ccc;
+    width: 268px;
+    background: #f2f2f2;
+}
+.xyusertitle{
+    display: block;
+    overflow: hidden;
+    background: #e3e3e3;
+    padding: 0 0 0 22px;
+    font-size: 16px;
+    line-height: 40px;
+    font-weight: bold;
+}
+.xyuser{
+    display: block;
+    margin: 0 10px;
+    background: #fff;
+    overflow: hidden;
+}
+.titlebg{
+    display: block;
+    height: 4px;
+    margin: 0 -10px;
+    background: url("/image/detail/mix-icon.png") no-repeat 0 -8px;
+}
+.xyuserpic{
+    display: block;
+    overflow: hidden;
+}
+.xyuserpic img{
+    display: block;
+    width: 90px;
+    height: 90px;
+    margin: 20px auto 0;
+    padding: 4px;
+    border: 1px solid #ccc;
+}
+.xyuser label{
+    display: block;
+    overflow: hidden;
+    margin: 10px 20px;
+    line-height: 30px;
+    height: 30px;
+    text-overflow: ellipsis;
+    border-bottom: 1px dashed #ccc;
+}
+
+.xyuser .midrenshu.on label{
+    margin: 0;
+    border: 0;
+}
+.midrenshu.on .reduce{
+    margin: 0 0 0 20px;
+}
+.midrenshu.on .plus{
+    margin: 0 20px 0 0px;
+}
+.midrenshu.on{
+    border: 0;
+}
+.midrenshu.on .midbtn a{
+    display: block;
+    margin: 0 auto;
+}
+.xyuser a{
+    display: block;
+    overflow: hidden;
+    margin: 0 10px;
+}
+.xyuser label a{
+    color: #3399ff;
+}
+.xyuser label a:hover{
+    text-decoration: underline;
+}
+.xyuser label b{
+    font-weight: normal;
+    color: #528d00;
+}
+.xyuser p{
+    display: block;
+    height: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 22px;
+    padding: 0 20px;
+    color: #333;
+}
+.xyuser p em{
+    color: #f60;
+}
+.userview{
+    display: block;
+    width: 66px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    border: 1px solid #ccc;
+    background: #e3e3e3;
+    color: #333;
+    margin: 20px auto;
+}
+.xylist{
+    display: block;
+    overflow: hidden;
+    margin: 10px 0 8px 10px;
+}
+.xylist span{
+    float: left;
+    margin: 0 5px 5px 0;
+    background: #fff;
+    width: 116px;
+    line-height: 30px;
+    border: 2px solid #fff;
+    text-align: center;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    border-radius:2px;
+}
+.xylist span.on{
+    color: #f60;
+    border:2px solid #f60 ;
+}
+.xypages{
+    clear: both;
+    display: block;
+    overflow: hidden;
+    margin: 5px 13px 0;
+}
+.xypages a{
+    float: right;
+    width: 55px;
+    margin: 0 0 0 5px;
+    text-align: center;
+    line-height: 20px;
+    border: 1px solid #ccc;
+    background: #e3e3e3;
+    color: #333;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    border-radius:2px;
+}
+.xypages a.on{
+    background: #b0b0b0;
+}
+.detailcontent{
+    display: block;
+    overflow: hidden;
+    margin: 20px 0 0;
+    border: 1px solid #ccc;
+}
+.conttitle{
+    position: relative;
+    height: 40px;
+    border-bottom: 1px solid #ccc;
+    background: #f2f2f2;
+}
+.titleborder{
+    position: absolute;
+    top:0;
+    left: 0;
+}
+.titleborder span{
+    float: left;
+    font-weight: bold;
+    border-right: 1px solid #ccc;
+    line-height: 30px;
+    padding: 6px 50px 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.titleborder span.on{
+    border-top:3px solid #f60;
+    background: #fff;
+    padding: 3px 50px 5px;
+    cursor: default;
+}
+.conteach{
+    display: block;
+    overflow: hidden;
+    margin: 20px;
+}
+.contlist{
+    overflow: hidden;
+    display: none;
+}
+.shopview img{
+    display: block;
+    margin: 0 0 20px;
+    width: 100%;
+}
+.joinhistory{
+    padding: 0 50px 0 230px;
+}
+.contdate{
+    display: block;
+    height: 60px;
+}
+.contdate label{
+    float: left;
+    color: #808080;
+    font-size: 24px;
+    font-weight: bold;
+    width: 160px;
+    line-height: 60px;
+    border-right: 2px solid #ddd;
+}
+.contdate em{
+    float: left;
+    margin:24px 0 0 -7px;
+    width: 12px;
+    height: 12px;
+    background: #ddd;
+    -webkit-border-radius:50%;
+    -moz-border-radius:50%;
+    border-radius:50%;
+}
+.viewuserbox,.viewuserlist{
+    display: block;
+    overflow: hidden;
+    padding: 0 0 0 20px;
+}
+.viewuserlist label{
+    position: relative;
+    float: left;
+    width: 120px;
+    color: #808080;
+    line-height: 40px;
+}
+.viewuserlist label b{
+    float: right;
+    width: 10px;
+    height: 10px;
+    margin: 14px -8px 0 0;
+    border: 2px solid #ddd;
+    background: #fff;
+    -webkit-border-radius:50%;
+    -moz-border-radius:50%;
+    border-radius:50%;
+}
+.viewuserlist label b strong{
+    display: block;
+    margin: 2px;
+    width: 6px;
+    height: 6px;
+    background: #ddd;
+    -webkit-border-radius:50%;
+    -moz-border-radius:50%;
+    border-radius:50%;
+}
+.listright{
+    float: left;
+    padding: 0 0 0 20px;
+    border-left:2px solid #ddd;
+}
+.listright p{
+    display: block;
+    overflow: hidden;
+    line-height: 40px;
+    color: #808080;
+}
+.listright p img{
+    float: left;
+    margin: 10px 0;
+    width: 20px;
+    height: 20px;
+}
+.listright p a{
+    float: left;
+    margin: 0 5px;
+    line-height: 40px;
+    color: #3399ff;
+}
+.listright p a:hover{
+    text-decoration: underline;
+}
+.listright p em{
+    color: #f60;
+}
+.listright b{
+    display:none;
+    width: 105px;
+    color: #808080;
+    margin: 0 0 0 10px;
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
+    border: 1px solid #808080;
+    font-weight: normal;
+    background: url("/image/detail/d.png") no-repeat 96% center;
+    cursor: pointer;
+}
+.hiddenbox{
+    display: none;
+    border: 2px solid #ddd;
+    padding: 5px 10px;
+    max-height: 90px;
+    width: 660px;
+    overflow-y: auto;
+}
+.hiddenbox span{
+    display: inline-block;
+    width: 805px;
+    line-height: 30px;
+    width: 127px;
+    color: #808080;
+    text-align: center;
+}
+.listright p.on b{
+    display: inline-block;
+}
+.listright.on .hiddenbox{
+    display: block;
+}
+.listright.on p b{
+    display: inline-block;
+}
+.xypages.down{
+    margin: 5px 0;
+}
+.xypages.down a{
+    font-size: 14px;
+    width: 80px;
+    line-height: 30px;
+}
+.viewlist{
+    display: block;
+    overflow: hidden;
+    margin: 0 0 20px;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+}
+.viewpic{
+    padding: 0 40px 20px;
+}
+.viewpicbox{
+    float: left;
+    width: 102px;
+    height: 102px;
+    border: 1px solid #ccc;
+}
+.viewpicbox a{
+    display: block;
+    overflow: hidden;
+}
+.viewpicbox a:hover label{
+    text-decoration: underline;
+}
+.viewpicbox img{
+    display: block;
+    width: 90px;
+    height: 90px;
+    padding: 5px;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+}
+.viewpicbox label{
+    display: block;
+    margin: 5px 0 0;
+    text-align: center;
+    line-height: 25px;
+    color: #3399ff;
+}
+.viewtext{
+    display: block;
+    margin: 0 0 0 130px;
+    border: 1px solid #ccc;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+}
+.texttitle{
+    display: block;
+    overflow: hidden;
+    border-bottom: 1px dashed #ccc;
+}
+.texttitle span{
+    float: left;
+    padding: 0 0 0 20px;
+    line-height: 40px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.texttitle label{
+    float: right;
+    line-height: 40px;
+    padding: 0 20px 0 0;
+}
+.textcont{
+    display: block;
+    padding: 10px 20px;
+}
+.textcont a{
+    display: block;
+    overflow: hidden;
+}
+.textcont label{
+    display: block;
+    line-height: 22px;
+    color: #333;
+}
+.textcont p{
+    display: block;
+    margin: 0 0 10px;
+    color: #808080;
+}
+.textcont a:hover p,.textcont a:hover label{
+    text-decoration: underline;
+}
+.textcont img{
+    float: left;
+    width: 120px;
+    height: 120px;
+    margin: 0 10px 0 0;
+    padding: 2px;
+    border: 1px solid #ccc;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    border-radius:2px;
+}
+.openloginbox{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top:0;
+    z-index:5;
+}
+.openbg{
+    position: absolute;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity:0.3;
+    z-index: 1;
+}
+.detaillogin{
+    display: none;
+    position: absolute;
+    z-index: 3;
+    width: 375px;
+    height: 275px;
+    left: 50%;
+    top:50%;
+    margin: -137px 0 0 -187px;
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+}
+.jiexiao{
+    display: block;
+    overflow: hidden;
+    border-top: 1px dashed #ccc;
+    padding: 20px 0 0;
+}
+.jiexiao span{
+    float: left;
+    line-height: 40px;
+    font-size: 16px;
+}
+.jiexiao em{
+    float: left;
+    margin: 0 0 0 10px;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 40px;
+    color: #f60;
+}
+.xingyun{
+    display: block;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background: #f2f2f2;
+    margin: 20px 0 0;
+}
+.userbox{
+    display: block;
+    overflow: hidden;
+}
+.userbox img{
+    float:left ;
+    width: 70px;
+    height: 70px;
+    margin: 10px;
+}
+.userbox p,.userbox span{
+    display: block;
+    overflow: auto;
+    margin-left:90px;
+}
+.userbox span{
+    margin-top: 20px;
+    line-height: 30px;
+    color: #528d00;
+    font-weight: bold;
+}
+.userbox span a{
+    color: #3399ff;
+}
+.userbox span a:hover{
+    text-decoration: underline;
+}
+.userbox p{
+    color: #996600;
+}
+.userdetailbox{
+    display: block;
+    overflow: hidden;
+    background: #fff;
+    margin: 10px;
+    padding: 5px;
+}
+.userdetailbox p{
+    display: block;
+    line-height: 25px;
+}
+.userdetailbox p em{
+    color: #f60;
+}
+.numlist{
+    display: block;
+    height: 75px;
+    overflow-y: auto;
+}
+.numlist span,.numlist label{
+    float: left;
+    margin: 0 15px 0 0;
+    line-height: 25px;
+}
+.numlist label.on{
+    color: #f60;
+    font-weight: bold;
+}
+.canyu{
+    display: block;
+    border: 1px solid #ccc;
+    border-top:0;
+    background: #ffffe0;
+    line-height: 50px;
+    text-align: center;
+}
+.boxleft{
+    float: left;
+}
+.gongshi{
+    clear: both;
+    display: block;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    margin: 20px 0 0;
+}
+.gongshi p{
+    display: block;
+    line-height: 55px;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 0 0 65px;
+}
+.gongshibox{
+    display: block;
+    overflow: hidden;
+    margin: 0 0 25px 65px;
+}
+.fl,.gongshitext{
+    float: left;
+}
+.gongshitext{
+    margin: 0 10px;
+    line-height: 62px;
+    font-size: 32px;
+    font-weight: bold;
+    color: #bab9b9;
+}
+.fl{
+    height: 44px;
+    width: 120px;
+    padding: 8px 0;
+    border: 1px solid #ccc;
+    background: -webkit-gradient(linear,left top,left bottom,from(#ffffff),to(#f2f2f2));
+}
+.fl span,.fl em,.fl label{
+    display: block;
+    line-height: 22px;
+    text-align: center;
+}
+.fl span,.fl em{
+    color: #f60;
+}
+.fl.red{
+    background: #fac8d1;
+}
+.guize{
+    display: block;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+.guizered{
+    float: left;
+    width: 130px;
+    background: #f60 url("/image/detail/over.png") no-repeat 0 0;
+    background-position: center 30px;
+    height: 115px;
+    padding: 85px 0 0;
+    text-align: center;
+    font-size: 20px;
+    color: #fff;
+    font-weight: bold;
+}
+.guizetext{
+    display: block;
+    padding: 10px 20px;
+    margin: 0 0 0 130px;
+}
+.guize p{
+    display: block;
+    line-height: 26px;
+}
+.guize p em{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+    margin: 0 10px 0 0;
+    color: #fff;
+    text-align: center;
+    line-height: 16px;
+    background: #f60;
+    -webkit-border-radius:50%;
+    -moz-border-radius:50%;
+    border-radius:50%;
+}
+.guize p.on{
+    color: #f60;
+}
+.listth{
+    display: block;
+    overflow: hidden;
+}
+.listth{
+    display: block;
+    border: 1px solid #ccc;
+    border-top:2px solid #ccc;
+    margin: 40px 0 0;
+    background: #f2f2f2;
+    color: #3c3c3c;
+}
+.listth span,.listth label{
+    float: left;
+    line-height: 35px;
+}
+.listth span{
+    width: 120px;
+    text-align: center;
+}
+.listth label{
+    padding: 0 0 0 232px;
+}
+.listtip{
+    display: block;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    border-top:0;
+    background: #ffffe0;
+    line-height: 35px;
+    text-align: center;
+    color: #3c3c3c;
+}
+.zuihou{
+    display: block;
+    overflow: hidden;
+    background: #f2f2f2;
+    border-left:1px solid #ccc;
+}
+.zuihou.noselect{
+    background: none;
+}
+.zuihoulist{
+    display: block;
+    overflow: hidden;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+.zuihoulist span,.zuihoulist p,.zuihoulist a{
+    float: left;
+    line-height: 35px;
+    border-right: 1px solid #ccc;
+}
+.zuihoulist span{
+    width: 120px;
+    text-align: center;
+}
+.zuihou.noselect p{
+    background: none;
+}
+.zuihou.noselect p i{
+    display: none;
+}
+.zuihoulist p{
+    width: 200px;
+    background: url("/image/detail/xy.png") no-repeat 0 0;
+    background-position: center center;
+}
+.zuihoulist p em,.zuihoulist p i{
+    float: left;
+    width: 50%;
+    text-align: center;
+    font-style: normal;
+}
+.zuihoulist p i{
+    color: #f60;
+    font-weight: bold;
+}
+.zuihoulist a:hover{
+    text-decoration: underline;
+}
+.zuihoulist a{
+    border: 0;
+    padding: 0 0 0 10px;
+    color: #999;
+}
+.jisuantext{
+    display: block;
+    overflow: hidden;
+    background: #f60;
+    padding: 15px 30px 20px 30px;;
+    border: 1px solid #ccc;
+    border-top: 0;
+}
+.jisuantext label{
+    float: left;
+    width: 85px;
+    line-height: 28px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+.jieguotext{
+    display: block;
+    margin: 0 0 0 85px;
+}
+.jieguotext p{
+    display: block;
+    line-height: 28px;
+    color: #fff;
+    font-size: 14px;
+}
+.jieguotext p span{
+    width: 18px;
+    display: inline-block;
+    height: 24px;
+    margin: 2px;
+    background: #fff;
+    color: #f60;
+    text-align: center;
+    line-height: 24px;
+    font-weight: bold;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    border-radius:2px;
+}
+.jieguotext p em{
+    display: inline-block;
+    background: url("/image/detail/qy.png") no-repeat 0 0;
+    width: 22px;
+    height: 25px;
+    margin: 1.5px;
+    text-align: center;
+    line-height: 25px;
+    color: #f60;
+}
+.jieguotext i{
+    display: block;
+    margin: 20px 0 0;
+    line-height: 30px;
+    width: 260px;
+    text-align: center;
+    color: #f60;
+    font-weight: bold;
+    background: #fff;
+    font-size: 16px;
+    -webkit-border-radius:15px;
+    -moz-border-radius:15px;
+    border-radius:15px;
+}

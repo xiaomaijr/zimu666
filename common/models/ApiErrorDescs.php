@@ -30,7 +30,7 @@ class ApiErrorDescs
     const ERR_USER_NAME_NOT_REGISTER = 15;//用户名未注册
     const ERR_USER_PASSWD_INPUT_WRONG = 16;//用户密码输入有误
     const ERR_USER_INFO_ERROR = 17;//用户信息有误
-    const ERR_USER_LOGOUT_FAIL = 18;//用户退出失败
+    const ERR_USER_NOT_EXISTS = 18;//用户不存在
     const ERR_FORGET_PASS_DIFF = 19;//两次输入密码不一致
     const ERR_RESET_PASSWD_FAIL = 20;//重置保存密码失败
     const ERR_NOTICE_KEY_NOT_EXIST = 21;//短信验证码key不存在
@@ -53,32 +53,37 @@ class ApiErrorDescs
     const ERR_NOTICE_RECHARGE_TRADE_NO_EMPTY = 1007;//通知充值手续费不能为空
     const ERR_NOTICE_WITHDRAW_MONEY_EMPTY = 1008;//通知提现金额不能为空
 
-    //2000-3000投资错误信息
-    const ERR_BORROW_DATA_NOT_EXIST = 2000;//借款信息不存在
-    const ERR_INVEST_RECORD_ADD_FAIL = 2002;//投资记录保存失败
-    const ERR_INVEST_DETAIL_ADD_FAIL = 2003;//投资还款保存失败
-    const ERR_INVEST_FAIL = 2004;//投资失败
+    //2000-3000购物订单错误信息
+    const ERR_ORDER_CREATE_FAILED = 2000;//购物订单创建失败
+    const ERR_ORDER_PAY_FAILED = 2001;//购物订单支付失败
+    const ERR_ORDER_STOCK_NOT_ENOUGH = 2002;//支付时库存不足
 
-    //3000-4000资金账户及银行卡
-    const ERR_BANK_FREEZED = 3000;//银行卡被绑定
-    const ERR_BANK_NUM_INPUT_ERR = 3001;//银行卡号两次输入错误
-    const ERR_OLD_BANK_NUM_INPUT_ERR = 3002;//旧银行卡号输入错误
-    const ERR_BANK_NUM_NOT_REPEAT = 3003;//银行卡号不能重复绑定
-    const ERR_BANK_BIND_FAIL = 3004;//绑定银行卡失败
-    const ERR_USER_UNBIND_BANK = 3005;//未绑定银行卡
-    const ERR_USER_MONEY_NOT_ENOUGH = 3006;//可用余额不足提现
-    const ERR_WITHDRAW_ADD_FAIL = 3007;//提现记录添加失败
+
+    //3000-4000资金账户
+    const ERR_ACCOUNT_NOT_EXISTS = 3000;//账户不存在
+    const ERR_ACCOUNT_INSUFFICIENT_AMOUNT = 3001;//账户金额不足
+    const ERR_ACCOUNT_LOCKED_NOT_ENOUGH = 3002;//冻结账户金额不足
 
     //4000-5000第三方错误
-    const ERR_ALREADY_REGISTER_QDD = 4000;//用户已注册钱多多
-    const ERR_QDD_REGISTER_PARAMS_ERR = 4001;//钱多多开户参数有误
-    const ERR_QDD_REGISTER_FAIL = 4002;//钱多多开户失败
-    const ERR_USER_UNBIND_THIRD_PAY = 4003;//未绑定第三方支付
-    const ERR_RECHARGE_ADD_ORDER_FAIL = 4004;//充值订单添加失败
-    const ERR_RECHARGE_NOTIFY_FAIL = 4005;//充值回调更新mmoney失败
-    const ERR_RECHARGE_MMLOG_ADD_FAIL = 4006;//充值回调添加mmlog失败
-    const ERR_RECHARGE_NOTIFY_PAYLINE_UPDATE_FAIL = 4007;//充值回调更新payline失败
-    const ERR_THIRD_VERIFY_FAIL = 4008;//第三方秘钥验证错误
+    const ERR_RECHARGE_FAILED = 4000;//充值失败
+
+
+    //5000晒单错误
+    const ERR_DISPLAY_ORDER_FAILED = 5000;//晒单失败
+
+    //6000购物车错误
+    const ERR_SHOP_CART_ID_ERROR = 6000;//购物车id不存在
+    const ERR_SHOP_CART_STATUS_ERROR = 6001;//状态错误，无法删除
+    const ERR_SHOP_CART_DELETE_FAILED = 6002;//删除失败
+    const ERR_SHOP_CART_GOOD_NOT_EXISTS = 6003;//购物车添加商品id不错在
+    const ERR_SHOP_CART_GOOD_ADD_FAILED = 6004;//购物车商品添加失败
+    const ERR_SHOP_CART_NUM_UPDATE_FAILED = 6005;//购物车商品数量更新失败
+    const ERR_SHOP_CART_STATUS_UPDATE_FAILED = 6006;//创建订单更新购物车状态失败
+
+    //7000商品
+    const ERR_INDIANA_GOOD_STOCK_NOT_ENOUTH = 7000;//商品库存不足
+    const ERR_INDIANA_GOOD_STOCK_UPDATE_FAILED = 7001;//更新库存失败
+    const ERR_INDIANA_GOOD_SOLD_OUT =7002;//该商品已售罄
 
 
 
@@ -109,7 +114,6 @@ class ApiErrorDescs
         self::ERR_USER_NAME_NOT_REGISTER => '用户名未注册',
         self::ERR_USER_PASSWD_INPUT_WRONG  => '用户密码输入有误',
         self::ERR_USER_INFO_ERROR => '用户信息有误',
-        self::ERR_USER_LOGOUT_FAIL => '用户退出失败',
         self::ERR_FORGET_PASS_DIFF => '两次输入密码不一致',
         self::ERR_RESET_PASSWD_FAIL => '重置密码保存失败',
         self::ERR_NOTICE_KEY_NOT_EXIST => '短信验证码key不存在',
@@ -132,31 +136,30 @@ class ApiErrorDescs
         self::ERR_NOTICE_WITHDRAW_MONEY_EMPTY => '通知提现金额不能为空',
 
         //2000-3000借款错误信息
-        self::ERR_BORROW_DATA_NOT_EXIST => '借款信息不存在',
-        self::ERR_INVEST_RECORD_ADD_FAIL => '投资记录保存失败',
-        self::ERR_INVEST_DETAIL_ADD_FAIL => '投资还款保存失败',
-        self::ERR_INVEST_FAIL => '投资失败',
-
+        self::ERR_ORDER_CREATE_FAILED =>    '购物订单创建失败',
+        self::ERR_ORDER_PAY_FAILED => '购物订单支付失败',
+        self::ERR_ORDER_STOCK_NOT_ENOUGH => '支付时库存不足',
             //3000-4000资金账户及银行卡
-        self::ERR_BANK_FREEZED => '银行卡被冻结',
-        self::ERR_BANK_NUM_INPUT_ERR => '两次输入银行卡不一致',
-        self::ERR_OLD_BANK_NUM_INPUT_ERR => '旧银行卡号输入错误',
-        self::ERR_BANK_NUM_NOT_REPEAT => '银行卡不能重复绑定',
-        self::ERR_BANK_BIND_FAIL => '绑定银行卡失败',
-        self::ERR_USER_UNBIND_BANK => '用户未绑定银行卡',
-        self::ERR_USER_MONEY_NOT_ENOUGH => '可用余额不足提现',
-        self::ERR_WITHDRAW_ADD_FAIL => '提现记录添加失败',
-        //4000-5000第三方错误
-        self::ERR_ALREADY_REGISTER_QDD => '用户已注册钱多多',
-        self::ERR_QDD_REGISTER_PARAMS_ERR => '钱多多开户参数有误',
-        self::ERR_QDD_REGISTER_FAIL => '钱多多开户失败',
-        self::ERR_USER_UNBIND_THIRD_PAY => '未绑定第三方支付',
-        self::ERR_RECHARGE_ADD_ORDER_FAIL => '充值订单添加失败',
-        self::ERR_RECHARGE_NOTIFY_FAIL => '充值回调更新mmoney失败',
-        self::ERR_RECHARGE_MMLOG_ADD_FAIL => '充值回调添加mmlog失败',
-        self::ERR_RECHARGE_NOTIFY_PAYLINE_UPDATE_FAIL => '充值回调更新payline失败',
-        self::ERR_THIRD_VERIFY_FAIL => '第三方秘钥验证错误',
+        self::ERR_ACCOUNT_NOT_EXISTS => '账户不存在',
+        self::ERR_ACCOUNT_INSUFFICIENT_AMOUNT => '账户余额不足',
+        self::ERR_ACCOUNT_LOCKED_NOT_ENOUGH => '冻结账户金额不足',
+        //4000第三方错误
+        self::ERR_RECHARGE_FAILED => '用户充值失败',
+        //5000晒单错误
+        self::ERR_DISPLAY_ORDER_FAILED => '晒单失败',
+        //6000购物车错误
+        self::ERR_SHOP_CART_ID_ERROR => '购物车id不存在',
+        self::ERR_SHOP_CART_STATUS_ERROR => '状态错误',
+        self::ERR_SHOP_CART_DELETE_FAILED => '删除失败',
+        self::ERR_SHOP_CART_GOOD_NOT_EXISTS => '购物车商品id不错在',
+        self::ERR_SHOP_CART_GOOD_ADD_FAILED => '购物车商品添加失败',
+        self::ERR_SHOP_CART_NUM_UPDATE_FAILED => '购物车商品数量更新失败',
+        self::ERR_SHOP_CART_STATUS_UPDATE_FAILED => '创建订单时更新购物车状态失败',
 
+        //7000 商品错误
+        self::ERR_INDIANA_GOOD_STOCK_NOT_ENOUTH => '商品库存不足',
+        self::ERR_INDIANA_GOOD_STOCK_UPDATE_FAILED => '更新库存失败',
+        self::ERR_INDIANA_GOOD_SOLD_OUT =>  '该商品已售罄',
     ];
 
 

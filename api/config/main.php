@@ -34,7 +34,7 @@ return [
                 '/mall/confirm-<id:\d+>.html' => 'site/confirm',
                 '/<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 
-                'defaultRoute' => 'site/index',
+                'defaultRoute' => 'index/index',
             ],
         ],
 

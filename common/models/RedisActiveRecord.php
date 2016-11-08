@@ -119,7 +119,7 @@ abstract class RedisActiveRecord extends ActiveRecord
         }elseif($limit){
             $query->limit($limit);
         }
-//        echo $query->createCommand()->getRawSql();exit;
+//        echo $query->createCommand()->getRawSql();
         $infos = $query->asArray()->all();
         return $infos?$infos:[];
     }

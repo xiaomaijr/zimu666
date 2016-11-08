@@ -91,7 +91,7 @@ class PhonesmsLog extends RedisActiveRecord
      */
     public function sendSms($phone,$content,$sendTime='',$productid=self::VerifyKey){
         $content = $this->auto_charset($content,'utf-8','utf-8');
-        $content = $content.$this->signInfo;
+        $content = $content . $this->signInfo;
         if(!in_array($productid,array(self::VerifyKey,self::MarketingKey,self::P2Pkey))){
             return false;
         }

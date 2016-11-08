@@ -1,0 +1,341 @@
+﻿/* zhujun 2015.11.06 */
+
+
+/*表格*/
+.dind_a {
+	float: left;
+	width: 100%;
+	height: 35px;
+	overflow: hidden;
+	font-size: 14px;
+	line-height: 35px;
+}
+
+.reser_box {
+	border: 1px solid #E0E0E0;
+	border-bottom: none;
+	clear: both;
+	margin-bottom: 10px;
+}
+
+.reser_box table {
+	width: 100%;
+}
+
+.reser_box table th {
+	height: 38px;
+	line-height: 38px;
+	background: #F2F1FF;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+.reser_box table td {
+	padding: 10px 0px;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+.zj_newcar_price {
+	float: left;
+	width: 100%;
+	clear: both;
+	margin: 0px 0px;
+	background: #E0E0E0;
+}
+
+.zj_newcar_price table {
+	width: 100%;
+}
+
+.zj_newcar_price table td, .zj_newcar_price table th {
+	padding: 10px 5px;
+	text-align: center;
+	font-size: 14px;
+}
+
+.zj_newcar_price table th {
+	background: #FDF6DA;
+	color: #333;
+}
+
+.zj_newcar_price table td {
+	background: #fff;
+}
+/*财务表格*/
+.zj_cw_price {
+	float: left;
+	width: 100%;
+	clear: both;
+	margin: 0px 0px 10px;
+	background: #E0E0E0;
+}
+
+.zj_cw_price table {
+	width: 100%;
+}
+
+.zj_cw_price table td, .zj_cw_price table th {
+	padding: 10px 5px;
+	text-align: center;
+	font-size: 14px;
+    text-transform: uppercase;
+	/*vertical-align: top;*/
+}
+.zj_cw_price table td span{
+	color: #B8B8B8;
+}
+
+.zj_cw_price table th {
+	background: #FDF6DA;
+	color: #333;
+}
+
+.zj_cw_price table td {
+	background: #fff;
+}
+
+.zj_cw_price table  tr:hover td{ background: #F2F1FF;}
+.buttonbox {
+	float: left;
+	clear: both;
+	height: 80px;
+	padding: 10px 0px;
+	width: 100%;
+}
+
+.buttonbox .btn {
+	display: inline-block;
+	margin-bottom: 0;
+	padding: 6px 82px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	background-image: none;
+	vertical-align: middle;
+	text-align: center;
+	white-space: nowrap;
+	font-weight: 400;
+	line-height: 1.42857143;
+	font-size: 16px;
+	cursor: pointer;
+	border-color: #4497F9;
+	background-color: #4497F9;
+	color: #fff;
+	margin-left: 110px;
+}
+/*输入框*/
+.diny_input {
+	float: left;
+	display: block;
+	margin-right: 10px;
+	padding: 6px 12px;
+	width: 110px;
+	height: 20px;
+	border: 1px solid #E0E0E0;
+	border-radius: 4px;
+	background-color: #fff;
+	background-image: none;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	color: #555;
+	font-size: 14px;
+	line-height: 1.42857143;
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.reser_div_b select {
+	font-size: 14px;
+	color: #555;
+	line-height: 1.42857143;
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	background-color: #fff;
+	background-image: none;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	display: block;
+	float: left;
+	margin-right: 10px;
+	padding: 0 12px;
+	height: 34px;
+	border: 1px solid #ccc;
+}
+
+.diny_select {
+	width: 110px;
+	border-radius: 4px;
+}
+.consut_texta {
+    padding: 6px 12px;
+    width: 400px;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-image: none;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5em;
+}
+.diny_select, .diny_selecthgzx {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.42857143;
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    background-color: #fff;
+    background-image: none;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    display: block;
+    float: left;
+    margin-right: 10px;
+    padding: 0 12px;
+    height: 34px;
+    border: 1px solid #ccc;
+}
+/*内容*/
+.reser_th_b {
+	font-size: 14px
+}
+
+.pr10 {
+	padding-right: 10px;
+}
+
+.pl20 {
+	padding-left: 20px;
+}
+.mrb20{ margin-bottom: 20px;}
+
+.teg_l {
+	text-align: left;
+}
+
+.blu4 {
+	color: #4497F9;
+}
+
+.pr30 {
+	padding-right: 30px;
+}
+
+.reser_div_a {
+	line-height: 34px;
+}
+
+.reser_th_a {
+	font-size: 14px;
+}
+
+.reser_td_a span {
+	line-height: 34px;
+}
+
+.reser_td_b {
+	font-size: 14px;
+}
+
+.fl {
+	float: left;
+}
+
+.fr {
+	float: right;
+}
+
+.mbf1 {
+	margin-bottom: -1px;
+}
+
+.lh34 {
+	line-height: 34px;
+}
+/*长度*/
+.w_80 {
+	width: 80px;
+}
+
+.w_110 {
+	width: 110px;
+}
+
+.w_200 {
+	width: 200px;
+}
+.w_230 {
+	width: 230px;
+}
+.w_300 {
+	width: 300px;
+}
+/*右侧浮动*/
+.rightbox_fdong{position:fixed;top:160px;right:0;width:280px;background:#F2F1FF; padding: 10px; border:1px solid #4497F9;}
+.right_fd1, .right_fd2 {
+    float: left;
+    clear: both;
+    overflow: hidden;
+    padding-bottom: 10px;
+    width: 100%;
+}
+.right_fd2 label {
+    padding-right: 8px;
+    padding-left: 8px;
+    line-height: 36px;
+}
+.btn, .right_fd2 label {
+    float: left;
+    font-size: 14px;
+}
+.btn-primary {
+    border-color: #4497F9;
+    background-color: #4497F9;
+    color: #fff;
+    display: inline-block;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-image: none;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: 400;
+    line-height: 1.42857143;
+    cursor: pointer;
+    float: left;
+    font-size: 14px;
+}
+/*图片限制*/
+.iconbt{ cursor: pointer; float: left; clear: both; margin-bottom: 20px;}
+.djz_img{ width: 200px;}
+/*二级导航*/
+.ui-widget-content .status_ab{ padding:4px 8px; color:#063ac8; font-size:16px}
+.ui-widget-content .onsta{ color: #ff6600;}
+.ui-widget-content .status_ab:hover{color: #ff6600; text-decoration: underline;}
+
+/*颜色*/
+.orgent{ background: #FDF6DA}
+
+
+/*框*/
+.btn-obob {
+    border-color: #bbbbbb;
+    background-color: #bbbbbb;
+    color: #333;
+    display: inline-block;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-image: none;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: 400;
+    line-height: 1.42857143;
+    cursor: pointer;
+    float: left;
+    font-size: 14px;
+    width: 230px;
+    display: none;
+}

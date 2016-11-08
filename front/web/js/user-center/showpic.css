@@ -1,0 +1,476 @@
+.orderview.order{
+    padding: 10px 0;
+    overflow: hidden;
+    width: 1200px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+}
+.viewlist2 a,.viewlist a{
+    display: block;
+    overflow: hidden;
+}
+.viewlist2 a img{
+    display: block;
+    margin: 10px;
+    width: 255px;
+    height: 290px;
+}
+.viewlist2.other{
+    width: 266px;
+}
+.viewlist2.other a img{
+    width: 245px;
+}
+.viewlist img{
+    margin: 40px 2.5% 0;
+    float: left;
+    width: 45%;
+}
+.viewlist2 a span,.viewlist span{
+    display: block;
+    color: #333;
+    font-weight: bold;
+    height: 25px;
+    margin: 0 10px;
+    overflow: hidden;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    line-height: 25px;
+}
+.viewlist2 a label,.viewlist label{
+    display: block;
+    margin: 0 10px 3px;
+    line-height: 20px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: 20px;
+    color: #333;
+    font-size: 12px;
+}
+.viewlist label{
+    margin: 0 0 3px;
+}
+.viewlist2 a label em,.viewlist label em{
+    font-weight: bold;
+    color: #f60;
+}
+.viewlist label em,.viewlist .showtext em{
+    float: none;
+    margin: 0 0 0 10px;
+}
+.viewlist2 a .showtext span,.viewlist .showtext span{
+    margin: 0;
+}
+.showtext{
+    display: block;
+    overflow: hidden;
+    padding: 5px 10px 10px;
+    background: #f5f5f5;
+}
+.showtext p{
+    display: block;
+    overflow: hidden;
+}
+.showtext i{
+    float: left;
+    line-height: 22px;
+    color: #329afd;
+    font-style: normal;
+}
+.showtext em{
+    float: right;
+    line-height: 22px;
+    color: #666;
+}
+.showtext b{
+    display: block;
+    font-weight: normal;
+    line-height: 20px;
+    height: 80px;
+    overflow: hidden;
+    color: #333;
+}
+.viewlist2{
+    float: left;
+    margin: 0 10px 30px;
+    width: 275px;
+    border: 1px solid #ccc;
+}
+.viewlist{
+    display: block;
+    overflow: hidden;
+    margin: 0 auto 30px;
+    padding: 0 0 40px;
+    width: 1200px;
+    border: 1px solid #ccc;
+}
+.userhead{
+    float: left;
+    width: 120px;
+    height: 120px;
+    border: 1px solid #ccc;
+    position: relative;
+}
+.userhead img{
+    display: block;
+    width: 120px;
+    height: 120px;
+}
+.userhead input{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top:0;
+    opacity: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+.userinfo{
+    display: block;
+    margin: 0 0 0 135px;
+    overflow: hidden;
+}
+.usernikename{
+    display: block;
+    overflow: hidden;
+}
+.usernikename span,.usernikename input{
+    float: left;
+    width: 260px;
+    color: #333;
+    line-height: 40px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.usernikename input{
+    line-height: 28px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    display: none;
+}
+.usernikename b{
+    float: left;
+    margin: 0 0 0 20px;
+    color: #f60;
+    font-weight: normal;
+    cursor: pointer;
+    line-height: 40px;
+}
+.userphoennum{
+    display: block;
+    line-height: 40px;
+    font-size: 14px;
+}
+.userprice{
+    display: block;
+    line-height: 40px;
+    font-size: 14px;
+    color: #333;
+}
+.userprice em{
+    color: #f60;
+    font-weight: bold;
+}
+.userprice a{
+    display: inline-block;
+    margin: 0 0 0 10px;
+    width: 60px;
+    height: 28px;
+    background: #db5d48;
+    color: #fff;
+    line-height: 28px;
+    text-align: center;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+}
+.personcenter{
+    display: block;
+    overflow: hidden;
+    width: 1120px;
+    padding: 20px 40px;
+    border: 1px solid #ccc;
+    margin: 20px auto;
+}
+.userhead{
+    float: left;
+    width: 120px;
+    height: 120px;
+    border: 1px solid #ccc;
+    position: relative;
+}
+.userhead img{
+    display: block;
+    width: 120px;
+    height: 120px;
+}
+/**其他个人中心**/
+.otherbox{
+    display: block;
+    overflow: hidden;
+    width: 1200px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    padding-bottom: 20px;
+}
+.othernav{
+    display: block;
+    background: #f5f5f5;
+    height: 45px;
+    position: relative;
+    border-bottom: 1px solid #ccc;
+}
+.each{
+    position: absolute;
+    top:0;
+    left: 0;
+}
+.each a{
+    float: left;
+    width: 100px;
+    line-height: 45px;
+    text-align: center;
+    color: #333;
+    border-right: 1px solid #f5f5f5;
+    border-left: 1px solid #f5f5f5;
+}
+.each a.on{
+    background: #fff;
+    padding-bottom: 1px;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+.othereach{
+    display: block;
+    margin: 20px 20px 0;
+}
+.otherlist{
+    display: block;
+    overflow: hidden;
+}
+.orderlistbox{
+    display: block;
+    overflow: hidden;
+    margin: 0 0 100px;
+}
+.orderlistbox{
+    display: block;
+    overflow: hidden;
+    margin: 0 0 100px;
+}
+.orderlist_titile label{
+    float: left;
+    margin: 0 0 0 42px;
+    line-height: 40px;
+    color: #111d3c;
+}
+.orderlist.on .orderlist_titile{
+    background: #db5d48;
+}
+.orderlist.on .orderlist_titile label{
+    color: #fff;
+}
+.orderlist_titile b{
+    float: right;
+    width: 40px;
+    height: 40px;
+    margin: 0 45px 0 0;
+    background: url("/image/user-center/c.png") no-repeat center center;
+    cursor: pointer;
+}
+.orderlist.on .orderlist_titile b{
+    background: url("/image/user-center/cw.png") no-repeat center center;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.orderlist_titile{
+    display: block;
+    overflow: hidden;
+    margin: 30px 0 0px;
+    background: #d8d8d8;
+}
+.orderlist_titile span{
+    float: left;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+}
+.orderlist_titile span.wid350,.orderlist_titile span.wid650{
+    text-align: left;
+    text-indent: 78px;
+}
+.wid350{
+    width: 450px;
+}
+.wid650{
+    width: 650px;
+}
+.wid100{
+    width: 100px;
+}
+.wid125{
+    width: 125px;
+    text-align: center;
+}
+.wid100 a{
+    display: block;
+    text-align: center;
+    line-height: 92px;
+    color: #f60;
+    text-decoration: underline;
+}
+.order_list_d{
+    display: block;
+    overflow: hidden;
+    padding: 10px 0;
+}
+.wid350 a.pic{
+    float: left;
+    margin: 15px 10px 15px 0;
+}
+.wid350 a{
+    display: block;
+    overflow: hidden;
+}
+.wid350 a img{
+    float: left;
+    width: 90px;
+    height: 90px;
+    border: 1px solid #d8d8d8;
+}
+.wid350 span a{
+    display: inline;
+    line-height: 25px;
+    color: #f60;
+    text-decoration: underline;
+}
+.wid350 span label{
+    color: #db5d48;
+    font-weight: normal;
+    cursor: default;
+}
+.wid350 span{
+    display: block;
+    line-height: 25px;
+    color: #333;
+}
+.wid350 a label{
+    display: block;
+    margin: 0 0 10px 100px;
+    font-size: 12px;
+}
+.wid100 em{
+    display: block;
+    text-align: center;
+    line-height: 92px;
+}
+.wid125 b{
+    display: block;
+    text-align: center;
+    line-height: 92px;
+    font-weight: normal;
+}
+.wid125 a{
+    display: block;
+    width: 100px;
+    margin: 10px auto;
+    background: #c60000;
+    text-align: center;
+    color: #fff;
+    line-height: 32px;
+}
+.wid125 a.pdeail{
+    color: #f60;
+    text-decoration: underline;
+    margin: 0 auto;
+    width: 60px;
+    background: none;
+    line-height: 92px;
+}
+.wid125 em{
+    line-height: 25px;
+    text-align: center;
+    cursor: pointer;
+}
+.wid125 em:hover{
+    text-decoration: underline;
+}
+
+.personal_orderlist{
+    float: left;
+}
+.orderlist{
+    display: block;
+    overflow: hidden;
+}
+
+
+.openviewmore{
+    display: none;
+    position: fixed;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+.deletetipboxbg{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left: 0;
+    background: #000;
+    opacity:0.5;
+    z-index: 1;
+}
+.viewmorebox{
+    display: none;
+    position: absolute;
+    width: 400px;
+    left: 50%;
+    top:100px;
+    margin: 0 0 0 -200px;
+    background: #fff;
+    -webkit-border-radius:8px;
+    -moz-border-radius:8px;
+    border-radius:8px;
+    z-index: 5;
+}
+.viewtitle{
+    display: block;
+    overflow: hidden;
+    height:50px;
+    line-height: 25px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+.viewtextbox{
+    display: block;
+    padding: 10px 20px 20px;
+    overflow: hidden;
+    border-bottom: 1px solid #ccc;
+}
+.viewtextbox p{
+    display: block;
+    line-height: 30px;
+}
+.viewtextbox span{
+    float: left;
+    line-height: 20px;
+    margin: 0 20px 0 0;
+}
+.closethisbox{
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: center;
+    line-height: 50px;
+}

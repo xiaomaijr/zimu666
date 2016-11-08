@@ -1,0 +1,122 @@
+.menus{
+    display: block;
+    overflow: hidden;
+    border: 0px;
+    margin-bottom: 10px;
+    width: 1190px;
+    height: 45px;
+    background-color: #fcfcfc;
+    margin: 0 auto;
+    font-size: 14px;
+    position: relative;
+}
+.g_clr{
+    border-left: 0;
+    border-right: 0;
+    width: 1190px;
+    height: 38px;
+    border-top: 2px solid #099e6a;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #fcfcfc;
+    margin: 0 auto;
+    margin-bottom: 0;
+    font-size: 14px;
+    position: relative;
+}
+.g_clr li{
+    height: 38px;
+    line-height: 38px;
+    width: 108px;
+    float: left;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+.g_clr li a.active{
+    background-color: #0aa770;
+    cursor: pointer;
+    color: #fff;
+}
+.g_clr li a.active span{
+    color: #fff;
+}
+.g_clr li a{
+    border-right: 0;
+    text-align: center;
+    color: #333;
+    position: relative;
+    font-family: Microsoft Yahei;
+    font-size: 16px;
+    display: block;
+    height: 100%;
+    cursor: pointer;
+}
+.title{
+    text-align: center;
+    color: #333;
+    cursor: pointer;
+    font-family: Microsoft Yahei;
+    font-size: 16px;
+}
+.menu-split{
+    display: block;
+    width: 1px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: url(https://gss1.bdstatic.com/5eN1dDebRNRTm2_p8IuM_a/v5/dU/1s/Aa/af/gO/3/menus_split.png) center left no-repeat;
+}
+.g_clr li a.active .menu-split{
+    background: none;
+}
+.content{
+    display: block;
+    overflow: hidden;
+    border: 1px solid #adb;
+    width: 1190px;
+    margin: 20px auto;
+}
+.js_bd,.eachlist{
+    padding: 3px 0 3px 23px;
+}
+.js_bd li,.eachlist li{
+    width: 128px;
+    padding-top: 6px;
+    padding-bottom: 4px;
+    margin-right: 4px;
+    padding-left: 9px;
+    position: relative;
+    color: #000;
+    font-size: 14px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: top;
+    display: inline-block;
+}
+.js_bd li a{
+    outline: 0;
+    text-decoration: none;
+    background-image: url(https://gss3.bdstatic.com/5bVXsj_p_tVS5dKfpU_Y_D3/urlicon/6000.png);
+    background-position: 2px 44%;
+    background-position: 2px 40%\9;
+    background-repeat: no-repeat;
+    padding-left: 25px;
+    display: inline-block;
+}
+.js_bd li a span{
+    color: #333;
+}
+.js_bd li a:hover span{
+    color: #F50;
+    text-decoration: underline;
+}
+.eachlist li a{
+    outline: 0;
+    text-decoration: none;
+    background-position: 2px 44%;
+    background-position: 2px 40%\9;
+    background-repeat: no-repeat;
+    display: inline-block;
+    color: #333;
+}

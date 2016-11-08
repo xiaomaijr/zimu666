@@ -1,0 +1,118 @@
+.main-wrap{
+    width:1100px;
+    height: auto;
+    margin-top:30px;
+    padding: 30px;
+}
+.border-block{
+    padding: 20px 40px 0px 40px;
+    border: 1px solid #000000;
+    margin-left:auto;
+    margin-right:auto;
+}
+.border-block-t{
+    padding: 20px 40px 0px 40px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.page-title{
+    padding-bottom: 10px;
+}
+.item {
+    font-size: 14px;
+    margin:2px 10px 2px 0;
+    float:left;
+}
+.product-info{
+    padding-top: 10px;
+    overflow: auto;
+}
+.policy-wrap{
+    margin-top: 20px;
+    font-size: 14px;
+    margin-bottom: 50px;
+}
+.policy-info-title{
+    width:107px;
+    background: white;
+    height: 26px;
+    line-height:26px;
+    padding: 0 10px;
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
+.title-font{
+    font-size: 14px;
+    font-weight: 700;
+}
+.text-box{
+    padding:10px 0px 10px 20px;
+}
+.item-field{
+    padding:10px 10px 0px 10px ;
+}
+.item-field p{
+    padding-top: 7px;
+}
+.description-text{
+    width: 800px;
+    height:100px;
+}
+.btn-box{
+    margin-top: 20px;
+}
+
+/** 选择产品审批政策模板 **/
+.select-sort-table {
+    border: none;
+}
+
+.select-sort-table td {
+    vertical-align: top;
+    padding-right: 30px;
+}
+
+.title-policy {
+    width: 440px;
+    border: 1px solid #000000;
+    height: 18px;
+    padding: 3px;
+}
+
+.check-all {
+    float: right;
+}
+
+.policy-items {
+    border: 1px solid #000000;
+    border-top: none;
+}
+
+.selected-policy-items {
+    padding-top: 10px;
+}
+
+.selected-policy-items li {
+    height: 20px;
+    width: 98%;
+    padding: 3px;
+}
+
+.selected-policy-items div{
+    width: 85%;
+    height: 20px;
+    display: inline-block;
+}
+
+.selected-policy-items li img{
+    float: right;
+    cursor: pointer;
+}
+
+.selected-policy-items li:hover {
+    background-color: #bbbbbb;
+}
+
+.placeHolder div { background-color:white !important; border:dashed 1px gray !important; }
