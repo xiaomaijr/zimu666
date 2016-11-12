@@ -14,7 +14,15 @@ class UserBaseController extends BaseController
     public function beforeAction($action){
 
         if (parent::beforeAction($action)) {
-            $this->userId = \Yii::$app->session['USER_ID'];
+            if (!empty(\Yii::$app->session['USER_ID'])) {
+                $this->userId = \Yii::$app->session['USER_ID'];
+            } else {
+                if (\Yii::$app->request->getIsAjax()) {
+
+                } else {
+                    $this->redirect('/user-passport/login-view?back_url=' . $_SERVER['REQUEST_URI']);
+                }
+            }
             return true;
         }
         return false;

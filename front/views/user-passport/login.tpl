@@ -15,6 +15,7 @@
             <span>获取验证码</span>
             <b>59s重新获取</b>
         </div>
+        <input type="hidden" class="back-url" value="<{$params.back_url|default:'/'}>"/>
         <div class="loginbtn"><a href="javascript:void(0)">登录</a></div>
     </div>
 <{/block}>

@@ -33,6 +33,8 @@ class BaseController extends \yii\web\Controller
     public function beforeAction($action)
     {
         try{
+            ini_set('display_errors', 1);
+            ini_set('error_reporting', E_ALL ^ E_NOTICE);
             session_start();
             $this->timeStart = microtime(true) * 1000;
             $strControllerId = $action->controller->id;
@@ -97,12 +99,5 @@ class BaseController extends \yii\web\Controller
         } else {
             \Yii::error($strLog);
         }
-    }
-
-    /*
-     *验证access_token
-     */
-    protected function checkAccessToken($accessToken,$userId){
-        MemberAccessToken::checkUserLogin($accessToken, $userId);
     }
 }

@@ -33,8 +33,9 @@ $(function(){
             dataType:       'json',
         }).done(function(data){
             isLoginClick = false;
+            var backUrl = $('.back-url').val();
             if (data.code === 0) {
-                window.location.href = data.data.backUrl;
+                window.location.href = backUrl;
                 return true;
             }
             $('.loginbox p').text(data.message);
