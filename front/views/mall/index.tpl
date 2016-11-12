@@ -21,7 +21,7 @@
         <div class="bd">
             <ul class="picList">
                 <{foreach $banners as $banner}>
-                <li><a href="<{$banner.url|default:'/'}>"><img src="<{$banner.image}>" /></a></li>
+                <li><a href="<{$banner[1]|default:'/'}>"><img src="<{$banner[0]}>" /></a></li>
                 <{/foreach}>
             </ul>
         </div>
@@ -40,7 +40,7 @@
             <a href="/mall/reward?id=<{$lattestGood.indiana_good_id}>">
                 <div class="jxicon"></div>
                 <img src="<{$lattestGood.image}>">
-                <span><{$lattestGood.name}></span>
+                <span><{$lattestGood.name}> 第<{$lattestGood.issue|default:1}>期</span>
                 <label>总需人次：<{$lattestGood.total_inputs}></label>
                 <em>揭晓倒计时:<{$lattestGood.end_time - time()}></em>
             </a>
@@ -59,7 +59,7 @@
         <div class="rqlist">
             <a href="/mall/detail?id=<{$hotGood.id}>">
                 <img src="<{$hotGood.image}>">
-                <span><{$hotGood.name}></span>
+                <span><{$hotGood.name}> 第<{$indianaHotGoods[$hotGood.id]['issue']}>期</span>
                 <label>总需人次:<{$hotGood.total_inputs}></label>
                 <div class="sprice">
                     <b></b>
@@ -93,7 +93,7 @@
             <a href="/mall/detail?id=<{$newGood.id}>">
                 <img src="<{$newGood.image}>">
                 <span>总需人次:<{$newGood.total_inputs}></span>
-                <label><{$newGood.name}></label>
+                <label><{$newGood.name}> 第<{$indianaHotGoods[$newGood.id]['issue']}>期</label>
             </a>
         </div>
         <{/foreach}>

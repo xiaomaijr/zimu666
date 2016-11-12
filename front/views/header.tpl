@@ -1,7 +1,7 @@
 <!--header-->
 <div class="header">
     <div class="toptip">
-        <span>一元购子苜商城唯一官方网址(www.zimu666.cn),请按Ctrl+D收藏我们网址.</span>
+        <span>一元购子苜商城唯一官方网址(www.zimu666.cn)</span>
         <a href="javacript:void(0)"></a>
     </div>
     <div class="top_help">

@@ -54,7 +54,7 @@
                 <a href="/mall/detail?id=<{$product.id}>">
                     <div>
                         <img src="<{$product.image}>">
-                        <span><{$product.name}></span>
+                        <span><{$product.name}> 第<{$indianaGoods[$product.id]['issue']}>期</span>
                         <label>总需人次:<{$product.total_inputs}></label>
                         <div class="sprice">
                             <b></b>

@@ -143,6 +143,10 @@ class UserPassportController extends BaseController
     public function actionLoginView()
     {
         $data['params'] = $this->request;
+        if (!empty(\Yii::$app->session['USER_ID'])) {
+            $backUrl = !empty($this->request['back_url']) ? trim($this->request['back_url']) : '/';
+            $this->redirect($backUrl);
+        }
         return $this->render('login.tpl', $data);
     }
 

@@ -38,16 +38,25 @@ class MallController extends BaseController
         $indianaHotGoods = [];
         $banners = CmsData::getByPSignAndSSign('index', 'banner');
         $hotGoods = Goods::getList(['is_hot' => 1, 'status' => 1, 'is_del' => ApiConfig::IS_DEL_NOT]);
+        $goodIds = [];
         if ($hotGoods) {
             $hotGoodIds = ApiUtils::getCols($hotGoods, 'id');
-            $indianaHotGoods = ApiUtils::getMap(IndianaGoods::getList(['good_id' => array_unique($hotGoodIds), 'status' => 0]), 'good_id');
+            $goodIds = array_merge($goodIds, $hotGoodIds);
+        }
+        $newGoods = Goods::getList(['is_index' => 1, 'status' => 1, 'is_del' => ApiConfig::IS_DEL_NOT], 4);
+        if ($newGoods) {
+            $newGoodIds = ApiUtils::getCols($newGoods, 'id');
+            $goodIds = array_merge($goodIds, $newGoodIds);
+        }
+        if ($goodIds) {
+            $indianaHotGoods = ApiUtils::getMap(IndianaGoods::getList(['good_id' => array_unique($goodIds), 'status' => 0]), 'good_id');
         }
         $data = [
             'banners' => json_decode($banners['data'], true),
             'lattestGoods' => Goods::getList(['is_lattest' => 1, 'status' => 1, 'is_del' => ApiConfig::IS_DEL_NOT]),
             'hotGoods'     => Goods::getList(['is_hot' => 1, 'status' => 1, 'is_del' => ApiConfig::IS_DEL_NOT]),
             'indianaHotGoods' => $indianaHotGoods,
-            'newGoods'     => Goods::getList(['is_index' => 1, 'status' => 1, 'is_del' => ApiConfig::IS_DEL_NOT], 4),
+            'newGoods'     => $newGoods,
             'displayOrders'=> array_chunk(DisplayOrder::getList(['pageSize' => 5, 'page' => 1]), 2),
         ];
         return $this->render('index.tpl', $data);
